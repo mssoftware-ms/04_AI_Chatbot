@@ -1,0 +1,181 @@
+mschmitz@maiknb:/mnt/d/03_GIT/02_Python/01_AI Coding Station$ npx claude-flow@alpha help
+
+🌊 Claude-Flow v2.0.0-alpha.90 - Enterprise-Grade AI Agent Orchestration Platform
+
+🎯 ENTERPRISE FEATURES: Complete ruv-swarm integration with 90+ MCP tools, neural networking, and production-ready infrastructure
+🐝 NEW: Claude Code 1.0.51+ full compatibility with enhanced hooks and batch processing
+⚡ ALPHA 90: Major MCP Implementation & Quality Update
+
+🔍 ALPHA 90 HIGHLIGHTS:
+  ✅ 15+ Real MCP Tools - DAA, Workflow, Performance tools fully implemented
+  🐛 Critical Bug Fixes - agent_metrics, swarm_monitor, neural_train errors resolved
+  🧠 Real WASM Neural Networks - ruv-fann powered actual neural processing
+  📊 >95% Functionality - Mock rate reduced from 40% to <5%
+  🔧 MCP Routing Fixed - All workflow/performance tools properly routed
+  🔧 Non-interactive Fixes - Proper prompt injection for CI/CD & automation
+
+USAGE:
+  npx claude-flow@alpha <command> [options]    # Run latest alpha version
+  npx claude-flow@alpha <command> --help       # Get detailed help for any command
+  npx claude-flow@alpha --help                 # Show this help
+
+  # After local install:
+  claude-flow <command> [options]
+  claude-flow <command> --help    # Get detailed help for any command
+
+🚀 QUICK START:
+  # First time setup (creates CLAUDE.md & .claude/commands)
+  npx claude-flow@alpha init
+
+  # 🐝 HIVE MIND QUICK START (NEW!):
+  claude-flow hive-mind wizard          # Interactive setup wizard
+  claude-flow hive-mind spawn "objective"  # Create intelligent swarm
+  claude-flow hive-mind spawn "Build API" --claude  # Open Claude Code CLI
+
+  # After setup, use without npx:
+  claude-flow start --ui --swarm         # Start with swarm intelligence UI
+  claude-flow swarm "build REST API"     # Deploy multi-agent workflow
+  claude-flow swarm "create service" --claude  # Open Claude Code CLI with swarm
+
+🐝 HIVE MIND COMMANDS (NEW!):
+  hive-mind wizard         🎯 Interactive setup wizard (RECOMMENDED)
+  hive-mind init           Initialize Hive Mind system with SQLite
+  hive-mind spawn <task>   Create intelligent swarm with objective
+  hive-mind status         View active swarms and performance metrics
+  hive-mind metrics        Advanced performance analytics
+
+📋 CORE COMMANDS:
+  init                     Initialize Claude Flow v2.0.0 (creates CLAUDE.md & .claude/commands)
+                          --monitoring enables token usage tracking
+  start [--ui] [--swarm]   Start orchestration system
+  swarm <objective>        Multi-agent swarm coordination
+  agent <action>           Agent management (spawn, list, terminate)
+  sparc <mode>             SPARC development modes (17 available)
+  memory <action>          Persistent memory operations
+  github <mode>            GitHub workflow automation (6 modes)
+  status                   System status and health
+
+🔍 VERIFICATION COMMANDS (NEW!):
+  verify <subcommand>      Truth verification system (0.95 threshold)
+  truth                    View truth scores and reliability metrics
+  pair [--start]           Collaborative development with real-time verification
+
+📋 SWARM INTELLIGENCE COMMANDS:
+  training <command>       Neural pattern learning & model updates (3 commands)
+  coordination <command>   Swarm & agent orchestration (3 commands)
+  analysis <command>       Performance & token usage analytics (real tracking!)
+  automation <command>     Intelligent agent & workflow management (3 commands)
+  hooks <command>          Lifecycle event management (5 commands)
+  migrate-hooks            Migrate settings.json to Claude Code 1.0.51+ format
+  monitoring <command>     Real-time system monitoring (3 commands)
+  optimization <command>   Performance & topology optimization (3 commands)
+
+📋 ADDITIONAL COMMANDS:
+  task <action>            Task and workflow management
+  config <action>          System configuration
+  mcp <action>             MCP server management
+  batch <action>           Batch operations
+  stream-chain <workflow>  Stream-JSON chaining for multi-agent pipelines (NEW!)
+
+🔍 GET HELP:
+  npx claude-flow@alpha --help                Show this help
+  npx claude-flow@alpha <command> --help      Detailed command help
+
+🎯 RECOMMENDED FOR NEW USERS:
+  npx claude-flow@alpha hive-mind wizard     # Start here! Interactive guided setup
+  npx claude-flow@alpha init                 # Initialize Claude Flow
+  npx claude-flow@alpha help hive-mind       # Learn about Hive Mind features
+  npx claude-flow@alpha swarm "Build API" --claude  # Quick start with Claude Code CLI
+
+📚 Documentation: https://github.com/ruvnet/claude-flow
+🐝 Hive Mind Guide: https://github.com/ruvnet/claude-flow/tree/main/docs/hive-mind
+🐝 ruv-swarm: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
+💬 Discord Community: https://discord.agentics.org
+
+💖 Created by rUv with love: https://github.com/ruvnet
+
+-bash: pyenv: command not found
+mschmitz@maiknb:/mnt/d/03_GIT/02_Python/01_AI Coding Station$
+
+
+##############################
+
+mschmitz@maiknb:/mnt/d/03_GIT/02_Python/01_AI Coding Station$ npx claude-flow@alpha help hive-mind
+
+🧠 Claude Flow Hive Mind System
+
+USAGE:
+  claude-flow hive-mind [subcommand] [options]
+
+SUBCOMMANDS:
+  init         Initialize hive mind system
+  spawn        Spawn hive mind swarm for a task
+  status       Show hive mind status
+  resume       Resume a paused hive mind session
+  stop         Stop a running hive mind session
+  sessions     List all hive mind sessions
+  consensus    View consensus decisions
+  memory       Manage collective memory
+  metrics      View performance metrics
+  wizard       Interactive hive mind wizard
+
+EXAMPLES:
+  # Initialize hive mind
+  claude-flow hive-mind init
+
+  # Spawn swarm with interactive wizard
+  claude-flow hive-mind spawn
+
+  # Quick spawn with objective
+  claude-flow hive-mind spawn "Build microservices architecture"
+
+  # View current status
+  claude-flow hive-mind status
+
+  # Interactive wizard
+  claude-flow hive-mind wizard
+
+  # Spawn with Claude Code coordination
+  claude-flow hive-mind spawn "Build REST API" --claude
+
+  # Auto-spawn coordinated Claude Code instances
+  claude-flow hive-mind spawn "Research AI trends" --auto-spawn --verbose
+
+  # List all sessions
+  claude-flow hive-mind sessions
+
+  # Resume a paused session
+  claude-flow hive-mind resume session-1234567890-abc123
+
+KEY FEATURES:
+  🐝 Queen-led coordination with worker specialization
+  🧠 Collective memory and knowledge sharing
+  🤝 Consensus building for critical decisions
+  ⚡ Parallel task execution with auto-scaling
+  🔄 Work stealing and load balancing
+  📊 Real-time metrics and performance tracking
+  🛡️ Fault tolerance and self-healing
+  🔒 Secure communication between agents
+
+OPTIONS:
+  --queen-type <type>    Queen coordinator type (strategic, tactical, adaptive)
+  --max-workers <n>      Maximum worker agents (default: 8)
+  --consensus <type>     Consensus algorithm (majority, weighted, byzantine)
+  --memory-size <mb>     Collective memory size in MB (default: 100)
+  --auto-scale           Enable auto-scaling based on workload
+  --encryption           Enable encrypted communication
+  --monitor              Real-time monitoring dashboard
+  --verbose              Detailed logging
+  --claude               Generate Claude Code spawn commands with coordination
+  --spawn                Alias for --claude
+  --auto-spawn           Automatically spawn Claude Code instances
+  --execute              Execute Claude Code spawn commands immediately
+
+For more information:
+https://github.com/ruvnet/claude-flow/tree/main/docs/hive-mind
+
+-bash: pyenv: command not found
+mschmitz@maiknb:/mnt/d/03_GIT/02_Python/01_AI Coding Station$
+
+#######################################################
+

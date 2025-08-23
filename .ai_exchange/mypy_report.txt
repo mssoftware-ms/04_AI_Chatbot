@@ -1,0 +1,37 @@
+src/ui/components/sidebar.py:42: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:369: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:374: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:388: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:392: [1m[31merror:(B[m Incompatible types in (B[m[1m"await"(B[m (actual type (B[m[1m"None"(B[m, expected type (B[m[1m"Awaitable[Any]"(B[m)  (B[m[33m[misc](B[m
+src/ui/components/sidebar.py:394: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:398: [1m[31merror:(B[m Incompatible types in (B[m[1m"await"(B[m (actual type (B[m[1m"None"(B[m, expected type (B[m[1m"Awaitable[Any]"(B[m)  (B[m[33m[misc](B[m
+src/ui/components/sidebar.py:400: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:400: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:405: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:405: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:410: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:415: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:419: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:421: [1m[31merror:(B[m Incompatible types in (B[m[1m"await"(B[m (actual type (B[m[1m"None"(B[m, expected type (B[m[1m"Awaitable[Any]"(B[m)  (B[m[33m[misc](B[m
+src/ui/components/sidebar.py:423: [1m[31merror:(B[m Function is missing a type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:428: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:433: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:483: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:483: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:489: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:489: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:496: [1m[31merror:(B[m Incompatible types in (B[m[1m"await"(B[m (actual type (B[m[1m"None"(B[m, expected type (B[m[1m"Awaitable[Any]"(B[m)  (B[m[33m[misc](B[m
+src/ui/components/sidebar.py:499: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:504: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:504: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:520: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:520: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:535: [1m[31merror:(B[m Need type annotation for (B[m[1m"messages"(B[m (hint: (B[m[1m"messages: list[<type>] = ..."(B[m)  (B[m[33m[var-annotated](B[m
+src/ui/components/sidebar.py:554: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:554: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:561: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:561: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:565: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:565: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m
+src/ui/components/sidebar.py:569: [1m[31merror:(B[m Function is missing a return type annotation  (B[m[33m[no-untyped-def](B[m
+src/ui/components/sidebar.py:569: [34mnote:(B[m Use (B[m[1m"-> None"(B[m if function does not return a value(B[m

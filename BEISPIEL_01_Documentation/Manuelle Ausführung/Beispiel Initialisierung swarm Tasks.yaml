@@ -1,0 +1,137 @@
+swarm_name: "PECO Konfigurator Analyse Team"
+version: "1.0"
+working_directory: "root\\Angebote Vorlagen"
+
+agents:
+  - name: "PDF_Extractor"
+    role: "Dokumenten-Spezialist"
+    capabilities:
+      - "PDF-Parsing und Datenextraktion"
+      - "Strukturierte Datenspeicherung"
+      - "Memory-Management mit /compact"
+    priority: "high"
+    tasks:
+      - "Sequenzielle PDF-Verarbeitung"
+      - "Extraktion technischer Spezifikationen"
+      - "Preisdaten-Erfassung"
+      - "Link- und Demo-Sammlung"
+
+  - name: "Data_Analyst"
+    role: "Datenanalyst"
+    capabilities:
+      - "Kostenvergleiche"
+      - "TCO-Berechnungen"
+      - "ROI-Analysen"
+      - "Sensitivitätsanalysen"
+    priority: "high"
+    tasks:
+      - "Preisanalyse aller Anbieter"
+      - "5-Jahres-Kostenprojektion"
+      - "Break-Even-Berechnungen"
+      - "Kosten-Nutzen-Bewertung"
+
+  - name: "Presentation_Designer"
+    role: "Präsentations-Experte"
+    capabilities:
+      - "PowerPoint-Erstellung"
+      - "Datenvisualisierung"
+      - "Corporate Design"
+      - "Infografik-Erstellung"
+    priority: "high"
+    tasks:
+      - "PowerPoint-Template anwenden"
+      - "Diagramme und Charts erstellen"
+      - "QR-Codes für Demo-Links"
+      - "Executive Summary"
+
+  - name: "Comparison_Expert"
+    role: "Vergleichsanalyst"
+    capabilities:
+      - "Feature-Matrizen"
+      - "Bewertungssysteme"
+      - "Entscheidungsmatrizen"
+      - "Stärken-Schwächen-Analysen"
+    priority: "medium"
+    tasks:
+      - "Feature-Vergleichstabellen"
+      - "Technologie-Stack-Analyse"
+      - "Vendor-Bewertung"
+      - "Empfehlungen formulieren"
+
+  - name: "Project_Coordinator"
+    role: "Projekt-Koordinator"
+    capabilities:
+      - "Workflow-Management"
+      - "Datenintegration"
+      - "Qualitätssicherung"
+      - "Dokumentation"
+    priority: "medium"
+    tasks:
+      - "Arbeitsschritte koordinieren"
+      - "Zwischenergebnisse verwalten"
+      - "Konsistenz sicherstellen"
+      - "Finale Zusammenführung"
+
+workflow:
+  phases:
+    - phase_1_extraction:
+        lead_agent: "PDF_Extractor"
+        support: ["Project_Coordinator"]
+        sequence:
+          - "MuM Dokumente verarbeiten"
+          - "/compact ausführen"
+          - "Tacton Dokumente verarbeiten"
+          - "/compact ausführen"
+          - "encoway/Cideon Dokumente verarbeiten"
+          - "/compact ausführen"
+        output: "extracted_data/"
+
+    - phase_2_analysis:
+        lead_agent: "Data_Analyst"
+        support: ["Comparison_Expert"]
+        tasks:
+          - "Kostendaten aggregieren"
+          - "Vergleichsmatrizen erstellen"
+          - "Kalkulationen durchführen"
+        output: "analysis_results/"
+
+    - phase_3_presentation:
+        lead_agent: "Presentation_Designer"
+        support: ["Data_Analyst", "Comparison_Expert"]
+        tasks:
+          - "PowerPoint-Struktur aufbauen"
+          - "Visualisierungen einbinden"
+          - "Management Summary erstellen"
+        output: "final_presentation/"
+
+memory_management:
+  compact_after_each_pdf: true
+  max_context_usage: "80%"
+  auto_save_interval: "after_each_phase"
+
+output_specifications:
+  main_presentation:
+    filename: "PECO_Konfigurator_2.0_Komplett_Vergleich_{date}.pptx"
+    slides_count: "18-22"
+    design_template: "Powerpoint.pptx"
+    
+  supporting_documents:
+    - type: "executive_summary"
+      format: "docx"
+      pages: "2-3"
+    
+    - type: "cost_comparison"
+      format: "xlsx"
+      sheets: ["Übersicht", "Details", "TCO", "Szenarien"]
+    
+    - type: "demo_links"
+      format: "txt"
+      content: "Alle Links und QR-Codes"
+
+quality_checks:
+  - "Alle 6 PDFs verarbeitet"
+  - "Preise für alle 3 Anbieter erfasst"
+  - "TCO-Berechnung vollständig"
+  - "Demo-Links extrahiert"
+  - "Empfehlung formuliert"
+  - "Corporate Design eingehalten"

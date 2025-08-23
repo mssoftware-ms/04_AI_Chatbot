@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>MCP‑Server mit Claude‑Flow@alpha (v2) – Addendum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{--bg:#0f1218;--ink:#e5e7eb;--muted:#9ca3af;--panel:#111827;--accent:#f97316;--code:#0c111a;--border:#273449;--link:#60a5fa}
+    html,body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui;margin:0}
+    header{padding:28px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#10131a,#0f1218)}
+    h1{margin:0 0 6px;font-size:28px}
+    main{max-width:980px;margin:0 auto;padding:18px 20px}
+    section{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:16px 0}
+    .note{border-left:4px solid var(--accent);padding:10px 12px;background:#0c111a;border-radius:8px}
+    code,.mono{background:#0c111a;padding:.15rem .35rem;border-radius:6px}
+    pre{background:#0c111a;padding:14px;border-radius:12px;overflow:auto}
+    a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+    small{color:var(--muted)}
+    ul.inline>li{margin:6px 0}
+  </style>
+</head>
+<body>
+<header>
+  <h1>MCP‑Server mit Claude‑Flow@alpha (v2) – Addendum</h1>
+  <small>Stand: 2025-08-16</small>
+</header>
+<main>
+
+<section>
+  <p><strong>Kurzfassung:</strong> <span class="mono">npx claude-flow@alpha init --force</span> richtet in v2 die MCP‑Anbindung für <em>Claude Code</em> automatisch ein. Zusätzliche Server verwaltest du mit der <em>Claude‑Code‑CLI</em> (<span class="mono">claude mcp …</span>). Für ausführende Agenten ist <span class="mono">--claude</span> erforderlich.</p>
+  <div class="note">Infos & Referenzen: Anthropic‑Doku zu MCP &amp; CLI; Claude‑Flow v2 README/Issues zu Auto‑MCP‑Setup.</div>
+</section>
+
+<section>
+  <h2>1) Überblick</h2>
+  <ul class="inline">
+    <li><strong>MCP</strong> verbindet Claude Code standardisiert mit Tools/Datenquellen (stdio/SSE/HTTP).</li>
+    <li><strong>Claude‑Flow@alpha v2</strong> nutzt MCP über Claude Code. <em>Keine</em> Extra‑Flags bei Flow‑Kommandos nötig; wichtig ist <span class="mono">--claude</span>.</li>
+    <li><strong>Scopes</strong>: local (User), project (<span class="mono">.mcp.json</span> im Projekt), user (<span class="mono">~/.claude</span>).</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2) Status prüfen</h2>
+<pre><code># Welche MCP‑Server sind registriert?
+claude mcp list
+
+# Details zu einem bestimmten Server
+claude mcp get github
+</code></pre>
+</section>
+
+<section>
+  <h2>3) Projektweit teilen – <span class="mono">.mcp.json</span></h2>
+  <p>Server projektweit hinzufügen (Versionskontrolle möglich):</p>
+<pre><code># Beispiel: Linear als SSE‑Server
+claude mcp add --scope project --transport sse linear https://mcp.linear.app/sse
+</code></pre>
+  <p>Typische <span class="mono">.mcp.json</span> (Ausschnitt):</p>
+<pre><code>{
+  "mcpServers": {
+    "linear": {
+      "type": "sse",
+      "url": "https://mcp.linear.app/sse",
+      "headers": {}
+    }
+  }
+}
+</code></pre>
+  <p><strong>Auto‑Freigabe projektweiter MCPs:</strong> <span class="mono">~/.claude/settings.json</span> → <span class="mono">"enableAllProjectMcpServers": true</span></p>
+</section>
+
+<section>
+  <h2>4) Server hinzufügen (Varianten)</h2>
+  <p><strong>(A) stdio (lokal):</strong> läuft als Prozess auf deiner Maschine</p>
+<pre><code>claude mcp add airtable --env AIRTABLE_API_KEY=YOUR_KEY -- npx -y airtable-mcp-server
+</code></pre>
+  <p><strong>(B) SSE (remote):</strong> Streaming‑Transport</p>
+<pre><code>claude mcp add --transport sse linear https://mcp.linear.app/sse
+</code></pre>
+  <p><strong>(C) HTTP (remote):</strong> Request/Response</p>
+<pre><code>claude mcp add --transport http notion https://mcp.notion.com/mcp
+</code></pre>
+  <p><strong>JSON direkt importieren:</strong></p>
+<pre><code>claude mcp add-json weather-api '{
+  "type": "stdio",
+  "command": "/path/to/weather-cli",
+  "args": ["--api-key","abc123"],
+  "env": { "CACHE_DIR": "/tmp" }
+}'
+</code></pre>
+</section>
+
+<section>
+  <h2>5) Nutzung mit Claude‑Flow</h2>
+<pre><code># Einmalig initialisieren (richtet MCP für Claude Code ein)
+npx claude-flow@alpha init --force
+
+# Swarm (Agenten‑Spawn erfordert --claude)
+npx claude-flow@alpha swarm "Fix build pipeline" --claude --verbose
+
+# Hive‑Mind
+npx claude-flow@alpha hive-mind spawn "Implement OAuth login" --claude --verbose
+</code></pre>
+  <p>MCP wirkt automatisch über Claude Code; zusätzliche MCP‑Server aus <span class="mono">.mcp.json</span> werden geladen.</p>
+</section>
+
+<section>
+  <h2>6) Tipps (CI/Automatisierung)</h2>
+  <ul class="inline">
+    <li><span class="mono">MCP_TIMEOUT=15000</span> für langsame Server.</li>
+    <li><span class="mono">MAX_MCP_OUTPUT_TOKENS</span> begrenzt Tool‑Ausgaben.</li>
+    <li><span class="mono">--permission-prompt-tool &lt;tool&gt;</span> für Non‑Interactive‑Runs.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>7) Hinweise</h2>
+  <ul class="inline">
+    <li>Windows nativ (nicht WSL): stdio‑Server via <span class="mono">cmd /c</span> wrappen.</li>
+    <li>Bei Repos unter <span class="mono">/mnt/*</span>: States (SQLite) auf ext4 verlagern.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>8) Links</h2>
+  <ul class="inline">
+    <li><a href="https://docs.anthropic.com/en/docs/claude-code/mcp">Anthropic · MCP mit Claude Code</a></li>
+    <li><a href="https://docs.anthropic.com/en/docs/claude-code/cli-reference">Anthropic · Claude Code CLI</a></li>
+    <li><a href="https://docs.anthropic.com/en/docs/claude-code/settings">Anthropic · Settings</a></li>
+    <li><a href="https://github.com/ruvnet/claude-flow">Github · claude‑flow</a></li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

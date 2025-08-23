@@ -1,0 +1,59 @@
+GLOBALE SYSTEMINSTALLATIONEN:
+
+1. Allgemeines Setup (Global)
+Zunächst richten wir die globale Umgebung ein. Dazu gehören Node.js, npm, Claude Code (Anthropic CLI) sowie Claude-Flow selbst. Führe diese Schritte auf Systemebene (z.B. in WSL2 Ubuntu oder Linux Terminal) aus:
+•	Node.js 18+ und npm installieren: Stelle sicher, dass Node.js (Version 18 oder höher) und npm verfügbar sind[2]. Überprüfe die Versionen im Terminal:
+
+ 	node --version    # sollte 18.x oder höher ausgeben
+npm --version     # sollte 9.x oder höher ausgeben
+ 	Aktualisiere npm gegebenenfalls mit npm install -g npm@latest[3]. Bereinige evtl. den npm-Cache: npm cache clean --force[4].
+•	Claude Code global installieren: Claude-Flow baut auf Anthropic Claude Code auf. Es wird eine globale Installation vorausgesetzt. Falls lokal im Projekt vorhanden, zuerst deinstallieren, dann global installieren und initialisieren:
+
+	  npm remove @anthropic-ai/claude-code           # lokale Installation im Projekt entfernen (falls vorhanden)
+	  sudo npm install -g @anthropic-ai/claude-code  # global installieren
+	  claude --version                               # Version prüfen
+	  claude --dangerously-skip-permissions          # Initiale Berechtigungen bestätigen
+
+	Hinweis: Der Parameter --dangerously-skip-permissions erlaubt Claude Code den Zugriff auf Dateien/Ordner ohne jede einzelne Anfrage zu bestätigen. Nutze ihn mit Bedacht.
+•	Claude-Flow (Alpha) global installieren: Für den Hive-Modus werden globale CLIs verwendet:
+
+	  sudo npm install -g claude-flow@alpha
+	  claude-flow --version
+
+	Hinweis: WSL2/Linux wird empfohlen. Die GUI erwartet, dass sowohl 'claude' als auch 'claude-flow' global im PATH verfügbar sind.
+•	Anthropic API Key setzen: Claude-Flow benötigt einen gültigen Anthropic API-Schlüssel (z.B. von Claude.ai oder Anthropic Account). Exportiere den API-Key als Umgebungsvariable, damit Claude Code/Flow ihn nutzen kann[12]:
+
+•	MCP-Integration : MCP (Model Context Protocol) ermöglicht Claude-Flow als Backend-Server in Claude Code zu registrieren. Optional, aber hilfreich. Voraussetzung: 'claude' ist global im PATH verfügbar. Dann:
+
+	  claude mcp add claude-flow "claude-flow mcp start"
+	  claude mcp list   # überprüfen, ob Claude-Flow als Server eingetragen ist
+
+Hinweis zu npm EACCES in WSL:
+- Fehler wie "EACCES: permission denied, mkdir '/usr/lib/node_modules/...'" entstehen ohne Root-Rechte bei globaler Installation.
+- Lösung: 'sudo npm install -g …' verwenden (WSL-Terminal fordert das Passwort ab). Alternativ das Paket lokal entfernen und erneut global installieren.
+ 	Damit kann Claude Code künftig Befehle an Claude-Flow weiterreichen. (Details siehe Claude-Flow Doku[14].)
+
+###############################################################################################################################################
+PROJEKTSETUP
+2. Projektbezogenes Setup im Repository-Ordner
+Im nächsten Schritt richtest du Claude-Flow innerhalb deines Projektordners ein. Das bedeutet, die notwendigen Konfigurationsdateien und Verzeichnisse für Claude-Flow werden in deinem Repository angelegt. Gehe wie folgt vor:
+•	Projektordner auswählen/erstellen: Wechsle in den Ordner deines Software-Projekts (Repository), in dem du Claude-Flow verwenden möchtest. Falls es noch keinen dedizierten Ordner gibt, lege einen neuen an:
+
+ 	mkdir mein-projekt && cd mein-projekt
+•	Claude-Flow im Projekt initialisieren: Führe im Projektordner die Projekt-Initialisierung aus. Claude-Flow bietet dafür einen Befehl, der eine Basisstruktur anlegt. Du kannst optional ein Template angeben, z.B. "full-stack" für ein Full-Stack-Entwicklungsprojekt[15]. Beispiel:
+
+ 	claude-flow project init --template full-stack    # Projekt mit Full-Stack Template initialisieren[15]
+ 	Hinweis: Falls project init nicht verfügbar ist, kannst du claude-flow init verwenden – beachte aber, dass dies ggf. ein generisches Setup macht. Das --template full-stack legt typische Agenten und Strukturen für Full-Stack-Projekte an.
+•	Verzeichnisstruktur prüfen: Nach erfolgreicher Initialisierung legt Claude-Flow im Projekt u.a. versteckte Verzeichnisse wie .hive-mind/, .swarm/ und memory/ an[16]. Diese enthalten Konfigurationsdateien (z.B. config.json), SQLite-Datenbanken für Sessions und Memory sowie eventuelle Checkpoints:
+
+ 	.hive-mind/     – Konfiguration & SQLite Session-Daten[16]  
+.swarm/         – Memory-Datenbank (memory.db) für Swarm-Sessions[16]  
+memory/         – Speicher für agentenspezifische Memories[17]  
+coordination/   – Temporäre Dateien für koordinierte Workflows[17]  
+ 	Diese Ordner könnten zunächst leer aussehen, da viel in SQLite-DBs gespeichert wird. Du kannst den Status prüfen mit Befehlen wie claude-flow memory stats oder claude-flow hive-mind status[18].
+•	Projektname (optional): Du kannst bei der Initialisierung einen Projektnamen vergeben, der in den Sessions genutzt wird. Beispiel:
+
+ 	npx claude-flow@alpha init --force --project-name "mein-projekt"[19]
+ 	Dies ist besonders bei größeren Projekten hilfreich, um mehrere Feature-„Hives” unterscheiden zu können.
+Nach diesem Schritt ist dein Projekt-Repository Claude-Flow-fähig. Die notwendigen Dateien und Einstellungen sind jetzt lokal vorhanden.
+(Falls du mehrere getrennte Projekte hast, wiederhole diesen Schritt für jeden Projektordner separat. Für ein neues Projekt einfach neuen Ordner anlegen und erneut initialisieren[20].)

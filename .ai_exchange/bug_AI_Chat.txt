@@ -1,0 +1,61 @@
+============================================================
+      WhatsApp AI Chatbot - WSL Auto-Launcher
+============================================================
+
+Detecting environment and starting application...
+
+[*] Starting WhatsApp AI Chatbot in WSL...
+
+============================================================
+Backend API: http://localhost:8000
+UI Interface: http://localhost:8550
+API Docs: http://localhost:8000/docs
+
+Press Ctrl+C to stop the application
+============================================================
+
+============================================================
+         WhatsApp AI Chatbot - WSL/Linux Launcher
+============================================================
+
+
+============================================================
+                    Main Menu
+============================================================
+  1) Install/Update Dependencies
+  2) Start Full Application (Backend + UI)
+  3) Start Backend Only
+  4) Start UI Only
+  5) Start Demo Mode
+  6) Run Tests
+  7) Check Dependencies
+  8) Exit
+============================================================
+Select an option: 2
+Starting Full Application...
+Traceback (most recent call last):
+  File "/home/mschmitz/.pyenv/versions/3.12.8/lib/python3.12/logging/config.py", line 587, in configure
+    formatters[name] = self.configure_formatter(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/mschmitz/.pyenv/versions/3.12.8/lib/python3.12/logging/config.py", line 720, in configure_formatter
+    c = _resolve(cname)
+        ^^^^^^^^^^^^^^^
+  File "/home/mschmitz/.pyenv/versions/3.12.8/lib/python3.12/logging/config.py", line 101, in _resolve
+    found = __import__(used)
+            ^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'pythonjsonlogger'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mnt/d/03_GIT/02_Python/04_AI_Chatbot/app.py", line 16, in <module>
+    setup_logging(settings.log_level)
+  File "/mnt/d/03_GIT/02_Python/04_AI_Chatbot/config/logging_config.py", line 112, in setup_logging
+    logging.config.dictConfig(config)
+  File "/home/mschmitz/.pyenv/versions/3.12.8/lib/python3.12/logging/config.py", line 942, in dictConfig
+    dictConfigClass(config).configure()
+  File "/home/mschmitz/.pyenv/versions/3.12.8/lib/python3.12/logging/config.py", line 590, in configure
+    raise ValueError('Unable to configure '
+ValueError: Unable to configure formatter 'json'
+
+Press Enter to continue...

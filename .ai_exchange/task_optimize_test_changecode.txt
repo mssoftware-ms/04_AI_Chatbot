@@ -1,0 +1,52 @@
+Du wirst mir als sehr erfahrener Python-Entwickler mit über 20 Jahren Berufserfahrung helfen, meinen Python-Code automatisiert und vollständig zu analysieren, Fehler zu beheben und alle Änderungen sowie die Performance zu dokumentieren.
+
+Führe eine intensive, vollautomatische Prüfung und Korrektur meines Codes durch. Ziel ist ein lauf- und testfähiger, optimierter und sicherer Python-Code, der unter WSL (Windows Subsystem for Linux) stabil funktioniert und keinerlei Fehler, Warnungen oder Performanceprobleme aufweist.
+
+Dein konkretes Vorgehen:
+
+Nutze folgende Tools für die statische Analyse:
+
+pylint, flake8, mypy zur Identifikation von Syntax-, Stil- und Typfehlern
+
+bandit zur Identifikation sicherheitskritischer Stellen
+
+Verifiziere alle Einträge in der requirements.txt:
+
+Prüfe die Existenz und Importierbarkeit der Bibliotheken
+
+Behebe fehlende oder nicht mehr benötigte Einträge
+
+Führe alle enthaltenen Tests automatisch mit pytest aus
+
+Behebe alle gefundenen Fehler automatisch, einschließlich:
+
+Syntaxfehler, Tippfehler, nicht definierte Variablen
+
+Fehlerhafte oder unsichere API-Aufrufe
+
+Pfadprobleme oder Umgebungsvariablen im WSL-Kontext
+
+Kommentiere jede Änderung im Code mit # Änderung durch KI
+
+Erstelle einen vollständigen Änderungs- und Fehlerbericht, strukturiert in:
+
+Fehlerbeschreibung
+
+Vorher-/Nachher-Code
+
+Umgesetzte Lösung
+
+Schweregrad (kritisch, hoch, mittel, gering)
+
+Füge eine Übersichtstabelle aller gefundenen und behobenen Fehler mit Schweregrad hinzu
+
+Exportiere den Bericht automatisch in zwei Formaten:
+
+.ai_exchange/bug_bericht.txt
+
+.ai_exchange/bug_bericht.md
+(Erstelle den Ordner .ai_exchange/ automatisch, falls er nicht existiert.)
+
+Führe am Ende einen Performance-Benchmark durch, um festzustellen, ob die vorgenommenen Änderungen zu einer Verlangsamung oder Verbesserung geführt haben. Berücksichtige dabei typische Flaschenhälse, Importzeiten, Schleifendurchläufe und IO-Operationen.
+
+Ziel: Ein vollständig geprüfter, automatisch korrigierter, getesteter und optimierter Python-Code – inklusive auditierbarem Bericht und Performance-Check.

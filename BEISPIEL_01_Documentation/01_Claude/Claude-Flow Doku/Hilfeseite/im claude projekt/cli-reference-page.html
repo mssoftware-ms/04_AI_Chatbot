@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Reference - Claude-Flow v86</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Import main styles from index.html */
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1A1A1A;
+            --border: #2A2A2A;
+            --accent-orange: #FF6B35;
+            --accent-orange-hover: #FF8255;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #5A9CF6;
+            --accent-green: #238636;
+            --accent-green-hover: #2EA043;
+            --success: #10B981;
+            --success-hover: #0EA570;
+            --error: #EF4444;
+            --error-hover: #DC2626;
+            --warning: #F59E0B;
+            --warning-hover: #FBBF24;
+            --info: #60A5FA;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-dim: #6B7280;
+            --font-sans: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Command Reference Specific Styles */
+        .cli-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .cli-header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .cli-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cli-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* Command Categories */
+        .command-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .category-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-orange);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .category-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Command List */
+        .command-section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        .section-icon {
+            font-size: 28px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .command-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .command-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .command-card:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-blue);
+        }
+
+        .command-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .command-name {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+
+        .command-badges {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-new {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-experimental {
+            background: var(--warning);
+            color: black;
+        }
+
+        .badge-deprecated {
+            background: var(--error);
+            color: white;
+        }
+
+        .command-description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .command-syntax {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-primary);
+            overflow-x: auto;
+        }
+
+        .command-options {
+            margin-top: 16px;
+        }
+
+        .options-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .option-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .option-item {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 12px;
+            padding: 8px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .option-flag {
+            font-family: var(--font-mono);
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        .option-desc {
+            color: var(--text-secondary);
+        }
+
+        /* Quick Search */
+        .quick-search {
+            position: sticky;
+            top: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* Interactive Examples */
+        .example-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .example-title {
+            color: var(--accent-green);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .example-code {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .try-button {
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .try-button:hover {
+            background: var(--accent-green-hover);
+        }
+
+        /* Tabs for command modes */
+        .mode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mode-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .mode-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .mode-tab.active {
+            color: var(--accent-orange);
+            border-bottom-color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="cli-container">
+        <!-- Header -->
+        <div class="cli-header">
+            <h1 class="cli-title">🚀 CLI Command Reference</h1>
+            <p class="cli-subtitle">Vollständige Referenz aller Claude-Flow v86 Befehle</p>
+        </div>
+
+        <!-- Quick Search -->
+        <div class="quick-search">
+            <input type="text" class="search-input" placeholder="🔍 Suche nach Befehlen... (z.B. 'swarm', 'agent', 'memory')" id="commandSearch">
+        </div>
+
+        <!-- Command Categories Overview -->
+        <div class="command-categories">
+            <div class="category-card" onclick="scrollToSection('basic-commands')">
+                <div class="category-icon">⚡</div>
+                <div class="category-name">Grundlegende Befehle</div>
+                <div class="category-count">4 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('swarm-commands')">
+                <div class="category-icon">🐝</div>
+                <div class="category-name">Swarm Management</div>
+                <div class="category-count">12 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('agent-commands')">
+                <div class="category-icon">🤖</div>
+                <div class="category-name">Agent Control</div>
+                <div class="category-count">15 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('hive-commands')">
+                <div class="category-icon">👑</div>
+                <div class="category-name">Hive-Mind</div>
+                <div class="category-count">8 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('memory-commands')">
+                <div class="category-icon">💾</div>
+                <div class="category-name">Memory Operations</div>
+                <div class="category-count">10 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('task-commands')">
+                <div class="category-icon">📋</div>
+                <div class="category-name">Task Management</div>
+                <div class="category-count">8 Befehle</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('sparc-commands')">
+                <div class="category-icon">⚙️</div>
+                <div class="category-name">SPARC Modi</div>
+                <div class="category-count">17 Modi</div>
+            </div>
+            <div class="category-card" onclick="scrollToSection('github-commands')">
+                <div class="category-icon">📊</div>
+                <div class="category-name">GitHub Integration</div>
+                <div class="category-count">6 Modi</div>
+            </div>
+        </div>
+
+        <!-- Basic Commands Section -->
+        <section class="command-section" id="basic-commands">
+            <div class="section-header">
+                <span class="section-icon">⚡</span>
+                <h2 class="section-title">Grundlegende Befehle</h2>
+            </div>
+
+            <div class="command-grid">
+                <!-- init command -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">init</div>
+                        <div class="command-badges">
+                            <span class="badge badge-new">Essential</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Initialisiert ein neues Claude-Flow Projekt mit allen notwendigen Konfigurationsdateien und Verzeichnisstrukturen.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha init [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--force</span>
+                                <span class="option-desc">Überschreibt existierende Konfiguration</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--sparc</span>
+                                <span class="option-desc">Aktiviert SPARC-Entwicklungsumgebung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--hive-mind</span>
+                                <span class="option-desc">Aktiviert Hive-Mind-Architektur</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--neural-enhanced</span>
+                                <span class="option-desc">Aktiviert neuronale Verbesserungen</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">Beispiel:</div>
+                        <div class="example-code">
+                            # Vollständige Initialisierung mit allen Features<br>
+                            npx claude-flow@alpha init --force --sparc --hive-mind --neural-enhanced
+                        </div>
+                        <button class="try-button" onclick="copyCommand('npx claude-flow@alpha init --force --sparc --hive-mind --neural-enhanced')">
+                            📋 Kopieren
+                        </button>
+                    </div>
+                </div>
+
+                <!-- start command -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">start</div>
+                    </div>
+                    <div class="command-description">
+                        Startet den Claude-Flow Orchestrator und optional das Web-Dashboard.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha start [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--ui</span>
+                                <span class="option-desc">Aktiviert Web-Interface</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--port &lt;number&gt;</span>
+                                <span class="option-desc">Port-Nummer (Standard: 3001)</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--daemon</span>
+                                <span class="option-desc">Läuft im Hintergrund</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--verbose</span>
+                                <span class="option-desc">Ausführliche Ausgabe</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- status command -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">status</div>
+                    </div>
+                    <div class="command-description">
+                        Zeigt den aktuellen Systemstatus, aktive Agenten und laufende Tasks an.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha status [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--detailed</span>
+                                <span class="option-desc">Zeigt erweiterte Informationen</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--json</span>
+                                <span class="option-desc">Ausgabe als JSON</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--health</span>
+                                <span class="option-desc">Nur Health-Check</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- stop command -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">stop</div>
+                    </div>
+                    <div class="command-description">
+                        Stoppt den Claude-Flow Orchestrator und alle aktiven Agenten.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha stop [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--force</span>
+                                <span class="option-desc">Erzwingt Beendigung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--cleanup</span>
+                                <span class="option-desc">Räumt temporäre Dateien auf</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--save-state</span>
+                                <span class="option-desc">Speichert Zustand vor Beendigung</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Swarm Commands Section -->
+        <section class="command-section" id="swarm-commands">
+            <div class="section-header">
+                <span class="section-icon">🐝</span>
+                <h2 class="section-title">Swarm Management</h2>
+            </div>
+
+            <div class="mode-tabs">
+                <button class="mode-tab active" onclick="switchMode(event, 'swarm-basic')">Basic</button>
+                <button class="mode-tab" onclick="switchMode(event, 'swarm-advanced')">Advanced</button>
+                <button class="mode-tab" onclick="switchMode(event, 'swarm-orchestration')">Orchestration</button>
+            </div>
+
+            <div class="command-grid">
+                <!-- swarm command -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">swarm</div>
+                        <div class="command-badges">
+                            <span class="badge badge-new">Core</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Startet einen Swarm mit der angegebenen Aufgabe und Strategie. Der zentrale Befehl für einmalige Aufgaben.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha swarm "task description" [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Wichtige Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--claude</span>
+                                <span class="option-desc">Claude-Integration aktivieren</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--strategy &lt;type&gt;</span>
+                                <span class="option-desc">parallel | sequential | adaptive | research</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--agents &lt;number&gt;</span>
+                                <span class="option-desc">Anzahl der Agenten (1-20)</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--memory-namespace</span>
+                                <span class="option-desc">Memory-Namespace für Isolation</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--monitor</span>
+                                <span class="option-desc">Live-Monitoring aktivieren</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--timeout &lt;minutes&gt;</span>
+                                <span class="option-desc">Gesamttimeout in Minuten</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--max-retries &lt;n&gt;</span>
+                                <span class="option-desc">Maximale Wiederholungen bei Fehler</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">Komplexes Beispiel:</div>
+                        <div class="example-code">
+                            # E-Commerce Platform mit paralleler Strategie<br>
+                            npx claude-flow@alpha swarm "Build complete e-commerce platform with microservices" \<br>
+                            &nbsp;&nbsp;--strategy parallel \<br>
+                            &nbsp;&nbsp;--agents 10 \<br>
+                            &nbsp;&nbsp;--memory-namespace ecommerce \<br>
+                            &nbsp;&nbsp;--monitor \<br>
+                            &nbsp;&nbsp;--claude
+                        </div>
+                        <button class="try-button" onclick="copyCommand(`npx claude-flow@alpha swarm 'Build complete e-commerce platform with microservices' --strategy parallel --agents 10 --memory-namespace ecommerce --monitor --claude`)">
+                            📋 Kopieren
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional swarm commands -->
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">swarm status</div>
+                    </div>
+                    <div class="command-description">
+                        Zeigt den Status aller aktiven Swarms mit Details zu Agenten und Tasks.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha swarm status [swarm-id]
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">swarm scale</div>
+                        <div class="command-badges">
+                            <span class="badge badge-experimental">Experimental</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Skaliert einen laufenden Swarm dynamisch hoch oder runter.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha swarm scale &lt;swarm-id&gt; --agents &lt;number&gt;
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hive-Mind Commands -->
+        <section class="command-section" id="hive-commands">
+            <div class="section-header">
+                <span class="section-icon">👑</span>
+                <h2 class="section-title">Hive-Mind Control</h2>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">hive-mind spawn</div>
+                        <div class="command-badges">
+                            <span class="badge badge-new">Advanced</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Spawnt einen kompletten Hive-Mind mit Queen-Agent und Worker-Hierarchie für kontinuierliche Entwicklung.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha hive-mind spawn "task description" [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Hive-Mind Spezifische Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--agents &lt;number&gt;</span>
+                                <span class="option-desc">Anzahl Worker-Agenten (Standard: 5)</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--claude</span>
+                                <span class="option-desc">Claude AI Integration</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--coordination-level</span>
+                                <span class="option-desc">low | medium | high | enterprise</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--queen-strategy</span>
+                                <span class="option-desc">balanced | aggressive | conservative</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--neural-patterns</span>
+                                <span class="option-desc">enabled | disabled</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--memory-compression</span>
+                                <span class="option-desc">low | medium | high</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">Enterprise Hive-Mind:</div>
+                        <div class="example-code">
+                            npx claude-flow@alpha hive-mind spawn "Develop enterprise SaaS platform" \<br>
+                            &nbsp;&nbsp;--agents 12 \<br>
+                            &nbsp;&nbsp;--claude \<br>
+                            &nbsp;&nbsp;--coordination-level enterprise \<br>
+                            &nbsp;&nbsp;--queen-strategy balanced \<br>
+                            &nbsp;&nbsp;--neural-patterns enabled
+                        </div>
+                        <button class="try-button" onclick="copyCommand(`npx claude-flow@alpha hive-mind spawn 'Develop enterprise SaaS platform' --agents 12 --claude --coordination-level enterprise --queen-strategy balanced --neural-patterns enabled`)">
+                            📋 Kopieren
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">hive-mind wizard</div>
+                    </div>
+                    <div class="command-description">
+                        Interaktiver Wizard für Hive-Mind Konfiguration mit Schritt-für-Schritt Anleitung.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha hive-mind wizard
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">hive-mind test</div>
+                    </div>
+                    <div class="command-description">
+                        Testet Hive-Mind Koordination mit simulierten Tasks.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha hive-mind test --agents 5 --coordination-test
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agent Commands -->
+        <section class="command-section" id="agent-commands">
+            <div class="section-header">
+                <span class="section-icon">🤖</span>
+                <h2 class="section-title">Agent Control</h2>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">agent spawn</div>
+                    </div>
+                    <div class="command-description">
+                        Erstellt einen neuen spezialisierten Agenten mit definierten Fähigkeiten.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha agent spawn &lt;type&gt; [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Agent-Typen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">coordinator</span>
+                                <span class="option-desc">Projekt-Koordination und Task-Verteilung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">architect</span>
+                                <span class="option-desc">System-Design und Architektur</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">coder</span>
+                                <span class="option-desc">Code-Implementierung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">tester</span>
+                                <span class="option-desc">Testing und QA</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">researcher</span>
+                                <span class="option-desc">Recherche und Analyse</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">specialist</span>
+                                <span class="option-desc">Spezialisierte Aufgaben</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">Spezialisierter Agent:</div>
+                        <div class="example-code">
+                            npx claude-flow@alpha agent spawn coder \<br>
+                            &nbsp;&nbsp;--name "Python Backend Dev" \<br>
+                            &nbsp;&nbsp;--capabilities "fastapi,sqlalchemy,pytest" \<br>
+                            &nbsp;&nbsp;--priority 9 \<br>
+                            &nbsp;&nbsp;--memory 1GB
+                        </div>
+                        <button class="try-button" onclick="copyCommand(`npx claude-flow@alpha agent spawn coder --name 'Python Backend Dev' --capabilities 'fastapi,sqlalchemy,pytest' --priority 9 --memory 1GB`)">
+                            📋 Kopieren
+                        </button>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">agent list</div>
+                    </div>
+                    <div class="command-description">
+                        Listet alle aktiven Agenten mit Status und Auslastung.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha agent list [--active]
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">agent terminate</div>
+                    </div>
+                    <div class="command-description">
+                        Beendet einen oder alle Agenten kontrolliert.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha agent terminate &lt;agent-id|all&gt; [--force]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPARC Modes -->
+        <section class="command-section" id="sparc-commands">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h2 class="section-title">SPARC Modi</h2>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">sparc run</div>
+                        <div class="command-badges">
+                            <span class="badge badge-new">17 Modi</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Führt einen spezialisierten SPARC-Modus für verschiedene Entwicklungsaufgaben aus.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha sparc run &lt;mode&gt; "task description"
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Verfügbare SPARC-Modi:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">architect</span>
+                                <span class="option-desc">System-Architektur Design</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">code/coder</span>
+                                <span class="option-desc">Code-Entwicklung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">tdd</span>
+                                <span class="option-desc">Test-Driven Development</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">security-review</span>
+                                <span class="option-desc">Sicherheitsanalyse</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">integration</span>
+                                <span class="option-desc">System-Integration</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">devops</span>
+                                <span class="option-desc">Deployment & CI/CD</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">optimize</span>
+                                <span class="option-desc">Code-Optimierung</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">refactor</span>
+                                <span class="option-desc">Code-Refactoring</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">document</span>
+                                <span class="option-desc">Dokumentation erstellen</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">TDD Workflow:</div>
+                        <div class="example-code">
+                            # Test-Driven Development für Payment System<br>
+                            npx claude-flow@alpha sparc run tdd "Create comprehensive test suite for payment processing"<br><br>
+                            # Security Review<br>
+                            npx claude-flow@alpha sparc run security-review "Audit authentication flow for vulnerabilities"
+                        </div>
+                        <button class="try-button" onclick="copyCommand(`npx claude-flow@alpha sparc run tdd 'Create comprehensive test suite for payment processing'`)">
+                            📋 Kopieren
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Commands -->
+        <section class="command-section" id="memory-commands">
+            <div class="section-header">
+                <span class="section-icon">💾</span>
+                <h2 class="section-title">Memory Operations</h2>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">memory store</div>
+                    </div>
+                    <div class="command-description">
+                        Speichert Daten im persistenten Memory-System mit optionalem Namespace und Tags.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha memory store &lt;key&gt; "value" [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--namespace &lt;name&gt;</span>
+                                <span class="option-desc">Memory-Namespace für Isolation</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--tags &lt;list&gt;</span>
+                                <span class="option-desc">Komma-getrennte Tags</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--ttl &lt;seconds&gt;</span>
+                                <span class="option-desc">Time-to-live in Sekunden</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--compress</span>
+                                <span class="option-desc">Komprimierung aktivieren</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">memory query</div>
+                    </div>
+                    <div class="command-description">
+                        Durchsucht den Memory-Store nach Mustern oder Tags.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha memory query "pattern" [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--filter &lt;pattern&gt;</span>
+                                <span class="option-desc">Suchmuster</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--recent</span>
+                                <span class="option-desc">Nur aktuelle Einträge</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--limit &lt;n&gt;</span>
+                                <span class="option-desc">Anzahl Ergebnisse</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--format &lt;type&gt;</span>
+                                <span class="option-desc">json | table | list</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">memory export</div>
+                    </div>
+                    <div class="command-description">
+                        Exportiert Memory-Daten für Backup oder Migration.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha memory export --output backup.json [--filter "pattern"]
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GitHub Integration -->
+        <section class="command-section" id="github-commands">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2 class="section-title">GitHub Integration</h2>
+            </div>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">github pr-manager</div>
+                        <div class="command-badges">
+                            <span class="badge badge-new">AI-Powered</span>
+                        </div>
+                    </div>
+                    <div class="command-description">
+                        Automatisches Pull Request Management mit AI-gestützten Reviews und Auto-Merge.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha github pr-manager [options]
+                    </div>
+                    <div class="command-options">
+                        <div class="options-title">Optionen:</div>
+                        <div class="option-list">
+                            <div class="option-item">
+                                <span class="option-flag">--action review</span>
+                                <span class="option-desc">PR Review durchführen</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--multi-reviewer</span>
+                                <span class="option-desc">Multi-Agenten Review</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--ai-powered</span>
+                                <span class="option-desc">AI-gestützte Analyse</span>
+                            </div>
+                            <div class="option-item">
+                                <span class="option-flag">--auto-merge-on-approval</span>
+                                <span class="option-desc">Automatisches Merging</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">github issue-tracker</div>
+                    </div>
+                    <div class="command-description">
+                        Intelligente Issue-Verwaltung mit automatischer Klassifizierung und Agent-Zuweisung.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha github issue-tracker --mode manage --auto-label --auto-assign
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-header">
+                        <div class="command-name">github release-manager</div>
+                    </div>
+                    <div class="command-description">
+                        Release-Koordination mit automatischer Changelog-Generierung und Semantic Versioning.
+                    </div>
+                    <div class="command-syntax">
+                        npx claude-flow@alpha github release-manager --version 2.0.0 --auto-changelog
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Reference Card -->
+        <div style="margin-top: 60px; padding: 30px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--accent-orange);">
+            <h3 style="color: var(--accent-orange); margin-bottom: 20px;">⚡ Quick Reference - Häufigste Befehle</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px;">
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha init --sparc --force</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Projekt initialisieren</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha swarm "task" --claude</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Swarm für einmalige Aufgabe</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha hive-mind spawn "task" --agents 8</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Hive-Mind für kontinuierliche Entwicklung</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha status --detailed</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Systemstatus prüfen</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha memory query --recent</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Letzte Memory-Einträge</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 6px;">
+                    <code style="color: var(--accent-green);">npx claude-flow@alpha monitor --dashboard</code>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Live-Monitoring starten</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('commandSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.command-card');
+            
+            cards.forEach(card => {
+                const content = card.textContent.toLowerCase();
+                if (content.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Scroll to section
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Copy command
+        function copyCommand(command) {
+            navigator.clipboard.writeText(command).then(() => {
+                // Visual feedback
+                event.target.textContent = '✅ Kopiert!';
+                setTimeout(() => {
+                    event.target.textContent = '📋 Kopieren';
+                }, 2000);
+            });
+        }
+
+        // Switch mode tabs
+        function switchMode(event, mode) {
+            const tabs = event.target.parentElement.querySelectorAll('.mode-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            // Here you would show/hide content based on mode
+        }
+    </script>
+</body>
+</html>

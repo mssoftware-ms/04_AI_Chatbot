@@ -1,0 +1,142 @@
+<!-- rebuilt 2025-08-16 with MCP section -->
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Claude‑Flow@alpha – Befehlszeilen‑Wizard (v2.2.1) · Handbuch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{--bg:#0f1218; --panel:#111827; --ink:#e5e7eb; --muted:#9ca3af; --brand:#f97316; --link:#60a5fa; --code:#1f2937; --border:#273449;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui}
+    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+    header{padding:28px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#10131a,#0f1218)}
+    h1{margin:0 0 10px;font-size:28px}
+    h2{margin-top:28px;border-top:1px solid var(--border);padding-top:24px}
+    .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+    .toc{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:18px 0}
+    .toc ul{list-style:none;padding-left:0;margin:0} .toc li{margin:6px 0}
+    code,.mono{background:var(--code);padding:.15rem .35rem;border-radius:6px}
+    pre{background:var(--code);padding:14px;border-radius:12px;overflow:auto}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Claude‑Flow@alpha – Befehlszeilen‑Wizard (v2.2.1)</h1>
+    <div>Handbuch &amp; Best Practices · Stand: 2025-08-16</div>
+  </div>
+</header>
+<main class="wrap">
+
+<section class="toc">
+  <strong>Inhaltsverzeichnis</strong>
+  <ul>
+    <li><a href="#ziel">1. Ziel</a></li>
+    <li><a href="#bedienung">2. Bedienung</a></li>
+    <li><a href="#formate">3. Ausgabeformate</a></li>
+    <li><a href="#mcp">4. MCP‑Server</a></li>
+    <li><a href="#sqlite">5. SQLite (Reinstall/Reset)</a></li>
+    <li><a href="#links">6. Links</a></li>
+  </ul>
+</section>
+
+<section id="ziel">
+  <h2>1. Ziel</h2>
+  <p>Der Wizard erzeugt verlässliche Einzeiler für <code>claude-flow@alpha</code> (WSL/CMD/Windows Terminal), ohne sie auszuführen. <strong>Hinweis:</strong> Für ausführende Agenten ist <code>--claude</code> erforderlich.</p>
+</section>
+
+<section id="bedienung">
+  <h2>2. Bedienung</h2>
+  <ol>
+    <li>Projektpfad (Windows) angeben → WSL‑Pfad prüfen</li>
+    <li>Preset &amp; Objective wählen, Saved‑Config optional</li>
+    <li>Flags setzen (<code>--claude</code>, <code>--verbose</code>, weitere)</li>
+    <li>Ausgabeformat wählen (WSL/CMD/WT/only Linux)</li>
+    <li>Befehl erzeugen → kopieren/speichern</li>
+  </ol>
+</section>
+
+<section id="formate">
+  <h2>3. Ausgabeformate</h2>
+  <pre><code>wsl.exe -d "Ubuntu" -- bash -lc "export LANG=C.UTF-8; export LC_ALL=C.UTF-8; cd '/mnt/d/.../AI Coding Station' &amp;&amp; npx claude-flow@alpha hive-mind spawn '&lt;objective&gt;' --claude --verbose --config ./\.claude-flow/saved-configs/AI\ Coding\ Station.json"</code></pre>
+  <pre><code>cmd /c start "" wsl.exe -d "Ubuntu" -- bash -lc "export LANG=C.UTF-8; export LC_ALL=C.UTF-8; cd '/mnt/d/…' &amp;&amp; npx claude-flow@alpha swarm '&lt;objective&gt;' --claude --verbose"</code></pre>
+  <pre><code>wt new-tab --title "CF@alpha" wsl.exe -d "Ubuntu" -- bash -lc "export LANG=C.UTF-8; export LC_ALL=C.UTF-8; cd '/mnt/d/…' &amp;&amp; npx claude-flow@alpha hive-mind status --verbose"</code></pre>
+</section>
+
+
+<section id="mcp">
+  <h2>MCP‑Server: Einrichtung &amp; Nutzung (mit Claude Code)</h2>
+  <p><strong>Kurzfassung:</strong> <code>npx claude-flow@alpha init --force</code> richtet in v2 die MCP‑Anbindung für <em>Claude Code</em> automatisch ein. Zusätzliche Server verwaltest du mit der <em>Claude‑Code‑CLI</em> (<code>claude mcp …</code>).</p>
+  <h3>Status prüfen</h3>
+  <pre><code>claude mcp list
+claude mcp get github</code></pre>
+  <h3>Projektweit teilen (.mcp.json)</h3>
+  <pre><code>claude mcp add --scope project --transport sse linear https://mcp.linear.app/sse</code></pre>
+  <p>Beispiel:</p>
+  <pre><code>{
+  "mcpServers": {
+    "linear": {
+      "type": "sse",
+      "url": "https://mcp.linear.app/sse",
+      "headers": {}
+    }
+  }
+}</code></pre>
+  <h3>Weitere Varianten</h3>
+  <pre><code># stdio (lokal)
+claude mcp add airtable --env AIRTABLE_API_KEY=YOUR_KEY -- npx -y airtable-mcp-server
+
+# HTTP
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+
+# JSON direkt
+claude mcp add-json weather-api '{"type":"stdio","command":"/path/to/cli","args":["--api-key","abc"],"env":{"CACHE_DIR":"/tmp"}}'</code></pre>
+  <h3>Settings &amp; Automatisierung</h3>
+  <ul>
+    <li><code>~/.claude/settings.json</code> → <code>"enableAllProjectMcpServers": true</code></li>
+    <li>Zeitlimits/Output: <code>MCP_TIMEOUT=15000</code>, <code>MAX_MCP_OUTPUT_TOKENS=…</code></li>
+  </ul>
+</section>
+
+
+
+<section id="sqlite">
+  <h2>SQLite für Claude‑Flow: Neuinstallation, Reparatur &amp; Reset</h2>
+  <p>Claude‑Flow nutzt eine <strong>SQLite‑Datenbank</strong> (Standard: <code>.swarm/memory.db</code>) für Persistenz/Memory. Fehler wie <em>„disk I/O error“</em> sind oft Dateisystem‑/Locking‑Probleme (z. B. <code>/mnt/*</code>). Empfohlen: State/Projekt im <strong>WSL‑ext4</strong>‑Dateisystem.</p>
+  <h3>1) Installation/Neuinstallation (Ubuntu/WSL)</h3>
+  <pre><code>sudo apt update
+sudo apt install --reinstall sqlite3 libsqlite3-0 libsqlite3-dev -y
+sqlite3 --version</code></pre>
+  <h3>2) Node‑Bindings reparieren (falls genutzt)</h3>
+  <pre><code>npm rebuild better-sqlite3
+# oder
+npm install --build-from-source better-sqlite3</code></pre>
+  <h3>3) State auf ext4 verlagern (empfohlen)</h3>
+  <pre><code>mkdir -p ~/cf_state/myproj/{hive,swarm}
+cd /pfad/zum/projekt
+mv .hive-mind .hive-mind.bak.$(date +%s) 2>/dev/null || true
+mv .swarm     .swarm.bak.$(date +%s)     2>/dev/null || true
+ln -s ~/cf_state/myproj/hive  .hive-mind
+ln -s ~/cf_state/myproj/swarm .swarm</code></pre>
+  <h3>4) Datenbank zurücksetzen</h3>
+  <pre><code>rm -f .swarm/memory.db .swarm/memory.db-journal .swarm/*.sqlite-shm .swarm/*.sqlite-wal 2>/dev/null || true
+npx claude-flow@alpha init --force</code></pre>
+  <h3>5) Health‑Checks</h3>
+  <pre><code>npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory list --limit 10
+npx claude-flow@alpha hive-mind status --verbose</code></pre>
+</section>
+
+
+<section id="links">
+  <h2>6. Links</h2>
+  <ul>
+    <li>Anthropic · MCP, CLI, Settings</li>
+    <li>GitHub · ruvnet/claude‑flow</li>
+    <li>Microsoft · WSL Filesystems</li>
+  </ul>
+</section>
+
+</main>
+</body>
+</html>

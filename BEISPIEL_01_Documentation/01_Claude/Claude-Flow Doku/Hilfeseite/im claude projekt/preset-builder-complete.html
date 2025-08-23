@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preset Builder - Claude-Flow v2.0.0-alpha.86</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Variables - Exakt aus constants.py */
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1A1A1A;
+            --border: #2A2A2A;
+            --accent-orange: #FF6B35;
+            --accent-orange-hover: #FF8255;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #5A9CF6;
+            --accent-green: #238636;
+            --accent-green-hover: #2EA043;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-tertiary: #808080;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .nav-section {
+            padding: 16px 0;
+        }
+
+        .nav-title {
+            padding: 8px 24px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+            border-left: 3px solid var(--accent-orange);
+            padding-left: 21px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Builder Layout */
+        .builder-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .builder-main {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .builder-sidebar {
+            width: 400px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Templates Section */
+        .templates-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .template-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+        }
+
+        .template-card.selected {
+            border-color: var(--accent-orange);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .template-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .template-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .template-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Configuration Form */
+        .config-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Agent Builder */
+        .agents-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .agent-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+            min-height: 100px;
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .agent-list.drag-over {
+            border-color: var(--accent-orange);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .agent-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            cursor: move;
+            transition: all 0.2s ease;
+        }
+
+        .agent-card.dragging {
+            opacity: 0.5;
+        }
+
+        .agent-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .agent-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .agent-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .agent-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agent-detail-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+
+        .agent-detail-value {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Add Agent Button */
+        .add-agent-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-agent-btn:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(35, 134, 54, 0.1);
+        }
+
+        /* Agent Types Panel */
+        .agent-types-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            z-index: 1000;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .agent-types-panel.active {
+            display: block;
+        }
+
+        .agent-types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .agent-type-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .agent-type-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        /* Workflow Builder */
+        .workflow-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .workflow-stages {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+
+        .workflow-stage {
+            min-width: 200px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stage-name {
+            font-weight: 600;
+        }
+
+        .stage-duration {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .stage-agents {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 60px;
+            border: 1px dashed var(--border);
+            border-radius: 4px;
+            padding: 8px;
+        }
+
+        .stage-agent {
+            background: var(--bg-primary);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* JSON Preview */
+        .preview-header {
+            padding: 16px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .preview-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .json-preview {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Validation Messages */
+        .validation-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .validation-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .validation-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .validation-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-info {
+            display: flex;
+            gap: 24px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #0EA770;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 999;
+            display: none;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        /* Tool Selection */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tool-chip {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-chip.selected {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Priority Slider */
+        .priority-slider {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .priority-value {
+            display: inline-block;
+            margin-left: 12px;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .builder-sidebar {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .builder-container {
+                flex-direction: column;
+            }
+
+            .builder-sidebar {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Claude-Flow</div>
+                <div class="sidebar-subtitle">v2.0.0-alpha.86</div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Documentation</div>
+                <a href="index.html" class="nav-item">
+                    <span>🏠</span>
+                    <span>Übersicht</span>
+                </a>
+                <a href="getting-started.html" class="nav-item">
+                    <span>🚀</span>
+                    <span>Getting Started</span>
+                </a>
+                <a href="cli-reference.html" class="nav-item">
+                    <span>⌨️</span>
+                    <span>CLI Reference</span>
+                </a>
+                <a href="preset-builder.html" class="nav-item active">
+                    <span>🎨</span>
+                    <span>Preset Builder</span>
+                </a>
+                <a href="task-completion.html" class="nav-item">
+                    <span>✅</span>
+                    <span>Task Completion</span>
+                </a>
+                <a href="multi-language.html" class="nav-item">
+                    <span>🌍</span>
+                    <span>Multi-Language</span>
+                </a>
+                <a href="features.html" class="nav-item">
+                    <span>⚡</span>
+                    <span>Features</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Resources</div>
+                <a href="examples.html" class="nav-item">
+                    <span>📚</span>
+                    <span>Examples</span>
+                </a>
+                <a href="api-reference.html" class="nav-item">
+                    <span>🔌</span>
+                    <span>API Reference</span>
+                </a>
+                <a href="troubleshooting.html" class="nav-item">
+                    <span>🔧</span>
+                    <span>Troubleshooting</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="header-title">🎨 Preset Builder</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="importPreset()">
+                        <i class="fas fa-upload"></i>
+                        Import
+                    </button>
+                    <button class="btn btn-primary" onclick="exportPreset()">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn btn-success" onclick="testPreset()">
+                        <i class="fas fa-play"></i>
+                        Test
+                    </button>
+                </div>
+            </header>
+
+            <!-- Builder Container -->
+            <div class="builder-container">
+                <!-- Main Builder Area -->
+                <div class="builder-main">
+                    <!-- Templates Section -->
+                    <section class="templates-section">
+                        <h2 class="section-title">
+                            <span>📦</span>
+                            Select Template
+                        </h2>
+                        <div class="templates-grid">
+                            <div class="template-card selected" data-template="python">
+                                <div class="template-icon">🐍</div>
+                                <div class="template-name">Python Development</div>
+                                <div class="template-desc">FastAPI, Django, Data Science</div>
+                            </div>
+                            <div class="template-card" data-template="javascript">
+                                <div class="template-icon">📜</div>
+                                <div class="template-name">JavaScript/TypeScript</div>
+                                <div class="template-desc">React, Node.js, Full-Stack</div>
+                            </div>
+                            <div class="template-card" data-template="enterprise">
+                                <div class="template-icon">🏢</div>
+                                <div class="template-name">Enterprise</div>
+                                <div class="template-desc">Java, C#, Microservices</div>
+                            </div>
+                            <div class="template-card" data-template="microservices">
+                                <div class="template-icon">🔧</div>
+                                <div class="template-name">Microservices</div>
+                                <div class="template-desc">Docker, K8s, Service Mesh</div>
+                            </div>
+                            <div class="template-card" data-template="testing">
+                                <div class="template-icon">🧪</div>
+                                <div class="template-name">Testing Suite</div>
+                                <div class="template-desc">Unit, Integration, E2E</div>
+                            </div>
+                            <div class="template-card" data-template="minimal">
+                                <div class="template-icon">⚡</div>
+                                <div class="template-name">Minimal</div>
+                                <div class="template-desc">Single Agent, Quick Start</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Basic Configuration -->
+                    <section class="config-section">
+                        <h2 class="section-title">
+                            <span>⚙️</span>
+                            Basic Configuration
+                        </h2>
+                        <div class="form-group">
+                            <label class="form-label">Project Name</label>
+                            <input type="text" class="form-input" id="projectName" placeholder="my-awesome-project">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-input" id="projectDesc" placeholder="Building an amazing application">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Namespace</label>
+                            <input type="text" class="form-input" id="namespace" placeholder="project-namespace">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Orchestrator Model</label>
+                            <select class="form-select" id="orchestratorModel">
+                                <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                                <option value="claude-3-sonnet-20240229" selected>Claude 3 Sonnet</option>
+                                <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <!-- Agent Builder -->
+                    <section class="agents-container">
+                        <h2 class="section-title">
+                            <span>🤖</span>
+                            Agent Configuration
+                        </h2>
+                        <div class="agent-list" id="agentList">
+                            <!-- Default Agent -->
+                            <div class="agent-card" draggable="true" data-agent-id="1">
+                                <div class="agent-header">
+                                    <div class="agent-name">
+                                        <span>👑</span>
+                                        <span>Orchestrator</span>
+                                    </div>
+                                    <span class="agent-type">coordinator</span>
+                                </div>
+                                <div class="agent-details">
+                                    <div class="agent-detail">
+                                        <span class="agent-detail-label">Role</span>
+                                        <span class="agent-detail-value">queen</span>
+                                    </div>
+                                    <div class="agent-detail">
+                                        <span class="agent-detail-label">Priority</span>
+                                        <span class="agent-detail-value">10</span>
+                                    </div>
+                                    <div class="agent-detail">
+                                        <span class="agent-detail-label">Model</span>
+                                        <span class="agent-detail-value">sonnet</span>
+                                    </div>
+                                    <div class="agent-detail">
+                                        <span class="agent-detail-label">Memory</span>
+                                        <span class="agent-detail-value">512MB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="add-agent-btn" onclick="showAgentTypes()">
+                            <i class="fas fa-plus"></i>
+                            Add Agent
+                        </button>
+                    </section>
+
+                    <!-- Workflow Builder -->
+                    <section class="workflow-section">
+                        <h2 class="section-title">
+                            <span>📊</span>
+                            Workflow Stages
+                        </h2>
+                        <div class="workflow-stages">
+                            <div class="workflow-stage">
+                                <div class="stage-header">
+                                    <span class="stage-name">Planning</span>
+                                    <span class="stage-duration">~5min</span>
+                                </div>
+                                <div class="stage-agents">
+                                    <div class="stage-agent">
+                                        <span>🏗️</span>
+                                        <span>Architect</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="workflow-stage">
+                                <div class="stage-header">
+                                    <span class="stage-name">Implementation</span>
+                                    <span class="stage-duration">~30min</span>
+                                </div>
+                                <div class="stage-agents">
+                                    <div class="stage-agent">
+                                        <span>💻</span>
+                                        <span>Coder</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="workflow-stage">
+                                <div class="stage-header">
+                                    <span class="stage-name">Testing</span>
+                                    <span class="stage-duration">~10min</span>
+                                </div>
+                                <div class="stage-agents">
+                                    <div class="stage-agent">
+                                        <span>🧪</span>
+                                        <span>Tester</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="workflow-stage">
+                                <div class="stage-header">
+                                    <span class="stage-name">Documentation</span>
+                                    <span class="stage-duration">~5min</span>
+                                </div>
+                                <div class="stage-agents">
+                                    <div class="stage-agent">
+                                        <span>📝</span>
+                                        <span>Writer</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- MCP Tools Configuration -->
+                    <section class="config-section">
+                        <h2 class="section-title">
+                            <span>🔌</span>
+                            MCP Tools Selection
+                        </h2>
+                        <div class="tool-grid">
+                            <div class="tool-chip selected">filesystem</div>
+                            <div class="tool-chip selected">github</div>
+                            <div class="tool-chip selected">memory</div>
+                            <div class="tool-chip">slack</div>
+                            <div class="tool-chip">postgres</div>
+                            <div class="tool-chip">sqlite</div>
+                            <div class="tool-chip">google-drive</div>
+                            <div class="tool-chip">gmail</div>
+                            <div class="tool-chip">brave-search</div>
+                            <div class="tool-chip">puppeteer</div>
+                            <div class="tool-chip">everart</div>
+                            <div class="tool-chip">fetch</div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Sidebar with JSON Preview -->
+                <div class="builder-sidebar">
+                    <div class="preview-header">
+                        <div class="preview-title">
+                            <span>{ }</span>
+                            <span>JSON Preview</span>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn-icon" onclick="copyJSON()" title="Copy JSON">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn-icon" onclick="validateJSON()" title="Validate">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="btn-icon" onclick="formatJSON()" title="Format">
+                                <i class="fas fa-indent"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <pre class="json-preview" id="jsonPreview">{
+  "name": "my-awesome-project",
+  "description": "Building an amazing application",
+  "namespace": "project-namespace",
+  "orchestrator": {
+    "model": "claude-3-sonnet-20240229",
+    "temperature": 0.7,
+    "max_thinking_length": 25000
+  },
+  "agents": [
+    {
+      "id": "orchestrator",
+      "type": "coordinator",
+      "role": "queen",
+      "model": "sonnet",
+      "priority": 10,
+      "memory_allocation": "512MB",
+      "capabilities": [
+        "task_planning",
+        "agent_coordination",
+        "decision_making"
+      ]
+    }
+  ],
+  "workflow": {
+    "stages": [
+      {
+        "name": "Planning",
+        "duration": "5m",
+        "agents": ["architect"],
+        "parallel": false
+      },
+      {
+        "name": "Implementation",
+        "duration": "30m",
+        "agents": ["coder"],
+        "parallel": true
+      },
+      {
+        "name": "Testing",
+        "duration": "10m",
+        "agents": ["tester"],
+        "parallel": false
+      },
+      {
+        "name": "Documentation",
+        "duration": "5m",
+        "agents": ["writer"],
+        "parallel": false
+      }
+    ]
+  },
+  "mcp_servers": [
+    "filesystem",
+    "github",
+    "memory"
+  ],
+  "environment": {
+    "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+    "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+  },
+  "hooks": {
+    "onStart": "echo 'Starting project...'",
+    "onComplete": "echo 'Project completed!'",
+    "onError": "echo 'Error occurred!'"
+  }
+}</pre>
+                        <div class="validation-message validation-success">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Valid Claude-Flow preset configuration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-info">
+                    <div class="status-item">
+                        <i class="fas fa-robot"></i>
+                        <span>4 Agents</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span>4 Stages</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-plug"></i>
+                        <span>3 MCP Tools</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-clock"></i>
+                        <span>~50min estimated</span>
+                    </div>
+                </div>
+                <div class="status-actions">
+                    <span>Auto-save enabled</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agent Types Panel (Hidden by default) -->
+    <div class="modal-overlay" id="modalOverlay" onclick="hideAgentTypes()"></div>
+    <div class="agent-types-panel" id="agentTypesPanel">
+        <h3 style="margin-bottom: 16px;">Select Agent Type</h3>
+        <div class="agent-types-grid">
+            <div class="agent-type-card" onclick="addAgent('coordinator')">
+                <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+                <div style="font-weight: 600;">Coordinator</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Task orchestration & planning</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('architect')">
+                <div style="font-size: 24px; margin-bottom: 8px;">🏗️</div>
+                <div style="font-weight: 600;">Architect</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">System design & structure</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('coder')">
+                <div style="font-size: 24px; margin-bottom: 8px;">💻</div>
+                <div style="font-weight: 600;">Coder</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Implementation & coding</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('tester')">
+                <div style="font-size: 24px; margin-bottom: 8px;">🧪</div>
+                <div style="font-weight: 600;">Tester</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Testing & quality assurance</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('researcher')">
+                <div style="font-size: 24px; margin-bottom: 8px;">🔬</div>
+                <div style="font-weight: 600;">Researcher</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Research & analysis</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('analyst')">
+                <div style="font-size: 24px; margin-bottom: 8px;">📊</div>
+                <div style="font-weight: 600;">Analyst</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Data analysis & insights</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('specialist')">
+                <div style="font-size: 24px; margin-bottom: 8px;">🎨</div>
+                <div style="font-weight: 600;">Specialist</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Domain-specific expertise</div>
+            </div>
+            <div class="agent-type-card" onclick="addAgent('writer')">
+                <div style="font-size: 24px; margin-bottom: 8px;">📝</div>
+                <div style="font-weight: 600;">Writer</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">Documentation & content</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Agent Management
+        let agents = [
+            {
+                id: 1,
+                name: 'Orchestrator',
+                type: 'coordinator',
+                role: 'queen',
+                priority: 10,
+                model: 'sonnet',
+                memory: '512MB',
+                icon: '👑'
+            }
+        ];
+        let nextAgentId = 2;
+
+        // Template Selection
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                loadTemplate(this.dataset.template);
+            });
+        });
+
+        // Load Template
+        function loadTemplate(templateName) {
+            const templates = {
+                python: {
+                    name: 'python-project',
+                    agents: ['coordinator', 'architect', 'coder', 'tester', 'writer'],
+                    tools: ['filesystem', 'github', 'memory', 'pytest'],
+                    workflow: ['Planning', 'Setup', 'Implementation', 'Testing', 'Documentation']
+                },
+                javascript: {
+                    name: 'js-project',
+                    agents: ['coordinator', 'architect', 'coder', 'tester'],
+                    tools: ['filesystem', 'github', 'memory', 'npm'],
+                    workflow: ['Planning', 'Setup', 'Frontend', 'Backend', 'Testing']
+                },
+                enterprise: {
+                    name: 'enterprise-app',
+                    agents: ['coordinator', 'architect', 'coder', 'coder', 'tester', 'analyst'],
+                    tools: ['filesystem', 'github', 'postgres', 'slack', 'jira'],
+                    workflow: ['Requirements', 'Architecture', 'Implementation', 'Testing', 'Deployment']
+                },
+                microservices: {
+                    name: 'microservices',
+                    agents: ['coordinator', 'architect', 'coder', 'coder', 'coder', 'tester'],
+                    tools: ['filesystem', 'github', 'docker', 'kubernetes', 'prometheus'],
+                    workflow: ['Design', 'Service A', 'Service B', 'Service C', 'Integration', 'Deployment']
+                },
+                testing: {
+                    name: 'test-suite',
+                    agents: ['coordinator', 'tester', 'tester', 'analyst'],
+                    tools: ['filesystem', 'github', 'memory', 'selenium', 'jest'],
+                    workflow: ['Unit Tests', 'Integration Tests', 'E2E Tests', 'Performance Tests']
+                },
+                minimal: {
+                    name: 'minimal-project',
+                    agents: ['coordinator', 'coder'],
+                    tools: ['filesystem', 'memory'],
+                    workflow: ['Implementation']
+                }
+            };
+
+            const template = templates[templateName];
+            if (template) {
+                document.getElementById('projectName').value = template.name;
+                updatePreview();
+            }
+        }
+
+        // Show/Hide Agent Types Panel
+        function showAgentTypes() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('agentTypesPanel').classList.add('active');
+        }
+
+        function hideAgentTypes() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('agentTypesPanel').classList.remove('active');
+        }
+
+        // Add Agent
+        function addAgent(type) {
+            const agentConfig = {
+                coordinator: { icon: '🎯', role: 'lead', priority: 9, model: 'sonnet', memory: '256MB' },
+                architect: { icon: '🏗️', role: 'lead', priority: 8, model: 'sonnet', memory: '256MB' },
+                coder: { icon: '💻', role: 'worker', priority: 7, model: 'haiku', memory: '128MB' },
+                tester: { icon: '🧪', role: 'worker', priority: 6, model: 'haiku', memory: '128MB' },
+                researcher: { icon: '🔬', role: 'worker', priority: 7, model: 'sonnet', memory: '256MB' },
+                analyst: { icon: '📊', role: 'worker', priority: 6, model: 'sonnet', memory: '256MB' },
+                specialist: { icon: '🎨', role: 'worker', priority: 5, model: 'haiku', memory: '128MB' },
+                writer: { icon: '📝', role: 'worker', priority: 5, model: 'haiku', memory: '128MB' }
+            };
+
+            const config = agentConfig[type];
+            const newAgent = {
+                id: nextAgentId++,
+                name: type.charAt(0).toUpperCase() + type.slice(1),
+                type: type,
+                ...config
+            };
+
+            agents.push(newAgent);
+            renderAgent(newAgent);
+            hideAgentTypes();
+            updatePreview();
+        }
+
+        // Render Agent Card
+        function renderAgent(agent) {
+            const agentCard = document.createElement('div');
+            agentCard.className = 'agent-card';
+            agentCard.draggable = true;
+            agentCard.dataset.agentId = agent.id;
+            agentCard.innerHTML = `
+                <div class="agent-header">
+                    <div class="agent-name">
+                        <span>${agent.icon}</span>
+                        <span>${agent.name}</span>
+                    </div>
+                    <span class="agent-type">${agent.type}</span>
+                </div>
+                <div class="agent-details">
+                    <div class="agent-detail">
+                        <span class="agent-detail-label">Role</span>
+                        <span class="agent-detail-value">${agent.role}</span>
+                    </div>
+                    <div class="agent-detail">
+                        <span class="agent-detail-label">Priority</span>
+                        <span class="agent-detail-value">${agent.priority}</span>
+                    </div>
+                    <div class="agent-detail">
+                        <span class="agent-detail-label">Model</span>
+                        <span class="agent-detail-value">${agent.model}</span>
+                    </div>
+                    <div class="agent-detail">
+                        <span class="agent-detail-label">Memory</span>
+                        <span class="agent-detail-value">${agent.memory}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('agentList').appendChild(agentCard);
+            initDragAndDrop(agentCard);
+        }
+
+        // Drag and Drop
+        function initDragAndDrop(element) {
+            element.addEventListener('dragstart', handleDragStart);
+            element.addEventListener('dragend', handleDragEnd);
+        }
+
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        // Agent List Drag Over
+        const agentList = document.getElementById('agentList');
+        agentList.addEventListener('dragover', handleDragOver);
+        agentList.addEventListener('drop', handleDrop);
+        agentList.addEventListener('dragenter', e => agentList.classList.add('drag-over'));
+        agentList.addEventListener('dragleave', e => agentList.classList.remove('drag-over'));
+
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            const afterElement = getDragAfterElement(agentList, e.clientY);
+            if (afterElement == null) {
+                agentList.appendChild(draggedElement);
+            } else {
+                agentList.insertBefore(draggedElement, afterElement);
+            }
+            return false;
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) e.stopPropagation();
+            agentList.classList.remove('drag-over');
+            updatePreview();
+            return false;
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.agent-card:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Tool Selection
+        document.querySelectorAll('.tool-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                updatePreview();
+            });
+        });
+
+        // Update JSON Preview
+        function updatePreview() {
+            const projectName = document.getElementById('projectName').value || 'my-project';
+            const projectDesc = document.getElementById('projectDesc').value || 'Project description';
+            const namespace = document.getElementById('namespace').value || 'default';
+            const orchestratorModel = document.getElementById('orchestratorModel').value;
+            
+            const selectedTools = Array.from(document.querySelectorAll('.tool-chip.selected'))
+                .map(chip => chip.textContent);
+
+            const preset = {
+                name: projectName,
+                description: projectDesc,
+                namespace: namespace,
+                orchestrator: {
+                    model: orchestratorModel,
+                    temperature: 0.7,
+                    max_thinking_length: 25000
+                },
+                agents: agents.map(agent => ({
+                    id: agent.name.toLowerCase(),
+                    type: agent.type,
+                    role: agent.role,
+                    model: agent.model,
+                    priority: agent.priority,
+                    memory_allocation: agent.memory,
+                    capabilities: getCapabilities(agent.type)
+                })),
+                workflow: {
+                    stages: getWorkflowStages()
+                },
+                mcp_servers: selectedTools,
+                environment: {
+                    GITHUB_TOKEN: "${GITHUB_TOKEN}",
+                    OPENAI_API_KEY: "${OPENAI_API_KEY}"
+                },
+                hooks: {
+                    onStart: "echo 'Starting project...'",
+                    onComplete: "echo 'Project completed!'",
+                    onError: "echo 'Error occurred!'"
+                }
+            };
+
+            document.getElementById('jsonPreview').textContent = JSON.stringify(preset, null, 2);
+        }
+
+        function getCapabilities(agentType) {
+            const capabilities = {
+                coordinator: ['task_planning', 'agent_coordination', 'decision_making'],
+                architect: ['system_design', 'architecture_planning', 'technical_decisions'],
+                coder: ['code_generation', 'implementation', 'refactoring'],
+                tester: ['unit_testing', 'integration_testing', 'test_generation'],
+                researcher: ['information_gathering', 'analysis', 'documentation_review'],
+                analyst: ['data_analysis', 'performance_monitoring', 'reporting'],
+                specialist: ['domain_expertise', 'specialized_tasks', 'consultation'],
+                writer: ['documentation', 'readme_generation', 'api_docs']
+            };
+            return capabilities[agentType] || [];
+        }
+
+        function getWorkflowStages() {
+            return [
+                {
+                    name: "Planning",
+                    duration: "5m",
+                    agents: ["architect"],
+                    parallel: false
+                },
+                {
+                    name: "Implementation",
+                    duration: "30m",
+                    agents: ["coder"],
+                    parallel: true
+                },
+                {
+                    name: "Testing",
+                    duration: "10m",
+                    agents: ["tester"],
+                    parallel: false
+                },
+                {
+                    name: "Documentation",
+                    duration: "5m",
+                    agents: ["writer"],
+                    parallel: false
+                }
+            ];
+        }
+
+        // Actions
+        function copyJSON() {
+            const json = document.getElementById('jsonPreview').textContent;
+            navigator.clipboard.writeText(json).then(() => {
+                showNotification('JSON copied to clipboard!', 'success');
+            });
+        }
+
+        function validateJSON() {
+            try {
+                const json = document.getElementById('jsonPreview').textContent;
+                JSON.parse(json);
+                showNotification('Valid JSON configuration!', 'success');
+            } catch (e) {
+                showNotification('Invalid JSON: ' + e.message, 'error');
+            }
+        }
+
+        function formatJSON() {
+            try {
+                const json = document.getElementById('jsonPreview').textContent;
+                const parsed = JSON.parse(json);
+                document.getElementById('jsonPreview').textContent = JSON.stringify(parsed, null, 2);
+                showNotification('JSON formatted!', 'success');
+            } catch (e) {
+                showNotification('Cannot format: Invalid JSON', 'error');
+            }
+        }
+
+        function exportPreset() {
+            const json = document.getElementById('jsonPreview').textContent;
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'claude-flow-preset.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Preset exported!', 'success');
+        }
+
+        function importPreset() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const preset = JSON.parse(event.target.result);
+                        loadPreset(preset);
+                        showNotification('Preset imported successfully!', 'success');
+                    } catch (err) {
+                        showNotification('Invalid preset file', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function loadPreset(preset) {
+            document.getElementById('projectName').value = preset.name || '';
+            document.getElementById('projectDesc').value = preset.description || '';
+            document.getElementById('namespace').value = preset.namespace || '';
+            document.getElementById('orchestratorModel').value = preset.orchestrator?.model || 'claude-3-sonnet-20240229';
+            
+            // Clear and reload agents
+            agents = [];
+            document.getElementById('agentList').innerHTML = '';
+            
+            if (preset.agents) {
+                preset.agents.forEach(agent => {
+                    agents.push(agent);
+                    renderAgent(agent);
+                });
+            }
+            
+            updatePreview();
+        }
+
+        function testPreset() {
+            const projectName = document.getElementById('projectName').value || 'test-project';
+            const command = `npx claude-flow@alpha init --preset custom-preset.json && npx claude-flow@alpha start --namespace ${projectName}`;
+            
+            navigator.clipboard.writeText(command).then(() => {
+                showNotification('Test command copied to clipboard!', 'success');
+                console.log('Test command:', command);
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            // Simple notification implementation
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${type === 'success' ? 'var(--success)' : type === 'error' ? 'var(--error)' : 'var(--accent-blue)'};
+                color: white;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Input Event Listeners
+        document.getElementById('projectName').addEventListener('input', updatePreview);
+        document.getElementById('projectDesc').addEventListener('input', updatePreview);
+        document.getElementById('namespace').addEventListener('input', updatePreview);
+        document.getElementById('orchestratorModel').addEventListener('change', updatePreview);
+
+        // Initialize
+        updatePreview();
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        exportPreset();
+                        break;
+                    case 'o':
+                        e.preventDefault();
+                        importPreset();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        testPreset();
+                        break;
+                }
+            }
+        });
+
+        // Auto-save to localStorage
+        setInterval(() => {
+            const preset = document.getElementById('jsonPreview').textContent;
+            localStorage.setItem('claude-flow-preset-draft', preset);
+        }, 5000);
+
+        // Load draft on startup
+        window.addEventListener('load', () => {
+            const draft = localStorage.getItem('claude-flow-preset-draft');
+            if (draft) {
+                try {
+                    const preset = JSON.parse(draft);
+                    loadPreset(preset);
+                } catch (e) {
+                    console.log('No valid draft found');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

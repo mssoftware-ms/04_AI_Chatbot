@@ -1,0 +1,198 @@
+<!-- rebuilt 2025-08-16 with MCP section -->
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Claude‑Flow@alpha – WSL Prompt & Command Wizard · Handbuch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{--bg:#0f1218; --panel:#111827; --ink:#e5e7eb; --muted:#9ca3af; --brand:#f97316; --link:#60a5fa; --code:#1f2937; --border:#273449;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui}
+    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+    header{padding:28px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#10131a,#0f1218)}
+    h1{margin:0 0 10px;font-size:28px}
+    h2{margin-top:28px;border-top:1px solid var(--border);padding-top:24px}
+    .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+    .toc{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:18px 0}
+    .toc ul{list-style:none;padding-left:0;margin:0}
+    .toc li{margin:6px 0}
+    code,.mono{background:var(--code);padding:.15rem .35rem;border-radius:6px}
+    pre{background:var(--code);padding:14px;border-radius:12px;overflow:auto}
+    .note{border-left:4px solid var(--brand);background:#0c111a;padding:12px 14px;border-radius:8px}
+    footer{border-top:1px solid var(--border);margin-top:36px;padding:16px;color:var(--muted);font-size:14px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Claude‑Flow@alpha – WSL Prompt &amp; Command Wizard</h1>
+    <div>Handbuch, Befehlsreferenz &amp; Best Practices · Stand: 2025-08-16</div>
+  </div>
+</header>
+<main class="wrap">
+<section id="toc" class="toc">
+  <strong>Inhaltsverzeichnis</strong>
+  <ul>
+    <li><a href="#ueberblick">1. Überblick</a></li>
+    <li><a href="#voraussetzungen">2. Voraussetzungen</a></li>
+    <li><a href="#quickstart">3. Quickstart</a></li>
+    <li><a href="#konzepte">4. Konzepte</a></li>
+    <li><a href="#config">5. Konfiguration & Speicherorte</a></li>
+    <li><a href="#cli">6. Wichtige CLI‑Kommandos</a></li>
+    <li><a href="#wizard">7. Bedienung des Wizards</a></li>
+    <li><a href="#mcp">8. MCP‑Server</a></li>
+    <li><a href="#sqlite">9. SQLite (Reinstall/Reset)</a></li>
+    <li><a href="#troubleshooting">10. Troubleshooting</a></li>
+    <li><a href="#links">11. Quellen & Links</a></li>
+  </ul>
+</section>
+
+<section id="ueberblick">
+  <h2>1. Überblick</h2>
+  <p>Der Wizard erzeugt <strong>Einzeiler</strong> für <code>wsl.exe … bash -lc "…"</code>, setzt UTF‑8‑Locale und wechselt ins Projektverzeichnis. <strong>Hinweis:</strong> Für ausführende Agenten ist <code>--claude</code> erforderlich.</p>
+  <div class="note">Tests „help“ / „help hive‑mind“ öffnen ein neues WSL‑Fenster.</div>
+</section>
+
+<section id="voraussetzungen">
+  <h2>2. Voraussetzungen</h2>
+  <ul>
+    <li>Windows + WSL (Ubuntu), Node.js 18+, npm 9+</li>
+    <li>Claude Code global: <code>npm i -g @anthropic-ai/claude-code</code></li>
+    <li>Claude‑Flow via <code>npx</code></li>
+  </ul>
+</section>
+
+<section id="quickstart">
+  <h2>3. Quickstart</h2>
+  <ol>
+    <li>Projektpfad setzen → WSL‑Pfad prüfen.</li>
+    <li>Optional Saved‑Config: <code>.claude-flow/saved-configs/*.json</code></li>
+    <li>Preset &amp; Flags wählen (<code>--claude</code>, <code>--verbose</code>) → Befehl erzeugen.</li>
+  </ol>
+</section>
+
+<section id="konzepte">
+  <h2>4. Konzepte</h2>
+  <ul>
+    <li><strong>Swarm:</strong> schnelle Einzelziele → <code>npx claude-flow@alpha swarm "…" --claude</code></li>
+    <li><strong>Hive‑Mind:</strong> persistent/Namespaces → <code>npx claude-flow@alpha hive-mind spawn "…" --claude</code></li>
+  </ul>
+</section>
+
+<section id="config">
+  <h2>5. Konfiguration &amp; Speicherorte</h2>
+  <ul>
+    <li><strong>Saved‑Configs:</strong> <code>.claude-flow/saved-configs/&lt;NAME&gt;.json</code> → <code>--config ./…</code></li>
+    <li><strong>Daten:</strong> <code>.hive-mind/</code> (Konfig/Sessions), <code>.swarm/</code> (SQLite: <code>memory.db</code>)</li>
+    <li><strong>Namespaces:</strong> <code>--namespace</code> pro Feature</li>
+  </ul>
+</section>
+
+<section id="cli">
+  <h2>6. Wichtige CLI‑Kommandos</h2>
+  <pre><code>npx claude-flow@alpha init --force
+npx claude-flow@alpha --help
+npx claude-flow@alpha hive-mind spawn "Ziel" --claude --verbose
+npx claude-flow@alpha swarm "Ziel" --claude --verbose
+npx claude-flow@alpha hive-mind status
+npx claude-flow@alpha memory stats|list|search</code></pre>
+</section>
+
+<section id="wizard">
+  <h2>7. Bedienung des Wizards</h2>
+  <ol>
+    <li>Preset wählen (spawn/swarm/help …)</li>
+    <li>Objective/Namespace/Flags setzen</li>
+    <li>Saved‑Config wählen (Auto‑Scan)</li>
+    <li>Ausgabeformat wählen (WSL, CMD, Windows Terminal, nur Linux)</li>
+    <li>Befehl erzeugen → kopieren/speichern</li>
+  </ol>
+</section>
+
+
+<section id="mcp">
+  <h2>MCP‑Server: Einrichtung &amp; Nutzung (mit Claude Code)</h2>
+  <p><strong>Kurzfassung:</strong> <code>npx claude-flow@alpha init --force</code> richtet in v2 die MCP‑Anbindung für <em>Claude Code</em> automatisch ein. Zusätzliche Server verwaltest du mit der <em>Claude‑Code‑CLI</em> (<code>claude mcp …</code>).</p>
+  <h3>Status prüfen</h3>
+  <pre><code>claude mcp list
+claude mcp get github</code></pre>
+  <h3>Projektweit teilen (.mcp.json)</h3>
+  <pre><code>claude mcp add --scope project --transport sse linear https://mcp.linear.app/sse</code></pre>
+  <p>Beispiel:</p>
+  <pre><code>{
+  "mcpServers": {
+    "linear": {
+      "type": "sse",
+      "url": "https://mcp.linear.app/sse",
+      "headers": {}
+    }
+  }
+}</code></pre>
+  <h3>Weitere Varianten</h3>
+  <pre><code># stdio (lokal)
+claude mcp add airtable --env AIRTABLE_API_KEY=YOUR_KEY -- npx -y airtable-mcp-server
+
+# HTTP
+claude mcp add --transport http notion https://mcp.notion.com/mcp
+
+# JSON direkt
+claude mcp add-json weather-api '{"type":"stdio","command":"/path/to/cli","args":["--api-key","abc"],"env":{"CACHE_DIR":"/tmp"}}'</code></pre>
+  <h3>Settings &amp; Automatisierung</h3>
+  <ul>
+    <li><code>~/.claude/settings.json</code> → <code>"enableAllProjectMcpServers": true</code></li>
+    <li>Zeitlimits/Output: <code>MCP_TIMEOUT=15000</code>, <code>MAX_MCP_OUTPUT_TOKENS=…</code></li>
+  </ul>
+</section>
+
+
+
+<section id="sqlite">
+  <h2>SQLite für Claude‑Flow: Neuinstallation, Reparatur &amp; Reset</h2>
+  <p>Claude‑Flow nutzt eine <strong>SQLite‑Datenbank</strong> (Standard: <code>.swarm/memory.db</code>) für Persistenz/Memory. Fehler wie <em>„disk I/O error“</em> sind oft Dateisystem‑/Locking‑Probleme (z. B. <code>/mnt/*</code>). Empfohlen: State/Projekt im <strong>WSL‑ext4</strong>‑Dateisystem.</p>
+  <h3>1) Installation/Neuinstallation (Ubuntu/WSL)</h3>
+  <pre><code>sudo apt update
+sudo apt install --reinstall sqlite3 libsqlite3-0 libsqlite3-dev -y
+sqlite3 --version</code></pre>
+  <h3>2) Node‑Bindings reparieren (falls genutzt)</h3>
+  <pre><code>npm rebuild better-sqlite3
+# oder
+npm install --build-from-source better-sqlite3</code></pre>
+  <h3>3) State auf ext4 verlagern (empfohlen)</h3>
+  <pre><code>mkdir -p ~/cf_state/myproj/{hive,swarm}
+cd /pfad/zum/projekt
+mv .hive-mind .hive-mind.bak.$(date +%s) 2>/dev/null || true
+mv .swarm     .swarm.bak.$(date +%s)     2>/dev/null || true
+ln -s ~/cf_state/myproj/hive  .hive-mind
+ln -s ~/cf_state/myproj/swarm .swarm</code></pre>
+  <h3>4) Datenbank zurücksetzen</h3>
+  <pre><code>rm -f .swarm/memory.db .swarm/memory.db-journal .swarm/*.sqlite-shm .swarm/*.sqlite-wal 2>/dev/null || true
+npx claude-flow@alpha init --force</code></pre>
+  <h3>5) Health‑Checks</h3>
+  <pre><code>npx claude-flow@alpha memory stats
+npx claude-flow@alpha memory list --limit 10
+npx claude-flow@alpha hive-mind status --verbose</code></pre>
+</section>
+
+
+<section id="troubleshooting">
+  <h2>10. Troubleshooting</h2>
+  <ul>
+    <li><strong>SQLite „disk I/O error“:</strong> State auf ext4 verlagern; DB resetten; ggf. <code>better-sqlite3</code> rebuilden.</li>
+    <li><strong>Keine Agenten:</strong> <code>--claude</code> gesetzt? <code>@anthropic-ai/claude-code</code> global installiert?</li>
+    <li><strong>WSL Performance:</strong> Projekt im Linux‑Dateisystem (nicht <code>/mnt</code>).</li>
+  </ul>
+</section>
+
+<section id="links">
+  <h2>11. Quellen &amp; Links</h2>
+  <ul>
+    <li>Anthropic · MCP, CLI, Settings</li>
+    <li>GitHub · ruvnet/claude‑flow</li>
+    <li>Microsoft · WSL Filesystems</li>
+  </ul>
+</section>
+
+</main>
+<footer class="wrap">© 2025 · Handbuch (aktualisiert am 2025-08-16)</footer>
+</body>
+</html>

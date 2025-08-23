@@ -1,0 +1,119 @@
+Unten findest du eine praxisnahe Entwickler-Doku für den Workflow „Windows-Python-App startet Hive-Mind in WSL über ein externes Terminal“. Ich nenne alle Stolperfallen (inkl. deiner realen Fehlerbilder) und gebe Schlüsselcode, den du direkt in deine App übernehmen kannst.
+
+Architektur & Datenfluss (Kurzüberblick)
+UI (PySide6) → Nutzer klickt „Start“.
+Launcher baut ein Linux-Kommando (dein claude-flow hive-mind spawn ...) und ruft externes Terminal: bevorzugt wt.exe (Windows Terminal), sonst Fallback cmd.exe /c start ….
+Das Terminal startet wsl.exe -d <Distro> -- bash -lc '<Kommando>'.
+bash -lc sorgt für Login-Umgebung und korrektes Shell-Parsing.
+Terminal bleibt zum Loglesen offen.
+Warum so:
+wt.exe ist die beste UX, aber interpretiert ; als Befehls-Trenner – das muss man escapen, sonst entstehen genau die Tabs/Fehler, die du gesehen hast. (Microsoft Learn)
+wsl.exe ist der offizielle Weg, Distro wählen (-d), Kommandos übergeben (--) und Distros listen (-l -q). (Microsoft Learn)
+
+Dinge, auf die du achten MUSST
+1) Ausgabe von wsl.exe -l -q ist UTF-16LE
+Wenn du als UTF-8 liest, siehst du „Kästchen“/NUL-Bytes, bekommst u. U. embedded null character. Bytes lesen, dann UTF-16LE dekodieren und BOM/NUL entfernen. (Das Verhalten ist dokumentiert/berichtigt in WSL-Issues.) (GitHub)
+Schlüsselcode (Distros sauber lesen):
+def list_wsl_distros():
+    import subprocess
+    raw = subprocess.check_output(["wsl.exe", "-l", "-q"])  # bytes!
+    try:
+        txt = raw.decode("utf-16le")       # typische Kodierung von wsl.exe
+    except UnicodeDecodeError:
+        txt = raw.decode("utf-8", errors="ignore")
+    txt = txt.replace("\ufeff", "")        # BOM raus
+    names = [s.replace("\x00","").strip() for s in txt.splitlines() if s.strip()]
+    return names or ["Ubuntu"]
+2) Semikolons bei wt.exe escapen
+wt.exe nutzt ; als Befehls-Delimiter. Unescapet zerlegt WT dein Kommando in mehrere Befehle/Tabs → exakt deine Fehlermeldungen 0x80070002 („Datei nicht gefunden“) zu echo, read, exec. Fix: In der WT-Variante die ; durch \; ersetzen. (Microsoft Learn)
+Schlüsselcode (Escaping nur für WT):
+def escape_for_wt(cmd: str) -> str:
+    return cmd.replace(";", r"\;")
+3) Kommandos sicher bauen (Quoting!)
+Den Task-Text POSIX-sicher quoten, nie shell=True auf Windows, Argumente als Liste übergeben. In Python dafür shlex.quote() verwenden. (Python documentation)
+Schlüsselcode (Innenkommando + „offen halten“):
+import shlex
+def build_inner_command(task: str, use_claude=True, verbose=True) -> str:
+    parts = ["claude-flow", "hive-mind", "spawn", shlex.quote(task)]
+    if use_claude: parts.append("--claude")
+    if verbose:    parts.append("--verbose")
+    base = " ".join(parts)
+    # Terminal offen lassen, Logs sichtbar:
+    return (f"{base}; echo; echo '--- Hive-Mind Task beendet ---'; "
+            f"read -n 1 -s -r -p 'Taste drücken, um zu schließen …'; "
+            f"echo; exec bash -i")
+4) Windows Terminal korrekt starten
+Bevorzugt wt.exe new-tab --title "<Titel>" wsl.exe -d <Distro> -- bash -lc '<CMD>'.Wichtig: Nur in der WT-Variante die Semikolons escapen. -- trennt wsl-Optionen vom Linux-Kommando. (Microsoft Learn)
+
+Schlüsselcode (WT-Pfad):
+import shutil, subprocess
+def launch_with_windows_terminal(distro: str, inner_cmd: str, title: str) -> bool:
+    wt = shutil.which("wt.exe")
+    if not wt: return False
+    inner_cmd = escape_for_wt(inner_cmd)  # nur hier!
+    subprocess.Popen(
+        [wt, "new-tab", "--title", title,
+         "wsl.exe", "-d", distro, "--", "bash", "-lc", inner_cmd],
+        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+    )
+    return True
+Hinweis: Windows Terminal erstellt WSL-Profile automatisch (Dynamic Profiles). Du musst nichts vordefinieren. (Microsoft Learn)
+5) Fallback über cmd.exe /c start …
+Wenn wt.exe fehlt, nimm cmd.exe /c start. Besonderheit: Das erste in Anführungszeichen stehende Argument ist der Titel. Der robusteste Cross-Version-Trick ist: leeren Titel übergeben (""). (Microsoft Learn, Stack Overflow)
+Schlüsselcode (Fallback, sicherer „empty title“):
+def launch_with_cmd_fallback(distro: str, inner_cmd: str):
+    subprocess.Popen(
+        ["cmd.exe", "/c", "start", "",     # leerer Fenstertitel
+         "wsl.exe", "-d", distro, "--", "bash", "-lc", inner_cmd],
+        shell=False
+    )
+6) Nicht in WSL auf wt.exe verlassen
+Execution Aliases funktionieren in WSL nicht zuverlässig. Wenn du aus WSL heraus WT starten willst, tue es explizit über cmd.exe /c "wt.exe" …. Für unseren Fall (Start aus Windows-Python) ist das unkritisch – gut zu wissen, falls du später Workflows drehst. (Microsoft Learn)
+
+Robuste Checks & Diagnostik
+Vor dem Start prüfen, ob claude-flow in PATH der Ziel-Distro liegt:
+out = subprocess.check_output(
+    ["wsl.exe","-d",distro,"--","bash","-lc",
+     "command -v claude-flow >/dev/null && echo __OK__ || echo __MISSING__"]
+).decode("utf-8","ignore")
+Fehlerbild 0x80070002 im WT → zu 99 % fehlendes Escaping von ;. Fix siehe oben. (Microsoft Learn)
+Kästchen/„embedded null character“ → falsches Encoding (UTF-16LE korrekt dekodieren). (GitHub)
+wt.exe wird nicht gefunden → App-Execution-Alias toggeln bzw. WT installieren/aktualisieren. (Hilfreich in der Praxis, wenn PATH/Store-Alias spinnt.) (Stack Overflow)
+
+Qualität & Sicherheit
+Kein shell=True auf Windows – minimiert Command-Injection-Risiken und Quote-Höllen.
+User-Eingaben immer quoten (hier via shlex.quote). (Python documentation)
+Distro-Namen sanitizen (BOM/NUL entfernen), bevor du sie als Argument nutzt.
+Arbeitsverzeichnis: Falls dein Hive-Mind eine Projektstruktur erwartet, setze es explizit im Linux-Kommando, z. B.:
+cd /mnt/d/03_Git/02_Python/01_AI\ Coding\ Station && claude-flow hive-mind ...
+(Pfadkonvertierung Windows→WSL ggf. per wslpath/Interop erledigen, wenn du es dynamisch brauchst.)
+
+Alternative: „Semikolons ganz umgehen“
+Wenn du den WT-Parser vollständig vermeiden willst, schreibe eine temporäre Shell-Datei in WSL und starte nur einen Befehl:
+script = r"""
+#!/usr/bin/env bash
+set -e
+{CMD}
+echo; echo '--- Hive-Mind Task beendet ---'
+read -n 1 -s -r -p 'Taste drücken …'; echo
+exec bash -i
+""".replace("{CMD}", base)  # base = dein "claude-flow hive-mind spawn ..."
+subprocess.check_call(["wsl.exe","-d",distro,"--","bash","-lc",
+                       f"tmp=$(mktemp); printf %s {shlex.quote(script)} > $tmp; "
+                       f"chmod +x $tmp; bash $tmp"])
+Kein Escaping-Stress, aber: minimal mehr Overhead.
+
+Mini-Testmatrix (empfohlen)
+WT vorhanden / fehlt → beide Pfade testen.
+Distros mit Sonderzeichen/„(Default)“ → Anzeige & Start.
+Lange Task-Strings mit Anführungszeichen → shlex.quote schützt. (Python documentation)
+claude-flow fehlt → Button „Verfügbarkeit testen“ zeigt __MISSING__.
+Startverzeichnis gesetzt/nicht gesetzt → Logik verifizieren.
+
+TL;DR – Entscheidend sind diese 5 Punkte
+wsl.exe-Output als UTF-16LE dekodieren, NUL/BOM entfernen. (GitHub)
+Semikolons für wt.exe escapen (\;), sonst zerlegt WT dein Kommando. (Microsoft Learn)
+Kommandos sicher bauen mit shlex.quote(); kein shell=True. (Python documentation)
+Start über wt.exe new-tab … wsl.exe -d <Distro> -- bash -lc '<CMD>'. (Microsoft Learn)
+Fallback: cmd.exe /c start "" wsl.exe -d <Distro> -- bash -lc '<CMD>'. Leerer Titel ist Absicht. (Microsoft Learn, Stack Overflow)
+Wenn du das in deine bestehende App übernimmst, ist der Workflow stabil, debug-freundlich und robust gegen typische Windows/WT/WSL-Fallstricke.

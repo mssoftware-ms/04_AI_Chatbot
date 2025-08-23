@@ -1,0 +1,36 @@
+Das Problem ist ein Encoding-Fehler: Die Ausgabe von wsl.exe -l -q kommt auf Windows in der Regel als UTF-16LE. Du dekodierst aktuell als UTF-8 – dadurch entstehen Nullbytes zwischen den Buchstaben (U\0b\0u\0…), die in der ComboBox als „Kästchen“ erscheinen und bei Aufrufen zu ValueError: embedded null character führen. Quelle: WSL-Output ist UTF-16LE, mehrfach bestätigt in Community- und MS-Threads. (GitHub, Gist)
+Fix in 2 Schritten
+WSL-Distro-Liste korrekt dekodieren (UTF-16LE, ohne text=True/encoding=):Ersetze deine list_wsl_distros() durch diese Version:
+
+def list_wsl_distros():
+    """WSL-Distributionen ermitteln; robust gegen UTF-16LE-Ausgabe von wsl.exe."""
+    try:
+        raw = subprocess.check_output(["wsl.exe", "-l", "-q"])  # bytes!
+        try:
+            txt = raw.decode("utf-16le")       # Standardausgabe von wsl.exe
+        except UnicodeDecodeError:
+            txt = raw.decode("utf-8", errors="ignore")  # Fallback
+        txt = txt.replace("\ufeff", "")  # evtl. BOM entfernen
+
+        names = []
+        for line in txt.splitlines():
+            s = line.strip().strip("\x00")
+            if not s:
+                continue
+            # Sicherheitshalber "(Default)" abwerfen, falls doch vorhanden:
+            if s.endswith("(Default)"):
+                s = s.replace("(Default)", "").strip()
+            names.append(s)
+        return names or ["Ubuntu"]
+    except Exception:
+        return ["Ubuntu"]
+Hintergrund: subprocess.check_output(..., text=True, encoding="utf-8") zwingt eine falsche Dekodierung. Besser: Bytes lesen und manuell korrekt dekodieren. Siehe auch Python-Doku zu subprocess. (Python documentation)
+Säubere den Distro-Namen vor jeder Nutzung als Argument/Titel:Nachdem du den Namen aus dem Combo ausgewählt hast (z. B. in on_start_clicked() und on_test_clicked()), stelle sicher, dass keine Steuerzeichen verbleiben:
+
+distro = self.cmb_distro.currentText()
+distro = distro.replace("\ufeff", "").replace("\x00", "").strip()
+Damit verschwinden die Kästchen, und der Fehler „embedded null character“ ist ebenfalls weg (der kam, weil Windows-APIs keine \x00 in Argumenten akzeptieren).
+
+Optional (robustere Variante ohne Profil-Namen)
+In launch_with_windows_terminal() kannst du auf Nummer sicher gehen und immer über wsl.exe -d <Distro> -- bash -lc ... starten (machst du bereits), statt zu versuchen, ein Terminal-Profil zu matchen. Das ist unabhängig von Terminal-Einstellungen und funktioniert stabil. (Grundbefehle und Aufrufweise sind in der MS-Doku zu WSL/subprocess beschrieben.) (Microsoft Learn, Python documentation)
+Wenn du willst, gebe ich dir die gesamte Datei mit den beiden Anpassungen zusammengefasst – aktuell reichen die oben gezeigten Ersetzungen.

@@ -1,0 +1,136 @@
+cd "D:\03_GIT\python\03_coding-ki"  cd "/mnt/d/03_GIT/python/03_coding-ki"
+cd "D:\03_GIT\python\Codex_CLI_Flow_GUI" cd /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI
+cd D:\03_Git\python\Claude-Flow-GUI\01_Dokumentation\Batchdateien     cd /mnt/d/03_Git/python/Claude-Flow-GUI/01_Dokumentation/Batchdateien
+cd /mnt/d/03_Git/python/Claude-Flow-GUI/02_GUI/ClaudeOpus_GUI
+cd /mnt/d/03_Git/python/ProjectManager-KI
+ hive mind aufruf:
+npx claude-flow@alpha hive-mind spawn "bug.txt" --claude --verbose
+
+Bearbeite alle offenen Issues im ordner Root->issues. Stelle sich das WIRKLICH ALLE AUFGABEN, auch Teilaufgaben in den vorhandenen issue welches du gerade bearbeitest, durchgeführt, abgschlossen und getestet sind, bevor du das issue auf closed setzt. Bei Fehlern oder unlösbaren Aufgaben, Meldung im cmd Fenster und issue auf closed lassen. Anweisung in description, beachte auch additional und comments. Abarbeitung step by step also z.b. Issue_1.json, Issue_2.json usw. Nach Abschluss der Aufgabe state=closed
+
+1) Empfohlen: In WSL öffnen – Editor läuft auf Windows (VS Code Remote)
+# Backup anlegen
+cp ~/.bashrc ~/.bashrc.bak.$(date +%F_%H%M%S)
+
+# Direkt in VS Code öffnen (setzt VS Code + Remote-WSL-Extension voraus)
+code ~/.bashrc
+
+
+Vorteil: VS Code speichert standardmäßig mit LF (Unix-Zeilenenden) und zerschießt die Datei nicht.
+
+2) Windows-Explorer auf WSL-Home öffnen (UNC-Pfad)
+
+Distro-Namen ermitteln:
+
+wsl.exe -l -q
+
+
+(z. B. Ubuntu oder Ubuntu-22.04)
+
+Im Explorer in die Adresszeile eingeben:
+
+\\wsl$\Ubuntu\home\mschmitz
+
+Unbedingt in VS Code öffnen
+
+
+
+
+
+Wenn hive-mind im Verzeichnis gestartet wurde:
+claude-flow hive-mind spawn " wenn ich auf haupt datei ausführen klicke, dann startet ein wsl fenster und es wied auch zum passenden pfad gewechselt, aber die .py startet nicht!" --claude --verbose
+oder
+claude-flow task <Aktion>
+
+claude-flow task create <type> "<beschreibung>" – Erstellt einen neuen Task bestimmter Kategorie (z.B. research, code, analysis, coordination, general) mit Beschreibung.
+claude-flow task orchestrate --task "<beschreibung>" [--strategy <typ>] – Neu in Alpha: Zerlegt eine komplexe Aufgabe in Unteraufgaben und orchestriert sie über den Schwarm
+GitHub
+.
+claude-flow task workflow <datei.json> – Lädt und startet einen vordefinierten Task-Workflow aus einer JSON-Datei (in coordination/ gespeichert).
+
+claude-flow task orchestrate --task "Implement user authentication" --strategy sequential
+
+agenten
+- Direkt in `.claude-flow/config.json` Agenten hinzufügen/entfernen oder Modelle
+ (`queen_model`/`worker_model`) ändern.
+- Oder ein Preset unter `.claude-flow/saved-configs/*.json` duplizieren/anpassen
+ und im UI auswählen.
+
+„Verarbeite die Issues im Ordner ./issues und folge auf jeden Fall den Anweisungen in der CLAUDE.md im Root-Verzeichnis.“
+
+
+"In dem Verzeichnis 01_Dokumentation findest du eine Datei 03_Dateibaum.txt Darin ist ein coding bzw Dateitree abgebildet, dessen Dateiinhalte komplett noch in der 02_Codex_CLI_Flow_GUI_Code.txt und daraus extrahiert werden müssen. Konkret bedeutete das, gehe den Dateibaum, eintrag für eintrag durch, lege Ordner an extrahiere Code aus der 02_Codex_CLI_Flow_GUI_Code.txt und erstelle die entsprechenden Dateien mit richtigen Bezeichnungen und Dateiendungen. Die Projektbeschreibung findest du in der Datei 01_Codex_CLI_Flow_GUI_Projektvorgaben.txt, wobei diese für die aufgabe nicht wichtig sein sollte, aber du kannst es dir ja durchlesen."
+
+
+cd /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI
+git init && git add -A && git commit -m "init"   # empfiehlt sich für Auto-/Full-Auto-Runs
+codex exec --full-auto "In dem Verzeichnis 01_Dokumentation findest du eine Datei 03_Dateibaum.txt Darin ist ein coding bzw Dateitree abgebildet, dessen Dateiinhalte komplett noch in der 02_Codex_CLI_Flow_GUI_Code.txt und daraus extrahiert werden müssen. Konkret bedeutete das, gehe den Dateibaum, eintrag für eintrag durch, lege Ordner an extrahiere Code aus der 02_Codex_CLI_Flow_GUI_Code.txt und erstelle die entsprechenden Dateien mit richtigen Bezeichnungen und Dateiendungen. Die Projektbeschreibung findest du in der Datei 01_Codex_CLI_Flow_GUI_Projektvorgaben.txt, wobei diese für die aufgabe nicht wichtig sein sollte, aber du kannst es dir ja durchlesen."
+
+So startest du jetzt
+- UI: `python -m queenflow.ui.main` und öffne `http://localhost:7860`
+- CLI: `python -m queenflow.runners.cli run --goal "Konvertiere Markdown nach HT
+ML und teste es." --auto true --max-iters 6`
+
+
+requirements.txt in codex_cli_flow_gui
+codex
+Hier ist, wofür die Dev-Tools gut sind und wie du sie nutzt.
+
+**Use Cases**
+- Linting: sauberes, konsistentes Python mit `ruff`.
+- Auto-Fixes: viele Style-/Import-Probleme automatisch beheben.
+- Typprüfung: Fehler früh finden mit `mypy` (statische Typen).
+- Tests & Coverage: Qualität messen mit `pytest` + `pytest-cov`.
+
+**Quick Setup**
+- Installation: `pip install -e .[dev]`
+- Alternativ: `pip install ruff mypy pytest pytest-cov`
+
+**Typische Commands**
+- Linter prüfen: `ruff check .`
+- Linter auto-fix: `ruff check . --fix`
+- Typen prüfen: `mypy queenflow`
+- Tests laufen lassen: `pytest -q`
+- Coverage messen: `pytest --cov=queenflow --cov-report=term-missing`
+
+**Empfehlungen**
+- Editor-Integration: VS Code “Ruff” + “Mypy” aktivieren für Inline-Feedback.
+- CI-Checks: obige Befehle in GitHub Actions/GitLab CI einbinden.
+- Schrittweise Typisierung: mit `from __future__ import annotations` (ist bereit
+s vorhanden) und schrittweise `mypy`-Fehler abarbeiten.
+- Optional pre-commit: `pre-commit` mit Hooks für `ruff`/`mypy` einrichten (auf
+Wunsch richte ich das ein).
+
+✏️ Applying patch to 1 file (+12 -0)
+  ⎿ /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI/mypy.ini (+12 -0)
+
+✏️ Applying patch to 1 file (+1 -0)
+  ⎿ /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI/pyproject.toml (+1 -0)
+
+✏️ Applying patch to 1 file (+15 -0)
+  ⎿ /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI/.pre-commit-config.yaml (+15 -0)
+
+✏️ Applying patch to 1 file (+3 -0)
+  ⎿ /mnt/d/03_GIT/python/Codex_CLI_Flow_GUI/requirements.txt (+3 -0)
+
+codex
+Erledigt: Dev-Tooling eingerichtet und zu requirements.txt hinzugefügt.
+
+Änderungen
+- requirements.txt: dev-tools ergänzt
+  - ruff>=0.5,<0.6
+  - mypy>=1.10,<1.12
+  - pre-commit>=3.7,<4.0
+- mypy.ini: Basis-Konfiguration für striktere Typprüfung hinzugefügt.
+- pyproject.toml: Ruff auf Zielversion py310 eingestellt.
+- .pre-commit-config.yaml: Hooks für Ruff (mit Autofix) und Mypy hinzugefügt.
+
+Wie benutzen
+- Installation: pip install -r requirements.txt
+- Ruff prüfen: ruff check .
+- Ruff auto-fix: ruff check . --fix
+- Format mit Ruff: ruff format
+- Mypy: mypy queenflow tests
+- Pre-commit installieren: pre-commit install
+  - Danach laufen Hooks automatisch bei jedem Commit.
+  - Manuell über alles: pre-commit run --all-files

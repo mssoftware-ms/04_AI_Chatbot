@@ -1,0 +1,101 @@
+Kurz gesagt gibt es in Claude Code zwei saubere Betriebsarten – Abo (Pro/Max via OAuth) und API-Nutzung (Console/Pay-as-you-go via ANTHROPIC_API_KEY). Du kannst in WSL zwischen beiden wechseln. Unten stehen praxistaugliche Befehle inkl. Verifikation.
+
+1) In die API-Nutzung wechseln (Billing über Anthropic Console)
+Ziel: Tokenbasierte Abrechnung pro Nutzung; ideal, wenn du Kosten/Modelle zentral im Anthropic-Console-Projekt steuern willst.
+Einmalschritt (WSL, nur wenn noch kein Key gesetzt):
+# API-Key nur für diese Shell setzen
+export ANTHROPIC_API_KEY="sk-ant-xxxxx..."
+
+# Test: Key sichtbar?
+printenv ANTHROPIC_API_KEY
+Persistieren (künftig automatisch in jeder WSL-Session):
+# Anhängen – die Quote sauber schließen, KEINE Sonderzeichen hinter der letzten Quote
+echo 'export ANTHROPIC_API_KEY="sk-ant-xxxxx..."' >> ~/.bashrc
+# neu laden
+source ~/.bashrc
+Starten & prüfen:
+# Projektordner
+cd /mnt/d/03_Git/dein_projekt
+claude --verbose
+# im Prompt:
+#   /status
+# Erwartung: "Authenticated via API key" o.ä.
+Hinweise & Quelle:
+* Claude Code akzeptiert API-Auth via ANTHROPIC_API_KEY (Environment-Variable). (Anthropic, Stack Overflow)
+* Unterschiede Abo vs. API (separate Produkte/Billing): (Anthropic Hilfezentrum)
+* Setup/Plattform-Details (WSL unterstützt): (Anthropic)
+
+2) In die Abo-Nutzung (Pro/Max) wechseln (Billing über dein Claude-Abo)
+Ziel: Nutzung innerhalb deines Pro/Max-Plans (kontingentiert/ratenbegrenzt), keine separaten API-Kosten.
+Schnellweg (aus einer laufenden Claude-Session):
+/login
+Das öffnet den Browser (OAuth) und bindet dein Pro/Max-Abo an Claude Code. Danach:
+/status
+Erwartung: Anzeige, dass über „Claude App“/Subscription authentifiziert ist. (Anthropic Hilfezentrum)
+Falls du vorher den API-Key fest gesetzt hast:
+Er sorgt oft dafür, dass Claude Code bevorzugt den Key nimmt. Dann zuerst die Variable neutralisieren:
+# nur für diese Shell:
+unset ANTHROPIC_API_KEY
+
+# wenn du ihn in ~/.bashrc persistiert hast:
+sed -i '/export ANTHROPIC_API_KEY=/d' ~/.bashrc
+source ~/.bashrc
+Neu starten und einloggen:
+cd /mnt/d/03_Git/dein_projekt
+claude
+# im Prompt:
+#   /login
+#   /status
+Hinweise & Stolpersteine:
+* Offiziell existieren /login (und teils /logout) – bei einzelnen Versionen fehlte/buggte /logout. Fallbacks unten. (Anthropic Hilfezentrum, GitHub)
+* Abo vs. API sind getrennte Produkte/Abrechnungen. (Anthropic Hilfezentrum)
+* Setup-Dokumentation listet beide Auth-Wege (Console vs. Claude App). (Anthropic)
+
+3) Schneller Wechsel per Alias (empfohlen)
+Lege dir zwei Aliase in ~/.bashrc an – einer startet API, einer Abo:
+# API-Start (setzt Key nur für die Prozessumgebung)
+echo 'alias claude-api='\''env ANTHROPIC_API_KEY="sk-ant-xxxxx..." claude'\''' >> ~/.bashrc
+
+# Abo-Start (stellt sicher, dass KEIN Key greift; dann /login falls nötig)
+echo 'alias claude-sub='\''unset ANTHROPIC_API_KEY; claude'\''' >> ~/.bashrc
+
+source ~/.bashrc
+Nutzung:
+cd /mnt/d/03_Git/dein_projekt
+claude-api     # API-Billing
+# oder
+claude-sub     # Abo-Billing (im Prompt ggf. /login, dann /status)
+
+4) Verifizieren, was gerade aktiv ist
+In der interaktiven Session:
+/status
+Zeigt u.a. den Auth-Zustand (Abo vs. API). Manche Integrationen empfehlen zusätzlich claude --verbose oder (je nach Tooling) claude auth status. (GitHub, Anthropic, docs.cline.bot)
+
+5) Fallbacks bei Auth-Problemen
+Wenn /logout in deiner Version fehlt oder die Session „klebt“, räume die lokalen Creds auf und starte neu:
+# Häufig genutzte Pfade; je nach Version existieren eine oder mehrere Dateien:
+rm -f ~/.claude/.credentials.json ~/.claude.json
+
+# (Optional) projektlokale Settings neutralisieren:
+rm -f ./.claude/settings.local.json
+
+# Dann neu:
+unset ANTHROPIC_API_KEY   # für Abo
+claude                    # /login -> Browser-OAuth
+# oder:
+export ANTHROPIC_API_KEY="sk-ant-xxxxx..."  # für API
+claude
+Hintergrund/Community-Referenzen zu Credentials-Dateien und gelegentlichen Inkonsistenzen: (GitHub, Reddit)
+
+Wann welches Modell der Abrechnung?
+* API (Console): Feingranulare Kostenkontrolle, dedizierte Limits, sauberes Team-/Projekt-Billing. Für produktive Agent-Läufe meist die bessere Wahl. (ClaudeLog, Anthropic)
+* Abo (Pro/Max): Bequem, kein zusätzlicher API-Metering-Overhead; beachte neuere Rate-Limits/Kontingente, die Anthropic wegen Heavy-Usage ausrollt. (Business Insider)
+
+Quellen
+* Offizielles Setup & Auth-Optionen (WSL unterstützt). (Anthropic)
+* „Using Claude Code with your Pro or Max plan“ (/login). (Anthropic Hilfezentrum)
+* API-Key-Auth via ANTHROPIC_API_KEY. (Anthropic)
+* Abo vs. API sind getrennt (Billing). (Anthropic Hilfezentrum)
+* /status zur Prüfung, Community-Bestätigungen & Troubleshooting. (GitHub)
+Wenn du willst, schreibe ich dir die zwei Aliase als kleine ~/.bashrc-Snippet-Blöcke fixfertig mit Kommentarheadern – dann kopierst du sie 1:1 in dein Setup.
+

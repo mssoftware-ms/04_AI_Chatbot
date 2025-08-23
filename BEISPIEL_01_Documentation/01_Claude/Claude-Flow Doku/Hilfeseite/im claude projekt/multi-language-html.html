@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Language Development - Claude-Flow v86</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Exakte Farben aus constants.py */
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1A1A1A;
+            --border: #2A2A2A;
+            --accent-orange: #FF6B35;
+            --accent-orange-hover: #FF8255;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #5A9CF6;
+            --accent-green: #238636;
+            --accent-green-hover: #2EA043;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-muted: #6B7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 700;
+            padding: 0 24px;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 0 24px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent-orange);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 32px;
+            max-width: 1400px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px;
+            margin-bottom: 48px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .language-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .language-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .language-card.selected {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(59, 130, 246, 0.2));
+            border-color: var(--accent-orange);
+        }
+
+        .language-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .language-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .language-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Template Section */
+        .templates-section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .template-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .template-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .template-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .template-icon {
+            font-size: 32px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .template-info {
+            flex: 1;
+        }
+
+        .template-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .template-stack {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .template-features {
+            list-style: none;
+            margin-top: 16px;
+        }
+
+        .template-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .template-features li:last-child {
+            border-bottom: none;
+        }
+
+        .template-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-title {
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-blue-hover);
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Integration Patterns */
+        .pattern-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .pattern-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pattern-description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .pattern-example {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        /* Agent Configuration */
+        .agent-config {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .agent-list {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .agent-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .agent-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+        }
+
+        .agent-details {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .agent-capabilities {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .agent-model {
+            background: var(--accent-blue);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-blue);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 24px 0;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning);
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--accent-orange);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-orange);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .hero {
+                padding: 32px 24px;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-title">Claude-Flow v86</div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Documentation</div>
+                <a href="index.html" class="nav-item">
+                    <span>🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="getting-started.html" class="nav-item">
+                    <span>🚀</span>
+                    <span>Getting Started</span>
+                </a>
+                <a href="cli-reference.html" class="nav-item">
+                    <span>⌨️</span>
+                    <span>CLI Reference</span>
+                </a>
+                <a href="preset-builder.html" class="nav-item">
+                    <span>🎨</span>
+                    <span>Preset Builder</span>
+                </a>
+                <a href="task-completion.html" class="nav-item">
+                    <span>✅</span>
+                    <span>Task Completion</span>
+                </a>
+                <a href="multi-language.html" class="nav-item active">
+                    <span>🌐</span>
+                    <span>Multi-Language</span>
+                </a>
+                <a href="features.html" class="nav-item">
+                    <span>⚡</span>
+                    <span>Features</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Resources</div>
+                <a href="examples.html" class="nav-item">
+                    <span>📚</span>
+                    <span>Examples</span>
+                </a>
+                <a href="api-reference.html" class="nav-item">
+                    <span>📌</span>
+                    <span>API Reference</span>
+                </a>
+                <a href="troubleshooting.html" class="nav-item">
+                    <span>🔧</span>
+                    <span>Troubleshooting</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h1 class="hero-title">🌐 Multi-Language Mastery</h1>
+                <p class="hero-subtitle">Polyglot Development mit Claude-Flow - 12+ Sprachen, Ein Workflow</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12+</div>
+                        <div class="stat-label">Sprachen</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Templates</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Integration</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Language Selector -->
+            <section class="language-selector">
+                <h2 class="section-title">
+                    <span>🎯</span>
+                    Wählen Sie Ihre Sprachen
+                </h2>
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                    Konfigurieren Sie spezialisierte Agenten für jede Programmiersprache in Ihrem Projekt.
+                </p>
+
+                <div class="language-grid">
+                    <div class="language-card selected" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🐍</div>
+                        <div class="language-name">Python</div>
+                        <div class="language-desc">FastAPI, Django, ML</div>
+                    </div>
+                    <div class="language-card selected" onclick="toggleLanguage(this)">
+                        <div class="language-icon">📜</div>
+                        <div class="language-name">TypeScript</div>
+                        <div class="language-desc">React, Node, Next.js</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🟨</div>
+                        <div class="language-name">JavaScript</div>
+                        <div class="language-desc">Frontend, Backend</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🐹</div>
+                        <div class="language-name">Go</div>
+                        <div class="language-desc">Microservices, CLI</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🦀</div>
+                        <div class="language-name">Rust</div>
+                        <div class="language-desc">Systems, WASM</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">☕</div>
+                        <div class="language-name">Java</div>
+                        <div class="language-desc">Spring, Enterprise</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🔷</div>
+                        <div class="language-name">C#</div>
+                        <div class="language-desc">.NET, Unity</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🐘</div>
+                        <div class="language-name">PHP</div>
+                        <div class="language-desc">Laravel, WordPress</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">💎</div>
+                        <div class="language-name">Ruby</div>
+                        <div class="language-desc">Rails, Sinatra</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🎯</div>
+                        <div class="language-name">Dart</div>
+                        <div class="language-desc">Flutter, Mobile</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🍎</div>
+                        <div class="language-name">Swift</div>
+                        <div class="language-desc">iOS, macOS</div>
+                    </div>
+                    <div class="language-card" onclick="toggleLanguage(this)">
+                        <div class="language-icon">🤖</div>
+                        <div class="language-name">Kotlin</div>
+                        <div class="language-desc">Android, Backend</div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="generateAgentConfig()">
+                        <i class="fas fa-magic"></i>
+                        Agenten generieren
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetLanguages()">
+                        <i class="fas fa-redo"></i>
+                        Zurücksetzen
+                    </button>
+                </div>
+            </section>
+
+            <!-- Polyglot Templates -->
+            <section class="templates-section">
+                <h2 class="section-title">
+                    <span>📦</span>
+                    Polyglot Project Templates
+                </h2>
+
+                <div class="template-grid">
+                    <!-- E-Commerce Platform -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <div class="template-icon">🛒</div>
+                            <div class="template-info">
+                                <div class="template-name">E-Commerce Platform</div>
+                                <div class="template-stack">Python + React + Go + Redis</div>
+                            </div>
+                        </div>
+                        <ul class="template-features">
+                            <li>Python FastAPI Backend (REST API)</li>
+                            <li>React TypeScript Frontend (SPA)</li>
+                            <li>Go Payment Microservice</li>
+                            <li>Redis Session Store & Cache</li>
+                            <li>PostgreSQL Database</li>
+                            <li>Docker Compose Setup</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="useTemplate('ecommerce')">
+                            <i class="fas fa-download"></i>
+                            Template verwenden
+                        </button>
+                    </div>
+
+                    <!-- Banking System -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <div class="template-icon">🏦</div>
+                            <div class="template-info">
+                                <div class="template-name">Banking System</div>
+                                <div class="template-stack">Java + Angular + C# + SQL Server</div>
+                            </div>
+                        </div>
+                        <ul class="template-features">
+                            <li>Java Spring Boot Core Banking</li>
+                            <li>Angular Enterprise UI</li>
+                            <li>C# Reporting Service</li>
+                            <li>SQL Server + Redis Cache</li>
+                            <li>CQRS & Event Sourcing</li>
+                            <li>Security & Compliance</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="useTemplate('banking')">
+                            <i class="fas fa-download"></i>
+                            Template verwenden
+                        </button>
+                    </div>
+
+                    <!-- IoT Platform -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <div class="template-icon">📡</div>
+                            <div class="template-info">
+                                <div class="template-name">IoT Platform</div>
+                                <div class="template-stack">Rust + React Native + Python</div>
+                            </div>
+                        </div>
+                        <ul class="template-features">
+                            <li>Rust Edge Gateway (High Performance)</li>
+                            <li>React Native Mobile App</li>
+                            <li>Python Data Processing Pipeline</li>
+                            <li>InfluxDB Time Series Database</li>
+                            <li>MQTT Message Broker</li>
+                            <li>Real-time Dashboard</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="useTemplate('iot')">
+                            <i class="fas fa-download"></i>
+                            Template verwenden
+                        </button>
+                    </div>
+
+                    <!-- Gaming Backend -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <div class="template-icon">🎮</div>
+                            <div class="template-info">
+                                <div class="template-name">Gaming Backend</div>
+                                <div class="template-stack">C++ + TypeScript + Redis</div>
+                            </div>
+                        </div>
+                        <ul class="template-features">
+                            <li>C++ Game Server (Low Latency)</li>
+                            <li>TypeScript Admin Dashboard</li>
+                            <li>Redis Real-time Leaderboard</li>
+                            <li>MongoDB Player Profiles</li>
+                            <li>WebSocket Communication</li>
+                            <li>Anti-Cheat System</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="useTemplate('gaming')">
+                            <i class="fas fa-download"></i>
+                            Template verwenden
+                        </button>
+                    </div>
+
+                    <!-- ML Pipeline -->
+                    <div class="template-card">
+                        <div class="template-header">
+                            <div class="template-icon">🤖</div>
+                            <div class="template-info">
+                                <div class="template-name">ML Pipeline</div>
+                                <div class="template-stack">Python + Scala + Jupyter</div>
+                            </div>
+                        </div>
+                        <ul class="template-features">
+                            <li>Python Model Training (TensorFlow)</li>
+                            <li>Scala Data Processing (Spark)</li>
+                            <li>Jupyter Notebooks</li>
+                            <li>MLflow Model Registry</li>
+                            <li>Kubernetes Orchestration</li>
+                            <li>Feature Store</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="useTemplate('ml')">
+                            <i class="fas fa-download"></i>
+                            Template verwenden
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agent Configuration -->
+            <section class="agent-config">
+                <h2 class="section-title">
+                    <span>🤖</span>
+                    Language-Specific Agent Configuration
+                </h2>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('python')">Python</button>
+                    <button class="tab" onclick="switchTab('typescript')">TypeScript</button>
+                    <button class="tab" onclick="switchTab('go')">Go</button>
+                    <button class="tab" onclick="switchTab('rust')">Rust</button>
+                    <button class="tab" onclick="switchTab('java')">Java</button>
+                </div>
+
+                <div id="python" class="tab-content active">
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">🐍</div>
+                            <div class="agent-details">
+                                <div class="agent-name">PythonMaster</div>
+                                <div class="agent-capabilities">FastAPI, Django, SQLAlchemy, Pytest, AsyncIO, Type Hints</div>
+                            </div>
+                            <span class="agent-model">Claude Opus</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">📊</div>
+                            <div class="agent-details">
+                                <div class="agent-name">DataScientist</div>
+                                <div class="agent-capabilities">Pandas, NumPy, Scikit-learn, TensorFlow, Matplotlib</div>
+                            </div>
+                            <span class="agent-model">Claude Sonnet</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🔄</div>
+                            <div class="agent-details">
+                                <div class="agent-name">AsyncExpert</div>
+                                <div class="agent-capabilities">AsyncIO, Aiohttp, Celery, RabbitMQ, Redis</div>
+                            </div>
+                            <span class="agent-model">Claude Haiku</span>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">python-agents.sh</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Python-optimierte Agenten spawnen
+npx claude-flow@alpha agent spawn python-expert \
+  --name "PythonMaster" \
+  --capabilities "python,fastapi,django,pytest,async,typing" \
+  --model "claude-opus-4-1-20250805" \
+  --namespace python-project
+
+# Data Science Spezialist
+npx claude-flow@alpha agent spawn data-scientist \
+  --name "DataScientist" \
+  --capabilities "pandas,numpy,scikit-learn,tensorflow,matplotlib" \
+  --model "claude-sonnet-4-20250514"
+
+# Async Programming Expert
+npx claude-flow@alpha agent spawn async-expert \
+  --name "AsyncExpert" \
+  --capabilities "asyncio,aiohttp,celery,rabbitmq,redis" \
+  --model "claude-haiku-20240307"</pre>
+                    </div>
+                </div>
+
+                <div id="typescript" class="tab-content">
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">📜</div>
+                            <div class="agent-details">
+                                <div class="agent-name">TypeScriptMaster</div>
+                                <div class="agent-capabilities">React, Next.js, Node.js, Express, TypeORM, Jest</div>
+                            </div>
+                            <span class="agent-model">Claude Opus</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">⚛️</div>
+                            <div class="agent-details">
+                                <div class="agent-name">ReactExpert</div>
+                                <div class="agent-capabilities">React 18, Hooks, Redux, Zustand, React Query, Testing Library</div>
+                            </div>
+                            <span class="agent-model">Claude Sonnet</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🔌</div>
+                            <div class="agent-details">
+                                <div class="agent-name">NodeBackend</div>
+                                <div class="agent-capabilities">Express, NestJS, GraphQL, Prisma, Socket.io</div>
+                            </div>
+                            <span class="agent-model">Claude Haiku</span>
+                        </div>
+                    </div>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">typescript-agents.sh</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># TypeScript Full-Stack Agenten
+npx claude-flow@alpha agent spawn typescript-expert \
+  --name "TypeScriptMaster" \
+  --capabilities "typescript,react,nextjs,nodejs,express,jest" \
+  --model "claude-opus-4-1-20250805" \
+  --namespace ts-project
+
+# React Frontend Spezialist
+npx claude-flow@alpha agent spawn react-expert \
+  --name "ReactExpert" \
+  --capabilities "react,hooks,redux,zustand,react-query,testing-library" \
+  --model "claude-sonnet-4-20250514"
+
+# Node.js Backend Expert
+npx claude-flow@alpha agent spawn node-backend \
+  --name "NodeBackend" \
+  --capabilities "express,nestjs,graphql,prisma,socketio" \
+  --model "claude-haiku-20240307"</pre>
+                    </div>
+                </div>
+
+                <div id="go" class="tab-content">
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">🐹</div>
+                            <div class="agent-details">
+                                <div class="agent-name">GoMaster</div>
+                                <div class="agent-capabilities">Gin, Echo, GORM, Go Modules, Goroutines, Channels</div>
+                            </div>
+                            <span class="agent-model">Claude Opus</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🔧</div>
+                            <div class="agent-details">
+                                <div class="agent-name">MicroserviceExpert</div>
+                                <div class="agent-capabilities">gRPC, Protocol Buffers, Service Mesh, Docker, K8s</div>
+                            </div>
+                            <span class="agent-model">Claude Sonnet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rust" class="tab-content">
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">🦀</div>
+                            <div class="agent-details">
+                                <div class="agent-name">RustMaster</div>
+                                <div class="agent-capabilities">Tokio, Actix, Diesel, Serde, WASM, Embedded</div>
+                            </div>
+                            <span class="agent-model">Claude Opus</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">⚡</div>
+                            <div class="agent-details">
+                                <div class="agent-name">SystemsExpert</div>
+                                <div class="agent-capabilities">Low-level, Memory Management, Unsafe Rust, FFI</div>
+                            </div>
+                            <span class="agent-model">Claude Sonnet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="java" class="tab-content">
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">☕</div>
+                            <div class="agent-details">
+                                <div class="agent-name">JavaMaster</div>
+                                <div class="agent-capabilities">Spring Boot, Hibernate, Maven, JUnit, Microservices</div>
+                            </div>
+                            <span class="agent-model">Claude Opus</span>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🏢</div>
+                            <div class="agent-details">
+                                <div class="agent-name">EnterpriseExpert</div>
+                                <div class="agent-capabilities">J2EE, WebLogic, JBoss, Enterprise Patterns</div>
+                            </div>
+                            <span class="agent-model">Claude Sonnet</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-Language Integration -->
+            <section>
+                <h2 class="section-title">
+                    <span>🔗</span>
+                    Cross-Language Integration Patterns
+                </h2>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>📄</span>
+                        API Contract-First Development
+                    </div>
+                    <p class="pattern-description">
+                        Definieren Sie API-Contracts mit OpenAPI/Swagger und generieren Sie automatisch 
+                        Client-Code für alle beteiligten Sprachen.
+                    </p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">contract-generation.sh</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># API Contract definieren und Code generieren
+npx claude-flow@alpha swarm "
+1. Create OpenAPI specification for our API
+2. Generate Python FastAPI server code
+3. Generate TypeScript client with types
+4. Generate Go client library
+5. Create integration tests for all clients
+6. Setup contract testing with Pact
+" --namespace api-contract --claude
+
+# Automatische Client-Generierung für alle Sprachen
+npx claude-flow@alpha hive-mind spawn "
+For each language in our project:
+- Generate typed API client from OpenAPI spec
+- Create language-specific error handling
+- Add retry logic and circuit breakers
+- Generate comprehensive tests
+- Create usage documentation
+" --languages "python,typescript,go,java" --claude</pre>
+                    </div>
+                </div>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>📨</span>
+                        Event-Driven Architecture
+                    </div>
+                    <p class="pattern-description">
+                        Nutzen Sie Apache Kafka oder RabbitMQ für asynchrone Kommunikation zwischen 
+                        Services in verschiedenen Sprachen.
+                    </p>
+
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">event-driven-setup.sh</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Event-Driven System mit Kafka aufsetzen
+npx claude-flow@alpha swarm "
+PROJECT: Multi-Language Event System
+
+1. Setup Kafka with Schema Registry
+2. Define Avro schemas for all events
+3. Create Python producer service
+4. Create Go consumer service
+5. Create TypeScript event processor
+6. Implement dead letter queue handling
+7. Add distributed tracing with OpenTelemetry
+8. Create monitoring dashboard
+
+ENSURE: All services use same event schemas
+" --namespace event-system --claude</pre>
+                    </div>
+                </div>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>🐳</span>
+                        Containerized Polyglot Deployment
+                    </div>
+                    <p class="pattern-description">
+                        Docker Compose und Kubernetes für nahtlose Orchestrierung von Multi-Language Services.
+                    </p>
+
+                    <div class="alert alert-info">
+                        <span class="alert-icon">💡</span>
+                        <div>
+                            <strong>Best Practice:</strong> Verwenden Sie Multi-Stage Docker Builds für optimale 
+                            Image-Größen und nutzen Sie Language-spezifische Base Images.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Performance Optimization -->
+            <section>
+                <h2 class="section-title">
+                    <span>🚀</span>
+                    Performance-Optimierung für Multi-Language
+                </h2>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>⚡</span>
+                        Language-Specific Optimizations
+                    </div>
+                    
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-title">performance-optimization.sh</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre># Performance-Optimierung für jede Sprache
+npx claude-flow@alpha swarm "
+OPTIMIZE each service for its language:
+
+PYTHON:
+- Use asyncio for I/O operations
+- Implement connection pooling
+- Add caching with Redis
+- Profile with cProfile
+- Consider Cython for hot paths
+
+TYPESCRIPT/NODE:
+- Implement clustering
+- Use worker threads for CPU tasks
+- Optimize bundle size
+- Enable V8 optimizations
+- Add CDN for static assets
+
+GO:
+- Optimize goroutine usage
+- Implement proper context handling
+- Use sync.Pool for object reuse
+- Profile with pprof
+- Minimize allocations
+
+RUST:
+- Use zero-copy operations
+- Implement proper lifetimes
+- Leverage SIMD when possible
+- Profile with cargo flamegraph
+- Optimize for cache locality
+
+GENERATE: Performance benchmark suite
+" --namespace performance --claude</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testing Strategies -->
+            <section>
+                <h2 class="section-title">
+                    <span>🧪</span>
+                    Multi-Language Testing Strategies
+                </h2>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>✅</span>
+                        Unified Testing Approach
+                    </div>
+                    
+                    <p class="pattern-description">
+                        Konsistente Test-Strategien über alle Sprachen hinweg mit gemeinsamen Quality Gates.
+                    </p>
+
+                    <div class="agent-list">
+                        <div class="agent-item">
+                            <div class="agent-icon">🧪</div>
+                            <div class="agent-details">
+                                <div class="agent-name">Unit Testing</div>
+                                <div class="agent-capabilities">
+                                    Python: pytest | TypeScript: Jest/Vitest | Go: testing package | Rust: cargo test | Java: JUnit
+                                </div>
+                            </div>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🔗</div>
+                            <div class="agent-details">
+                                <div class="agent-name">Integration Testing</div>
+                                <div class="agent-capabilities">
+                                    Testcontainers für alle Sprachen, WireMock für API Mocking, Contract Testing mit Pact
+                                </div>
+                            </div>
+                        </div>
+                        <div class="agent-item">
+                            <div class="agent-icon">🎯</div>
+                            <div class="agent-details">
+                                <div class="agent-name">E2E Testing</div>
+                                <div class="agent-capabilities">
+                                    Playwright oder Cypress für UI, K6 oder Locust für Load Testing, Postman/Newman für API
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Commands -->
+            <section>
+                <h2 class="section-title">
+                    <span>⚡</span>
+                    Quick Commands
+                </h2>
+
+                <div class="alert alert-success">
+                    <span class="alert-icon">🚀</span>
+                    <div>
+                        <strong>Schnellstart:</strong> Nutzen Sie diese Befehle für sofortigen Multi-Language Setup.
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-title">quick-polyglot-setup.sh</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre># Vollständiges Polyglot-Projekt in 5 Minuten
+npx claude-flow@alpha hive-mind spawn "
+CREATE: E-Commerce Platform
+LANGUAGES: Python (Backend), TypeScript (Frontend), Go (Services)
+
+STRUCTURE:
+/backend-api (Python FastAPI)
+/frontend-app (React TypeScript)
+/payment-service (Go)
+/notification-service (Go)
+/shared (Proto definitions, OpenAPI specs)
+/infrastructure (Docker, K8s, Terraform)
+
+IMPLEMENT:
+1. FastAPI backend with PostgreSQL
+2. React frontend with Material-UI
+3. Go payment processing service
+4. Go email/SMS notification service
+5. Redis for caching and sessions
+6. Docker Compose for local development
+7. GitHub Actions CI/CD pipeline
+8. Comprehensive test suite
+9. API documentation
+10. Deployment scripts
+
+FOLLOW: Best practices for each language
+ENSURE: Services communicate via REST and gRPC
+" --namespace ecommerce --claude --verbose</pre>
+                </div>
+            </section>
+
+            <!-- Best Practices Checklist -->
+            <section>
+                <h2 class="section-title">
+                    <span>📋</span>
+                    Best Practices Checklist
+                </h2>
+
+                <div class="pattern-card">
+                    <div class="pattern-title">
+                        <span>✨</span>
+                        Die 10 Gebote der Multi-Language Entwicklung
+                    </div>
+                    
+                    <ol style="line-height: 2; padding-left: 24px;">
+                        <li><strong>Language Selection:</strong> Wähle die richtige Sprache für den richtigen Job</li>
+                        <li><strong>Consistent Interfaces:</strong> Nutze OpenAPI/gRPC für klare Schnittstellen</li>
+                        <li><strong>Unified Logging:</strong> Structured Logging mit einheitlichem Format</li>
+                        <li><strong>Distributed Tracing:</strong> OpenTelemetry für Cross-Service Visibility</li>
+                        <li><strong>Error Handling:</strong> Konsistente Error Codes und Formate</li>
+                        <li><strong>Security First:</strong> Gleiche Security Standards für alle Services</li>
+                        <li><strong>Documentation:</strong> README in jedem Service, zentrale Architektur-Docs</li>
+                        <li><strong>Testing Strategy:</strong> Mindestens 80% Coverage, Contract Tests</li>
+                        <li><strong>CI/CD Pipeline:</strong> Parallelisierte, Language-spezifische Pipelines</li>
+                        <li><strong>Monitoring:</strong> Unified Metrics und Alerting über alle Services</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Call to Action -->
+            <section style="text-align: center; padding: 48px 0;">
+                <h2 style="font-size: 32px; margin-bottom: 24px;">Bereit für Polyglot Development?</h2>
+                <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 32px;">
+                    Starten Sie jetzt mit Multi-Language Projekten und nutzen Sie die Stärken jeder Sprache optimal.
+                </p>
+                <div style="display: flex; gap: 16px; justify-content: center;">
+                    <a href="preset-builder.html" class="btn btn-primary">
+                        <span>🎨</span>
+                        <span>Preset Builder</span>
+                    </a>
+                    <a href="examples.html" class="btn btn-secondary">
+                        <span>📚</span>
+                        <span>Mehr Beispiele</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle language selection
+        function toggleLanguage(element) {
+            element.classList.toggle('selected');
+        }
+
+        // Reset language selection
+        function resetLanguages() {
+            document.querySelectorAll('.language-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+        }
+
+        // Generate agent configuration
+        function generateAgentConfig() {
+            const selected = document.querySelectorAll('.language-card.selected');
+            const languages = [];
+            
+            selected.forEach(card => {
+                languages.push(card.querySelector('.language-name').textContent);
+            });
+
+            if (languages.length === 0) {
+                alert('Bitte wählen Sie mindestens eine Sprache aus.');
+                return;
+            }
+
+            alert(`Generiere Agenten-Konfiguration für:\n${languages.join(', ')}\n\nKonfiguration wird erstellt...`);
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('pre').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Use template
+        function useTemplate(templateName) {
+            const templates = {
+                'ecommerce': 'E-Commerce Platform Template',
+                'banking': 'Banking System Template',
+                'iot': 'IoT Platform Template',
+                'gaming': 'Gaming Backend Template',
+                'ml': 'ML Pipeline Template'
+            };
+
+            alert(`Lade ${templates[templateName]}...\n\nDas Template wird vorbereitet und kann im Preset Builder angepasst werden.`);
+            
+            // In real implementation, this would load the template configuration
+            window.location.href = 'preset-builder.html?template=' + templateName;
+        }
+
+        // Command Palette (Cmd+K)
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                alert('Command Palette - Coming Soon!\n\nSchnellzugriff auf alle Funktionen.');
+            }
+        });
+    </script>
+</body>
+</html>

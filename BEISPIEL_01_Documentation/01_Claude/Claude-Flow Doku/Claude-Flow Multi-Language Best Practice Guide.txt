@@ -1,0 +1,840 @@
+Basierend auf Ihrer AI-Coding-Station und der vorhandenen Dokumentation entwickle ich eine umfassende Best Practice für Multi-Language/Multi-Platform Entwicklung mit Claude-Flow:
+
+# Claude-Flow Multi-Language Best Practice Guide
+## Agentensystem für unterschiedliche Programmiersprachen und Plattformen
+
+### Version 2.0 | Erweiterung für AI-Coding-Station
+
+---
+
+## Erweiterte Inhalte für die Dokumentation
+
+### 1. Language-Specific Agent Configuration
+
+#### Python-Agenten-Setup
+```bash
+# Python-optimierter Agent mit spezialisierten Capabilities
+npx claude-flow@alpha agent spawn python-expert \
+  --name "PythonMaster" \
+  --capabilities "python,fastapi,django,pytest,async,typing,dataclasses" \
+  --model "claude-opus-4-1-20250805" \
+  --namespace python-project
+
+# Spezialisierte Sub-Agenten für Python-Ökosystem
+npx claude-flow@alpha agent spawn data-scientist \
+  --name "DataAnalyst" \
+  --capabilities "pandas,numpy,scikit-learn,matplotlib,jupyter"
+  
+npx claude-flow@alpha agent spawn web-developer \
+  --name "DjangoExpert" \
+  --capabilities "django,rest-framework,celery,redis,postgresql"
+```
+
+#### JavaScript/TypeScript-Agenten
+```bash
+# Frontend-Spezialist
+npx claude-flow@alpha agent spawn frontend-dev \
+  --name "ReactMaster" \
+  --capabilities "react,typescript,nextjs,tailwind,zustand,tanstack-query" \
+  --namespace frontend-project
+
+# Backend Node.js Spezialist  
+npx claude-flow@alpha agent spawn backend-dev \
+  --name "NodeExpert" \
+  --capabilities "nodejs,express,nestjs,typeorm,prisma,graphql"
+```
+
+#### Cross-Platform Mobile Development
+```bash
+# React Native Spezialist
+npx claude-flow@alpha agent spawn mobile-dev \
+  --name "MobileExpert" \
+  --capabilities "react-native,expo,flutter,dart,kotlin,swift"
+
+# Flutter-Spezialist
+npx claude-flow@alpha agent spawn flutter-dev \
+  --name "FlutterMaster" \
+  --capabilities "flutter,dart,bloc,riverpod,firebase"
+```
+
+### 2. Language-Aware Workflow Templates
+
+#### Template: Python Full-Stack Application
+```json
+{
+  "workflow": "python-fullstack",
+  "version": "1.0",
+  "language_config": {
+    "primary": "python",
+    "version": "3.11+",
+    "framework": "fastapi",
+    "testing": "pytest",
+    "linting": ["black", "flake8", "mypy"]
+  },
+  "phases": [
+    {
+      "id": "setup",
+      "agent": "PythonMaster",
+      "tasks": [
+        "Create virtual environment",
+        "Setup pyproject.toml",
+        "Configure pre-commit hooks",
+        "Setup GitHub Actions"
+      ]
+    },
+    {
+      "id": "backend",
+      "agent": "PythonMaster",
+      "tasks": [
+        "Create FastAPI application structure",
+        "Implement SQLAlchemy models",
+        "Setup Alembic migrations",
+        "Create API endpoints with Pydantic models",
+        "Implement authentication with JWT",
+        "Add Redis caching layer"
+      ]
+    },
+    {
+      "id": "testing",
+      "agent": "PythonMaster",
+      "tasks": [
+        "Write pytest unit tests",
+        "Create integration tests",
+        "Setup test fixtures",
+        "Configure coverage reports",
+        "Add performance tests with locust"
+      ]
+    }
+  ]
+}
+```
+
+### 3. Integration mit AI-Coding-Station
+
+#### Automatisierte Agent-Konfiguration aus der GUI
+```python
+# integration/claude_flow_integration.py
+from dataclasses import dataclass
+from typing import List, Dict, Optional
+import subprocess
+import json
+
+@dataclass
+class AgentConfig:
+    name: str
+    capabilities: List[str]
+    language: str
+    model: str = "claude-opus-4-1-20250805"
+    
+class ClaudeFlowIntegration:
+    def __init__(self, wsl_bridge):
+        self.wsl = wsl_bridge
+        self.active_agents = {}
+        
+    def spawn_language_specific_agent(self, config: AgentConfig):
+        """Spawnt einen sprachspezifischen Agenten über WSL"""
+        cmd = f"""
+        npx claude-flow@alpha agent spawn {config.language}-expert \\
+          --name "{config.name}" \\
+          --capabilities "{','.join(config.capabilities)}" \\
+          --model "{config.model}"
+        """
+        
+        result = self.wsl.execute(cmd)
+        self.active_agents[config.name] = config
+        return result
+        
+    def create_polyglot_swarm(self, project_languages: List[str]):
+        """Erstellt einen Schwarm mit Agenten für alle Projektsprachen"""
+        agents = []
+        
+        for lang in project_languages:
+            agent_config = self.get_optimal_agent_for_language(lang)
+            agents.append(agent_config)
+            
+        # Spawn coordinator
+        coordinator_cmd = f"""
+        npx claude-flow@alpha hive-mind spawn "
+        PROJECT: Multi-Language Project
+        LANGUAGES: {', '.join(project_languages)}
+        
+        COORDINATION STRATEGY:
+        1. Analyze project structure
+        2. Assign language-specific tasks to specialized agents
+        3. Ensure API contracts between components
+        4. Validate cross-language integrations
+        5. Generate unified documentation
+        " --agents {len(agents) + 1} --claude
+        """
+        
+        return self.wsl.execute(coordinator_cmd)
+```
+
+### 4. Language-Specific Best Practices
+
+#### Python Best Practices mit Claude-Flow
+```bash
+#!/bin/bash
+# python-best-practices.sh
+
+PROJECT="python-app"
+NAMESPACE="py-$PROJECT"
+
+# Phase 1: Moderne Python-Struktur
+npx claude-flow@alpha swarm "
+Create modern Python project structure:
+
+PROJECT STRUCTURE:
+src/
+├── $PROJECT/
+│   ├── __init__.py
+│   ├── core/
+│   ├── api/
+│   ├── models/
+│   └── utils/
+tests/
+├── unit/
+├── integration/
+└── conftest.py
+
+CONFIGURATION FILES:
+- pyproject.toml (mit poetry dependencies)
+- .pre-commit-config.yaml
+- .github/workflows/ci.yml
+- Dockerfile (multi-stage build)
+- docker-compose.yml
+
+REQUIREMENTS:
+- Python 3.11+ type hints überall
+- Pydantic für Datenvalidierung
+- Strukturiertes Logging mit structlog
+- Async/await wo sinnvoll
+- 100% Docstring coverage
+" --namespace $NAMESPACE --claude
+
+# Phase 2: Type-Safe Implementation
+npx claude-flow@alpha swarm "
+Implement with strict typing:
+
+1. Use typing.Protocol for interfaces
+2. Generic types where appropriate
+3. TypedDict for structured dicts
+4. Literal types for constants
+5. Run mypy in strict mode
+6. Use pydantic BaseModel for all DTOs
+
+Example pattern:
+'''python
+from typing import Protocol, TypeVar, Generic
+from pydantic import BaseModel, Field
+
+T = TypeVar('T', bound=BaseModel)
+
+class Repository(Protocol, Generic[T]):
+    async def get(self, id: str) -> T | None: ...
+    async def create(self, item: T) -> T: ...
+'''
+" --namespace $NAMESPACE --continue-session --claude
+```
+
+#### TypeScript/JavaScript Best Practices
+```bash
+#!/bin/bash
+# typescript-best-practices.sh
+
+PROJECT="ts-app"
+NAMESPACE="ts-$PROJECT"
+
+npx claude-flow@alpha swarm "
+Setup modern TypeScript project:
+
+TOOLCHAIN:
+- TypeScript 5.3+ with strict mode
+- ESLint with @typescript-eslint
+- Prettier for formatting
+- Vitest for testing
+- tsx for development
+- esbuild for bundling
+
+ARCHITECTURE:
+- Clean Architecture layers
+- Dependency Injection with tsyringe
+- Domain-Driven Design patterns
+- CQRS where appropriate
+
+TYPE SAFETY:
+- Zod for runtime validation
+- Branded types for domain modeling
+- Exhaustive switch statements
+- No any types allowed
+- Strict null checks
+
+Example:
+'''typescript
+// Domain type with branding
+type UserId = string & { readonly brand: unique symbol };
+const UserId = (id: string): UserId => id as UserId;
+
+// Runtime validation with Zod
+const UserSchema = z.object({
+  id: z.string().transform(UserId),
+  email: z.string().email(),
+  createdAt: z.date()
+});
+
+type User = z.infer<typeof UserSchema>;
+'''
+" --namespace $NAMESPACE --claude
+```
+
+### 5. Cross-Language Integration Patterns
+
+#### API Contract Generation
+```bash
+#!/bin/bash
+# cross-language-contracts.sh
+
+npx claude-flow@alpha swarm "
+Generate cross-language API contracts:
+
+1. CREATE OpenAPI SPECIFICATION:
+   - Define all endpoints in openapi.yaml
+   - Include detailed schemas
+   - Add examples for each endpoint
+
+2. GENERATE LANGUAGE-SPECIFIC CLIENTS:
+   Python: Use openapi-python-client
+   TypeScript: Use openapi-typescript-codegen
+   Go: Use oapi-codegen
+   Rust: Use openapi-generator
+
+3. IMPLEMENT CONTRACT TESTS:
+   - Pact for consumer-driven contracts
+   - Schema validation in all languages
+   - Shared test fixtures in JSON
+
+4. CREATE POLYGLOT DOCKER COMPOSE:
+   '''yaml
+   services:
+     python-api:
+       build: ./services/python
+       environment:
+         - API_SPEC=/shared/openapi.yaml
+     
+     typescript-frontend:
+       build: ./services/frontend
+       depends_on:
+         - python-api
+     
+     go-worker:
+       build: ./services/worker
+       environment:
+         - API_CLIENT_URL=http://python-api:8000
+   '''
+
+5. UNIFIED MONITORING:
+   - OpenTelemetry for all services
+   - Shared Grafana dashboards
+   - Centralized logging with ELK
+" --claude
+```
+
+### 6. Performance-Optimierte Language Patterns
+
+#### Hochperformante Python-Patterns
+```bash
+npx claude-flow@alpha swarm "
+Implement Python performance patterns:
+
+1. ASYNC EVERYWHERE:
+   '''python
+   import asyncio
+   from concurrent.futures import ProcessPoolExecutor
+   import uvloop  # Faster event loop
+   
+   asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+   '''
+
+2. CYTHON FOR HOT PATHS:
+   - Identify bottlenecks with py-spy
+   - Convert critical functions to Cython
+   - Use memoryviews for array operations
+
+3. RUST EXTENSIONS WITH PYDANTIC:
+   '''python
+   # Use maturin for Rust integration
+   from my_rust_extension import fast_compute
+   '''
+
+4. EFFICIENT DATA STRUCTURES:
+   - Use __slots__ for classes
+   - collections.deque for queues
+   - numpy for numerical operations
+   - Polars instead of Pandas for large datasets
+" --namespace python-perf --claude
+```
+
+### 7. Testing-Strategien für Multi-Language Projects
+
+#### Unified Testing Framework
+```bash
+#!/bin/bash
+# unified-testing.sh
+
+npx claude-flow@alpha hive-mind spawn "
+Create unified testing strategy:
+
+UNIT TESTING BY LANGUAGE:
+- Python: pytest with pytest-asyncio, pytest-cov
+- JavaScript: Vitest with @testing-library
+- Go: Built-in testing with testify
+- Rust: Built-in tests with cargo test
+
+INTEGRATION TESTING:
+1. Docker Compose for test environment
+2. Testcontainers for database testing
+3. WireMock for external API mocking
+4. K6 for load testing
+
+CROSS-LANGUAGE E2E:
+'''yaml
+# e2e-test.yml
+steps:
+  - name: Start all services
+    run: docker-compose up -d
+    
+  - name: Wait for health
+    run: ./scripts/wait-for-healthy.sh
+    
+  - name: Run Playwright tests
+    run: npx playwright test
+    
+  - name: Run API contract tests
+    run: npm run test:contracts
+    
+  - name: Performance baseline
+    run: k6 run performance.js
+'''
+
+MUTATION TESTING:
+- Python: mutmut
+- JavaScript: Stryker
+- Go: go-mutesting
+
+PROPERTY-BASED TESTING:
+- Python: hypothesis
+- JavaScript: fast-check
+- Shared test cases in JSON
+" --agents 5 --claude
+```
+
+### 8. CI/CD Pipeline für Polyglot Projects
+
+```yaml
+# .github/workflows/polyglot-ci.yml
+name: Polyglot CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.changes.outputs.python }}
+      typescript: ${{ steps.changes.outputs.typescript }}
+      go: ${{ steps.changes.outputs.go }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            python:
+              - 'services/python/**'
+            typescript:
+              - 'services/frontend/**'
+            go:
+              - 'services/worker/**'
+
+  python-pipeline:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Claude-Flow Python Analysis
+        run: |
+          npx claude-flow@alpha swarm "
+          Analyze Python code quality:
+          1. Run mypy type checking
+          2. Check with flake8
+          3. Format with black --check
+          4. Security scan with bandit
+          5. Complexity analysis with radon
+          " --namespace ci-python --claude
+
+  typescript-pipeline:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.typescript == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Claude-Flow TypeScript Analysis
+        run: |
+          npx claude-flow@alpha swarm "
+          Analyze TypeScript code:
+          1. Type checking with tsc --noEmit
+          2. ESLint with strict rules
+          3. Bundle size analysis
+          4. Lighthouse CI for performance
+          " --namespace ci-typescript --claude
+```
+
+### 9. Debugging und Monitoring
+
+#### Multi-Language Debugging Setup
+```python
+# debug_orchestrator.py
+class DebugOrchestrator:
+    def __init__(self, claude_flow_integration):
+        self.cf = claude_flow_integration
+        
+    def setup_unified_debugging(self):
+        """Konfiguriert Debugging für alle Sprachen"""
+        
+        debug_config = """
+        npx claude-flow@alpha swarm "
+        Setup unified debugging:
+        
+        PYTHON DEBUGGING:
+        - Configure debugpy for VSCode
+        - Setup ipdb breakpoints
+        - Enable asyncio debug mode
+        - Configure structlog for debugging
+        
+        JAVASCRIPT DEBUGGING:
+        - Source maps for production
+        - Chrome DevTools integration
+        - Node.js --inspect flag
+        - React Developer Tools
+        
+        CROSS-LANGUAGE TRACING:
+        - OpenTelemetry instrumentation
+        - Jaeger for distributed tracing
+        - Correlation IDs across services
+        - Request flow visualization
+        
+        ERROR TRACKING:
+        - Sentry for all languages
+        - Custom error boundaries
+        - Structured error logging
+        - Alert routing by severity
+        " --namespace debug-setup --claude
+        """
+        
+        return self.cf.wsl.execute(debug_config)
+```
+
+### 10. Automatisierte Code-Reviews
+
+```bash
+#!/bin/bash
+# automated-review.sh
+
+npx claude-flow@alpha hive-mind spawn "
+Perform comprehensive code review:
+
+SECURITY REVIEW:
+- Check for SQL injection vulnerabilities
+- Validate input sanitization
+- Review authentication logic
+- Check for exposed secrets
+- Validate CORS configuration
+
+PERFORMANCE REVIEW:
+- Identify N+1 queries
+- Check for memory leaks
+- Review caching strategies
+- Analyze algorithmic complexity
+- Database index usage
+
+ARCHITECTURE REVIEW:
+- SOLID principles adherence
+- Dependency injection usage
+- Layer separation
+- API design consistency
+- Error handling patterns
+
+CODE QUALITY:
+- Test coverage analysis
+- Documentation completeness
+- Naming conventions
+- Code duplication
+- Cyclomatic complexity
+
+Generate review report in Markdown with:
+- Critical issues (must fix)
+- Recommendations (should fix)
+- Suggestions (nice to have)
+- Positive highlights
+" --agents 4 --claude
+```
+
+### 11. Projekt-Templates für AI-Coding-Station
+
+#### Quick-Start Templates
+```python
+# templates/project_templates.py
+TEMPLATES = {
+    "python-fastapi": {
+        "name": "FastAPI Microservice",
+        "languages": ["python"],
+        "agents": ["PythonMaster", "APIDesigner", "TestEngineer"],
+        "init_command": """
+        npx claude-flow@alpha swarm "
+        Create FastAPI microservice with:
+        - Async SQLAlchemy
+        - Alembic migrations
+        - JWT authentication
+        - Redis caching
+        - Docker setup
+        - 90% test coverage
+        " --namespace fastapi-service --claude
+        """
+    },
+    
+    "react-typescript": {
+        "name": "React TypeScript SPA",
+        "languages": ["typescript", "javascript"],
+        "agents": ["ReactMaster", "UIDesigner", "TestEngineer"],
+        "init_command": """
+        npx claude-flow@alpha swarm "
+        Create React TypeScript app with:
+        - Vite bundler
+        - Zustand state management
+        - TanStack Query
+        - Tailwind CSS
+        - Vitest + React Testing Library
+        - Storybook
+        " --namespace react-app --claude
+        """
+    },
+    
+    "fullstack-monorepo": {
+        "name": "Full-Stack Monorepo",
+        "languages": ["python", "typescript", "sql"],
+        "agents": ["FullStackLead", "PythonMaster", "ReactMaster", "DevOpsEngineer"],
+        "init_command": """
+        npx claude-flow@alpha hive-mind spawn "
+        Create full-stack monorepo:
+        
+        STRUCTURE:
+        - /apps/web (Next.js)
+        - /apps/api (FastAPI)
+        - /packages/shared (Types & Utils)
+        - /packages/ui (Component Library)
+        
+        TOOLING:
+        - Turborepo for builds
+        - Changesets for versioning
+        - Docker Compose for development
+        - GitHub Actions for CI/CD
+        
+        FEATURES:
+        - Authentication system
+        - Real-time with WebSockets
+        - File upload handling
+        - Background jobs with Celery
+        - Full test coverage
+        " --agents 4 --claude
+        """
+    }
+}
+```
+
+### 12. Metriken und KPIs
+
+```bash
+#!/bin/bash
+# project-metrics.sh
+
+npx claude-flow@alpha swarm "
+Generate project metrics dashboard:
+
+CODE METRICS:
+- Lines of Code by language
+- Test coverage percentages
+- Technical debt score
+- Cyclomatic complexity
+- Dependency freshness
+
+DEVELOPMENT METRICS:
+- Commit frequency
+- PR turnaround time
+- Bug discovery rate
+- Feature velocity
+- Code review coverage
+
+QUALITY METRICS:
+- Defect density
+- Mean time to resolution
+- Performance benchmarks
+- Security vulnerability count
+- Documentation coverage
+
+OUTPUT FORMAT:
+Create metrics.json and dashboard.html with:
+- Interactive charts using Chart.js
+- Trend analysis over time
+- Language-specific breakdowns
+- Team performance insights
+- Actionable recommendations
+" --namespace metrics --claude
+```
+
+## Integration in AI-Coding-Station
+
+### Erweiterte GUI-Komponenten
+
+```python
+# ui_extensions/language_selector_tab.py
+class LanguageSelectorTab:
+    def __init__(self, parent, app):
+        self.parent = parent
+        self.app = app
+        self.selected_languages = []
+        
+    def create_tab(self):
+        """Erstellt Tab für Sprachauswahl und Agent-Konfiguration"""
+        
+        frame = ctk.CTkFrame(self.parent)
+        
+        # Sprachen-Auswahl
+        languages = ["Python", "TypeScript", "JavaScript", "Go", "Rust", "Java", "C#"]
+        
+        for lang in languages:
+            checkbox = ctk.CTkCheckBox(
+                frame,
+                text=lang,
+                command=lambda l=lang: self.toggle_language(l)
+            )
+            checkbox.pack(pady=5)
+            
+        # Agent-Vorschläge
+        self.agent_frame = ctk.CTkFrame(frame)
+        self.agent_frame.pack(fill="both", expand=True, pady=10)
+        
+        # Template-Auswahl
+        template_button = ctk.CTkButton(
+            frame,
+            text="Load Project Template",
+            command=self.load_template
+        )
+        template_button.pack(pady=10)
+        
+        return frame
+        
+    def toggle_language(self, language):
+        """Aktualisiert Agent-Vorschläge basierend auf Sprachauswahl"""
+        
+        if language in self.selected_languages:
+            self.selected_languages.remove(language)
+        else:
+            self.selected_languages.append(language)
+            
+        self.update_agent_suggestions()
+        
+    def update_agent_suggestions(self):
+        """Schlägt optimale Agenten für gewählte Sprachen vor"""
+        
+        suggestions = self.get_agent_suggestions(self.selected_languages)
+        
+        # Clear existing
+        for widget in self.agent_frame.winfo_children():
+            widget.destroy()
+            
+        # Display suggestions
+        for agent in suggestions:
+            label = ctk.CTkLabel(
+                self.agent_frame,
+                text=f"• {agent['name']}: {', '.join(agent['capabilities'])}"
+            )
+            label.pack(anchor="w", pady=2)
+```
+
+### Automatisierte Workflow-Generierung
+
+```python
+# workflow_generator.py
+class WorkflowGenerator:
+    def __init__(self, project_config):
+        self.config = project_config
+        
+    def generate_workflow(self):
+        """Generiert optimalen Workflow basierend auf Projektanforderungen"""
+        
+        workflow = {
+            "name": self.config.project_name,
+            "languages": self.config.languages,
+            "phases": []
+        }
+        
+        # Analysiere Projektstruktur
+        if "Python" in self.config.languages:
+            workflow["phases"].append(self.generate_python_phase())
+            
+        if "TypeScript" in self.config.languages:
+            workflow["phases"].append(self.generate_typescript_phase())
+            
+        # Cross-language integration
+        if len(self.config.languages) > 1:
+            workflow["phases"].append(self.generate_integration_phase())
+            
+        # Testing phase
+        workflow["phases"].append(self.generate_testing_phase())
+        
+        return workflow
+        
+    def execute_workflow(self, workflow):
+        """Führt generierten Workflow über Claude-Flow aus"""
+        
+        for phase in workflow["phases"]:
+            cmd = f"""
+            npx claude-flow@alpha swarm "
+            PHASE: {phase['name']}
+            TASKS: {json.dumps(phase['tasks'])}
+            AGENT: {phase['agent']}
+            
+            Execute all tasks in order.
+            Validate completion before proceeding.
+            " --namespace {self.config.namespace} --continue-session --claude
+            """
+            
+            result = self.wsl.execute(cmd)
+            
+            if not self.validate_phase(phase, result):
+                raise Exception(f"Phase {phase['name']} failed validation")
+```
+
+## Zusammenfassung der Best Practices
+
+1. **Language-First Approach**: Wähle Agenten basierend auf der Zielsprache
+2. **Polyglot Coordination**: Nutze einen Coordinator-Agent für Multi-Language-Projekte
+3. **Contract-Driven Development**: Definiere API-Contracts vor der Implementierung
+4. **Unified Testing**: Konsistente Test-Strategien über alle Sprachen
+5. **Performance Monitoring**: Language-spezifische Performance-Optimierungen
+6. **Automated Reviews**: Regelmäßige automatisierte Code-Reviews
+7. **Continuous Integration**: Sprach-spezifische CI/CD-Pipelines
+8. **Documentation as Code**: Generiere Dokumentation aus Code
+9. **Security First**: Integrierte Security-Scans für alle Sprachen
+10. **Metric-Driven Development**: Verfolge Metriken über alle Sprachen
+
+Diese Erweiterung integriert sich nahtlos in Ihre AI-Coding-Station und bietet:
+- Vorkonfigurierte Agent-Sets für verschiedene Sprachen
+- Automatische Workflow-Generierung
+- Cross-Language-Integration
+- Unified Monitoring und Testing
+- Best Practices für moderne Softwareentwicklung
+
+Die Dokumentation kann direkt in Ihre bestehenden .md und .pdf Dateien integriert werden und erweitert die Task-Completion-Strategien um sprach-spezifische Aspekte.

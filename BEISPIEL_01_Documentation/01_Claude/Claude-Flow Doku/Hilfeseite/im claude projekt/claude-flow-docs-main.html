@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude-Flow v86 - Enterprise AI Orchestration Platform</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    
+    <style>
+        /* ==================== ROOT VARIABLES ==================== */
+        :root {
+            /* Claude-Flow Colors from UI Guidelines */
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1A1A1A;
+            --border: #2A2A2A;
+            
+            --accent-orange: #FF6B35;
+            --accent-orange-hover: #FF8255;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #5A9CF6;
+            --accent-green: #238636;
+            --accent-green-hover: #2EA043;
+            
+            --success: #10B981;
+            --success-hover: #0EA570;
+            --error: #EF4444;
+            --error-hover: #DC2626;
+            --warning: #F59E0B;
+            --warning-hover: #FBBF24;
+            --info: #60A5FA;
+            
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-dim: #6B7280;
+            
+            /* Typography */
+            --font-sans: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            
+            /* Gradients */
+            --gradient-orange: linear-gradient(135deg, #FF6B35 0%, #FF8255 100%);
+            --gradient-blue: linear-gradient(135deg, #3B82F6 0%, #5A9CF6 100%);
+            --gradient-mesh: radial-gradient(at 40% 20%, hsla(28,100%,74%,0.1) 0px, transparent 50%);
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+        }
+
+        /* ==================== RESET & BASE ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: var(--radius-sm);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3A3A3A;
+        }
+
+        /* ==================== LAYOUT ==================== */
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        .sidebar-logo:hover {
+            color: var(--accent-orange-hover);
+        }
+
+        .sidebar-section {
+            padding: var(--spacing-lg);
+        }
+
+        .sidebar-section-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .nav-item {
+            display: block;
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--accent-orange);
+            color: var(--text-primary);
+        }
+
+        .nav-item-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: var(--spacing-sm);
+        }
+
+        .nav-submenu {
+            margin-left: var(--spacing-lg);
+            margin-top: var(--spacing-xs);
+        }
+
+        .nav-submenu .nav-item {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            background: rgba(20, 20, 20, 0.9);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .search-box {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-left: 40px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .theme-toggle {
+            padding: var(--spacing-sm);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-mesh);
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--accent-orange);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            max-width: 600px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            text-decoration: none;
+            height: 40px;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-blue);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--success-hover);
+        }
+
+        .btn-large {
+            height: 50px;
+            padding: var(--spacing-md) var(--spacing-xl);
+            font-size: 16px;
+        }
+
+        /* ==================== FEATURE GRID ==================== */
+        .features {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+        }
+
+        .features-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-orange);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--accent-blue);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: var(--spacing-md);
+        }
+
+        /* ==================== QUICK START TERMINAL ==================== */
+        .quickstart {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+            background: var(--bg-secondary);
+        }
+
+        .quickstart-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .terminal {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: var(--bg-primary);
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .terminal-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .terminal-dot.red { background: var(--error); }
+        .terminal-dot.yellow { background: var(--warning); }
+        .terminal-dot.green { background: var(--success); }
+
+        .terminal-body {
+            padding: var(--spacing-lg);
+            font-family: var(--font-mono);
+            font-size: 14px;
+        }
+
+        .terminal-line {
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: var(--accent-green);
+            margin-right: var(--spacing-sm);
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+            margin-left: var(--spacing-lg);
+        }
+
+        /* ==================== STATUS CARDS ==================== */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .status-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+        }
+
+        .status-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .status-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .status-value.success { color: var(--success); }
+        .status-value.warning { color: var(--warning); }
+        .status-value.info { color: var(--accent-blue); }
+
+        /* ==================== DOCUMENTATION CONTENT ==================== */
+        .doc-content {
+            padding: var(--spacing-2xl) var(--spacing-xl);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .doc-content h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xl);
+            color: var(--text-primary);
+        }
+
+        .doc-content h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-top: var(--spacing-2xl);
+            margin-bottom: var(--spacing-lg);
+            color: var(--accent-orange);
+        }
+
+        .doc-content h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+
+        .doc-content p {
+            margin-bottom: var(--spacing-md);
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .doc-content code {
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--accent-blue);
+        }
+
+        .doc-content pre {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            overflow-x: auto;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .doc-content pre code {
+            background: transparent;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        /* ==================== CODE TABS ==================== */
+        .code-tabs {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .code-tabs-header {
+            display: flex;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-tab {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .code-tab:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .code-tab.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        .code-content {
+            padding: var(--spacing-lg);
+        }
+
+        .code-panel {
+            display: none;
+        }
+
+        .code-panel.active {
+            display: block;
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: var(--spacing-xl);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .hero-title {
+                font-size: 32px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* ==================== COMMAND PALETTE ==================== */
+        .command-palette {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            max-width: 90vw;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+        }
+
+        .command-palette.active {
+            display: block;
+        }
+
+        .command-palette-input {
+            width: 100%;
+            padding: var(--spacing-lg);
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .command-palette-results {
+            max-height: 400px;
+            overflow-y: auto;
+            border-top: 1px solid var(--border);
+        }
+
+        .command-result {
+            padding: var(--spacing-md) var(--spacing-lg);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .command-result:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* ==================== OVERLAY ==================== */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-logo">
+                    <span>🔥</span>
+                    <span>Claude-Flow</span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <!-- Getting Started -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">
+                        <span>🚀</span>
+                        <span>Getting Started</span>
+                    </div>
+                    <a href="#quick-start" class="nav-item active">
+                        <span class="nav-item-icon">⚡</span>
+                        Quick Start
+                    </a>
+                    <a href="#installation" class="nav-item">
+                        <span class="nav-item-icon">📦</span>
+                        Installation
+                    </a>
+                    <a href="#first-project" class="nav-item">
+                        <span class="nav-item-icon">🎯</span>
+                        Erstes Projekt
+                    </a>
+                </div>
+
+                <!-- Features -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">
+                        <span>✨</span>
+                        <span>Features</span>
+                    </div>
+                    <a href="#hive-mind" class="nav-item">
+                        <span class="nav-item-icon">🐝</span>
+                        Hive-Mind Intelligence
+                    </a>
+                    <a href="#neural" class="nav-item">
+                        <span class="nav-item-icon">🧠</span>
+                        Neural Networks
+                    </a>
+                    <a href="#mcp-tools" class="nav-item">
+                        <span class="nav-item-icon">🔧</span>
+                        87 MCP Tools
+                    </a>
+                    <a href="#memory" class="nav-item">
+                        <span class="nav-item-icon">💾</span>
+                        Memory System
+                    </a>
+                    <a href="#github" class="nav-item">
+                        <span class="nav-item-icon">📊</span>
+                        GitHub Integration
+                    </a>
+                </div>
+
+                <!-- CLI Reference -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">
+                        <span>📚</span>
+                        <span>CLI Reference</span>
+                    </div>
+                    <a href="#commands" class="nav-item">
+                        <span class="nav-item-icon">⌨️</span>
+                        Befehle
+                    </a>
+                    <a href="#swarm" class="nav-item">
+                        <span class="nav-item-icon">🦾</span>
+                        Swarm Management
+                    </a>
+                    <a href="#agents" class="nav-item">
+                        <span class="nav-item-icon">🤖</span>
+                        Agent Control
+                    </a>
+                    <a href="#workflows" class="nav-item">
+                        <span class="nav-item-icon">🔄</span>
+                        Workflows
+                    </a>
+                </div>
+
+                <!-- Presets -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">
+                        <span>🎨</span>
+                        <span>Swarm Presets</span>
+                    </div>
+                    <a href="#preset-python" class="nav-item">
+                        <span class="nav-item-icon">🐍</span>
+                        Python Development
+                    </a>
+                    <a href="#preset-js" class="nav-item">
+                        <span class="nav-item-icon">📜</span>
+                        JavaScript
+                    </a>
+                    <a href="#preset-enterprise" class="nav-item">
+                        <span class="nav-item-icon">🏢</span>
+                        Enterprise Team
+                    </a>
+                </div>
+
+                <!-- Help -->
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">
+                        <span>❓</span>
+                        <span>Hilfe</span>
+                    </div>
+                    <a href="#troubleshooting" class="nav-item">
+                        <span class="nav-item-icon">🔍</span>
+                        Fehlerbehebung
+                    </a>
+                    <a href="#faq" class="nav-item">
+                        <span class="nav-item-icon">💬</span>
+                        FAQ
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="header-title">Claude-Flow Documentation v86</h1>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" placeholder="Suche nach Befehlen, Features..." id="searchInput">
+                        </div>
+                        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- HERO SECTION -->
+            <section class="hero fade-in">
+                <div class="hero-content">
+                    <div class="hero-badge pulse">
+                        <span>🔥</span>
+                        <span>ALPHA v2.0.0-alpha.86</span>
+                    </div>
+                    <h1 class="hero-title">Claude-Flow</h1>
+                    <p class="hero-subtitle">
+                        Enterprise-Grade AI-Orchestrierungsplattform mit Hive-Mind Swarm Intelligence, 
+                        27+ kognitiven Modellen und 87 erweiterten MCP-Tools.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-large" onclick="scrollToSection('quick-start')">
+                            <span>🚀</span>
+                            <span>Quick Start</span>
+                        </button>
+                        <button class="btn btn-secondary btn-large" onclick="scrollToSection('features')">
+                            <span>📖</span>
+                            <span>Documentation</span>
+                        </button>
+                        <button class="btn btn-success btn-large" onclick="openTerminal()">
+                            <span>⚡</span>
+                            <span>Live Demo</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATUS CARDS -->
+            <section class="features">
+                <div class="features-content">
+                    <div class="status-grid">
+                        <div class="status-card">
+                            <div class="status-label">Active Agents</div>
+                            <div class="status-value success">12</div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-label">Tasks Completed</div>
+                            <div class="status-value warning">284</div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-label">MCP Tools</div>
+                            <div class="status-value info">87</div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-label">Performance Gain</div>
+                            <div class="status-value success">+184%</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FEATURES GRID -->
+            <section class="features" id="features">
+                <div class="features-content">
+                    <h2 class="section-title">Core Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-card" onclick="navigateTo('#hive-mind')">
+                            <div class="feature-icon">🐝</div>
+                            <h3 class="feature-title">Hive-Mind Intelligence</h3>
+                            <p class="feature-description">
+                                Queen-geführte AI-Koordination mit biologisch inspirierter Schwarm-Intelligenz 
+                                für optimale Task-Verteilung und Ressourcen-Management.
+                            </p>
+                            <span class="feature-badge">12 Management Tools</span>
+                        </div>
+
+                        <div class="feature-card" onclick="navigateTo('#neural')">
+                            <div class="feature-icon">🧠</div>
+                            <h3 class="feature-title">Neural Networks</h3>
+                            <p class="feature-description">
+                                27+ kognitive Modelle mit WASM SIMD-Beschleunigung für Pattern Recognition, 
+                                Task Orchestration und Performance-Optimierung.
+                            </p>
+                            <span class="feature-badge">WASM SIMD Accelerated</span>
+                        </div>
+
+                        <div class="feature-card" onclick="navigateTo('#mcp-tools')">
+                            <div class="feature-icon">🔧</div>
+                            <h3 class="feature-title">87 MCP Tools</h3>
+                            <p class="feature-description">
+                                Umfassendes Toolkit für Swarm-Orchestrierung, Agent-Control, Task-Management 
+                                und GitHub-Integration.
+                            </p>
+                            <span class="feature-badge">10 Tool Categories</span>
+                        </div>
+
+                        <div class="feature-card" onclick="navigateTo('#memory')">
+                            <div class="feature-icon">💾</div>
+                            <h3 class="feature-title">SQLite Memory System</h3>
+                            <p class="feature-description">
+                                Persistente Wissensspeicherung mit 12 spezialisierten Tabellen für Sessions, 
+                                Patterns und verteilten Konsens.
+                            </p>
+                            <span class="feature-badge">12 Database Tables</span>
+                        </div>
+
+                        <div class="feature-card" onclick="navigateTo('#daa')">
+                            <div class="feature-icon">🔄</div>
+                            <h3 class="feature-title">Dynamic Agent Architecture</h3>
+                            <p class="feature-description">
+                                Selbstorganisierende, fehlertolerante Agenten mit Auto-Scaling und 
+                                intelligenter Load-Balancing.
+                            </p>
+                            <span class="feature-badge">Self-Organizing</span>
+                        </div>
+
+                        <div class="feature-card" onclick="navigateTo('#github')">
+                            <div class="feature-icon">📊</div>
+                            <h3 class="feature-title">GitHub Integration</h3>
+                            <p class="feature-description">
+                                6 spezialisierte Modi für Repository-Management, Pull Requests, 
+                                Issue-Tracking und Release-Koordination.
+                            </p>
+                            <span class="feature-badge">6 GitHub Modes</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUICK START TERMINAL -->
+            <section class="quickstart" id="quick-start">
+                <div class="quickstart-content">
+                    <h2 class="section-title">Quick Start</h2>
+                    
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-title">Claude-Flow Terminal</span>
+                            <div class="terminal-actions">
+                                <span class="terminal-dot red"></span>
+                                <span class="terminal-dot yellow"></span>
+                                <span class="terminal-dot green"></span>
+                            </div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command"># Installation ohne globale Installation</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command">npx claude-flow@alpha</span>
+                            </div>
+                            <div class="terminal-output">✅ Claude-Flow v2.0.0-alpha.86 ready</div>
+                            
+                            <div class="terminal-line" style="margin-top: 16px;">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command"># Projekt mit SPARC-Umgebung initialisieren</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command">npx claude-flow@alpha init --sparc --force</span>
+                            </div>
+                            <div class="terminal-output">🚀 Initializing Claude-Flow with SPARC environment...</div>
+                            <div class="terminal-output">✅ Project initialized successfully</div>
+                            
+                            <div class="terminal-line" style="margin-top: 16px;">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command"># Swarm für REST API Entwicklung starten</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command">npx claude-flow@alpha swarm "Build REST API with authentication" --claude</span>
+                            </div>
+                            <div class="terminal-output">🐝 Spawning Hive-Mind...</div>
+                            <div class="terminal-output">👑 Queen Agent activated</div>
+                            <div class="terminal-output">🤖 5 Worker Agents spawned</div>
+                            <div class="terminal-output">⚡ Task orchestration started...</div>
+                        </div>
+                    </div>
+
+                    <!-- CODE TABS -->
+                    <div class="code-tabs" style="margin-top: 32px;">
+                        <div class="code-tabs-header">
+                            <button class="code-tab active" onclick="switchTab(event, 'bash')">Bash/CLI</button>
+                            <button class="code-tab" onclick="switchTab(event, 'javascript')">JavaScript</button>
+                            <button class="code-tab" onclick="switchTab(event, 'python')">Python Preset</button>
+                            <button class="code-tab" onclick="switchTab(event, 'yaml')">GitHub Actions</button>
+                        </div>
+                        <div class="code-content">
+                            <div class="code-panel active" id="bash">
+                                <pre><code class="language-bash">#!/bin/bash
+# Complete Development Pipeline
+
+# 1. Initialisierung
+npx claude-flow@alpha init --sparc --force
+
+# 2. Hive-Mind mit 10 Agenten spawnen
+npx claude-flow@alpha hive-mind spawn \
+  "Build e-commerce platform" \
+  --agents 10 \
+  --claude \
+  --coordination-level high
+
+# 3. Memory-Namespace setzen
+npx claude-flow@alpha memory store \
+  project-context "Microservices with Docker" \
+  --namespace ecommerce
+
+# 4. Monitoring starten
+npx claude-flow@alpha monitor --dashboard</code></pre>
+                            </div>
+                            
+                            <div class="code-panel" id="javascript">
+                                <pre><code class="language-javascript">// Claude-Flow Orchestration
+async function orchestrateProject() {
+  // Swarm initialisieren
+  await mcp__claude_flow__swarm_init({
+    topology: "hierarchical",
+    strategy: "auto",
+    maxAgents: 10
+  });
+
+  // Agenten spawnen
+  const agents = await Promise.all([
+    mcp__claude_flow__agent_spawn({
+      type: "coordinator",
+      name: "ProjectLead"
+    }),
+    mcp__claude_flow__agent_spawn({
+      type: "coder",
+      name: "BackendDev",
+      capabilities: ["python", "fastapi"]
+    })
+  ]);
+
+  // Task orchestrieren
+  await mcp__claude_flow__task_orchestrate({
+    task: "Build REST API",
+    strategy: "parallel",
+    agents: agents.map(a => a.id)
+  });
+}</code></pre>
+                            </div>
+                            
+                            <div class="code-panel" id="python">
+                                <pre><code class="language-json">{
+  "version": "2.0.0",
+  "name": "Python Development Team",
+  "orchestrator": {
+    "topology": "hierarchical",
+    "maxConcurrentAgents": 10,
+    "coordinationLevel": "high"
+  },
+  "agents": [
+    {
+      "id": "queen",
+      "type": "coordinator",
+      "name": "Python Project Manager",
+      "role": "queen",
+      "priority": 10
+    },
+    {
+      "id": "architect",
+      "type": "architect",
+      "name": "System Architect",
+      "specialization": {
+        "frameworks": ["FastAPI", "SQLAlchemy"],
+        "patterns": ["Repository", "CQRS"]
+      }
+    }
+  ]
+}</code></pre>
+                            </div>
+                            
+                            <div class="code-panel" id="yaml">
+                                <pre><code class="language-yaml">name: Claude-Flow Development
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ai-development:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Claude-Flow
+        run: |
+          npm install -g claude-flow@alpha
+          
+      - name: Run AI Development
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude-flow swarm create \
+            --preset python-development \
+            --task "${{ github.event.pull_request.title }}"</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DOCUMENTATION CONTENT -->
+            <section class="doc-content" id="documentation">
+                <h1>Vollständige Dokumentation</h1>
+                
+                <h2>🐝 Hive-Mind Intelligence</h2>
+                <p>
+                    Die Hive-Mind Intelligence ist von biologischen Schwarm-Systemen inspiriert und nutzt eine 
+                    hierarchische Struktur mit spezialisierten Agenten, die durch gemeinsamen Speicher und 
+                    neuronale Mustererkennung koordiniert werden.
+                </p>
+                
+                <h3>Queen Agent (Koordinator)</h3>
+                <p>
+                    Die Queen ist das zentrale Nervensystem des Hive-Mind und übernimmt folgende Aufgaben:
+                </p>
+                <ul style="color: var(--text-secondary); margin-left: 20px;">
+                    <li>Task-Orchestrierung: Verteilt Aufgaben basierend auf Agent-Fähigkeiten</li>
+                    <li>Ressourcen-Management: Überwacht CPU, Memory und Netzwerk-Auslastung</li>
+                    <li>Konsens-Koordination: Sammelt Votes von Worker-Agenten</li>
+                    <li>Performance-Monitoring: Trackt Success-Rates und optimiert Agent-Zuweisung</li>
+                    <li>Konflikt-Resolution: Löst Deadlocks und widersprüchliche Outputs</li>
+                </ul>
+
+                <pre><code class="language-bash"># Queen spawnen mit spezifischen Fähigkeiten
+npx claude-flow@alpha hive-mind spawn \
+  --queen-type strategic \
+  --consensus-algorithm majority \
+  --delegation-strategy adaptive</code></pre>
+
+                <h3>Worker-Agenten</h3>
+                <p>
+                    Worker sind spezialisierte Agenten mit fokussierten Fähigkeiten. Jeder Agent-Typ hat 
+                    spezifische Verantwortlichkeiten und Tools zur Verfügung.
+                </p>
+
+                <h2>🧠 Neural Networks & Kognitive Modelle</h2>
+                <p>
+                    Claude-Flow nutzt 27+ kognitive Modelle mit WebAssembly (WASM) SIMD-Beschleunigung für 
+                    Hardware-beschleunigte neuronale Berechnungen.
+                </p>
+
+                <h3>Modell-Kategorien</h3>
+                <div class="features-grid" style="margin-top: 20px;">
+                    <div class="feature-card">
+                        <h4 style="color: var(--accent-orange);">Koordinations-Modelle (5)</h4>
+                        <ul style="color: var(--text-secondary); font-size: 14px;">
+                            <li>Task Orchestrator</li>
+                            <li>Resource Allocator</li>
+                            <li>Conflict Resolver</li>
+                            <li>Priority Manager</li>
+                            <li>Load Balancer</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4 style="color: var(--accent-blue);">Lern-Modelle (6)</h4>
+                        <ul style="color: var(--text-secondary); font-size: 14px;">
+                            <li>Pattern Recognizer</li>
+                            <li>Success Predictor</li>
+                            <li>Error Analyzer</li>
+                            <li>Optimization Learner</li>
+                            <li>Meta-Learner</li>
+                            <li>Domain Adapter</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h4 style="color: var(--success);">Performance-Modelle (4)</h4>
+                        <ul style="color: var(--text-secondary); font-size: 14px;">
+                            <li>Bottleneck Detector</li>
+                            <li>Optimization Suggester</li>
+                            <li>Cache Manager</li>
+                            <li>Resource Predictor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h2>🔧 Die 87 MCP Tools</h2>
+                <p>
+                    Claude-Flow implementiert 87 spezialisierte MCP (Model Context Protocol) Tools, 
+                    organisiert in 10 Hauptkategorien:
+                </p>
+
+                <div class="status-grid" style="margin-top: 20px;">
+                    <div class="status-card">
+                        <div class="status-label">Swarm Management</div>
+                        <div class="status-value info">12 Tools</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-label">Agent Control</div>
+                        <div class="status-value info">15 Tools</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-label">Task Orchestration</div>
+                        <div class="status-value info">8 Tools</div>
+                    </div>
+                    <div class="status-card">
+                        <div class="status-label">Memory Operations</div>
+                        <div class="status-value info">10 Tools</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="footer">
+                <p>Claude-Flow v2.0.0-alpha.86 Documentation</p>
+                <p style="margin-top: 8px; font-size: 12px;">
+                    Created with 🔥 by the Claude-Flow Community | 
+                    <a href="https://github.com/ruvnet/claude-flow" style="color: var(--accent-orange);">GitHub</a>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- COMMAND PALETTE -->
+    <div class="command-palette" id="commandPalette">
+        <input type="text" class="command-palette-input" placeholder="Suche nach Befehlen..." id="commandInput">
+        <div class="command-palette-results" id="commandResults"></div>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay" onclick="closeCommandPalette()"></div>
+
+    <!-- JavaScript -->
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Navigation
+        function navigateTo(section) {
+            document.querySelector(section)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Tab Switching
+        function switchTab(event, tabName) {
+            // Remove active class from all tabs and panels
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.code-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+
+            // Add active class to clicked tab and corresponding panel
+            event.target.classList.add('active');
+            document.getElementById(tabName)?.classList.add('active');
+        }
+
+        // Command Palette
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                openCommandPalette();
+            }
+            if (e.key === 'Escape') {
+                closeCommandPalette();
+            }
+        });
+
+        function openCommandPalette() {
+            document.getElementById('commandPalette').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('commandInput').focus();
+        }
+
+        function closeCommandPalette() {
+            document.getElementById('commandPalette').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const commandInput = document.getElementById('commandInput');
+
+        // Command data
+        const commands = [
+            { name: 'init', description: 'Projekt initialisieren', category: 'Basic' },
+            { name: 'swarm', description: 'Swarm starten', category: 'Swarm' },
+            { name: 'hive-mind spawn', description: 'Hive-Mind aktivieren', category: 'Hive' },
+            { name: 'agent spawn', description: 'Agent erstellen', category: 'Agent' },
+            { name: 'memory store', description: 'Daten speichern', category: 'Memory' },
+            { name: 'task create', description: 'Task erstellen', category: 'Task' },
+            { name: 'monitor', description: 'System überwachen', category: 'Monitor' },
+            { name: 'github pr-manager', description: 'Pull Requests verwalten', category: 'GitHub' }
+        ];
+
+        // Search handler
+        searchInput?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 2) {
+                // Implement search functionality
+                console.log('Searching for:', query);
+            }
+        });
+
+        // Command palette search
+        commandInput?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const results = commands.filter(cmd => 
+                cmd.name.toLowerCase().includes(query) || 
+                cmd.description.toLowerCase().includes(query)
+            );
+            
+            const resultsContainer = document.getElementById('commandResults');
+            resultsContainer.innerHTML = results.map(cmd => `
+                <div class="command-result" onclick="executeCommand('${cmd.name}')">
+                    <strong>${cmd.name}</strong> - ${cmd.description}
+                    <span style="float: right; color: var(--text-dim); font-size: 12px;">${cmd.category}</span>
+                </div>
+            `).join('');
+        });
+
+        function executeCommand(command) {
+            console.log('Executing command:', command);
+            closeCommandPalette();
+            // Navigate to relevant section or execute command
+        }
+
+        // Active navigation highlighting
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Terminal demo
+        function openTerminal() {
+            console.log('Opening terminal demo...');
+            // Implement terminal demo
+        }
+
+        // Copy code functionality
+        document.querySelectorAll('pre').forEach(pre => {
+            pre.style.position = 'relative';
+            const button = document.createElement('button');
+            button.textContent = '📋 Copy';
+            button.style.cssText = `
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                padding: 4px 8px;
+                background: var(--bg-primary);
+                border: 1px solid var(--border);
+                border-radius: 4px;
+                color: var(--text-secondary);
+                font-size: 12px;
+                cursor: pointer;
+            `;
+            button.onclick = () => {
+                const code = pre.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = '✅ Copied!';
+                    setTimeout(() => {
+                        button.textContent = '📋 Copy';
+                    }, 2000);
+                });
+            };
+            pre.appendChild(button);
+        });
+
+        // Initialize animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .status-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+</body>
+</html>

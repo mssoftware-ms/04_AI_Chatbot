@@ -1,0 +1,105 @@
+Alles klar, Maik. An deinem Log sehe ich drei sehr wahrscheinliche Ursachen, warum der npx claude-flow@alpha hive-mind spawn …-Aufruf weiter scheitert – und wie du das zuverlässig behebst.
+
+Die 3 größten Fehlerquellen & Fixes
+1) Kaputte/alte SQLite-Schemas (z. B. sessions.swarm_name fehlt)
+Das ist aktuell ein bekanntes Alpha-Bug in claude-flow; es kommt nach Updates zu Schema-Drift (Spalten fehlen). Lösungen sind entweder DB reset oder vorübergehendes Version-Pinning. (GitHub)
+Schnell-Fix (WSL, im Projektordner):
+# 1) Vorhandene State/DB sichern oder löschen
+mkdir -p ~/backup_claude_flow_$(date +%F)
+[ -f ~/.claude-flow/hive-mind.db ] && mv ~/.claude-flow/hive-mind.db* ~/backup_claude_flow_$(date +%F)/
+rm -rf .hive-mind .swarm
+
+# 2) Re-Init der Alpha
+npx claude-flow@alpha init --force
+Wenn du auf Nummer sicher gehen willst, pinne vorerst eine stabile Alpha:
+# Temporär auf eine funktionierende Version pinnen
+npx claude-flow@2.0.0-alpha.86 --version
+# und dann damit arbeiten:
+npx claude-flow@2.0.0-alpha.86 hive-mind spawn "…" --claude --verbose
+(Alpha-86 ist auf npm gelistet und vermeidet einige jüngere Migrationsfehler.) (npm)
+Hintergrund: Die Maintainer haben mehrfach DB-/Migrationsänderungen veröffentlicht, wodurch ältere lokale DBs (z. B. ~/.claude-flow/hive-mind.db oder Projekt-State unter .hive-mind/, .swarm/) nicht mehr kompatibel sind. Reset + Re-Init beseitigt diese Konflikte. (GitHub)
+
+2) claude (Claude Code CLI) fehlt oder ist falsch konfiguriert
+Mit --claude erwartet claude-flow die Claude-Code-CLI in PATH. Fehlt sie, brechen Spawns ab oder laufen „leer“.
+Installiere/prüfe daher: (GitHub, npm)
+npm install -g @anthropic-ai/claude-code
+claude --version
+Danach MCP sauber (projekt-scoped) verdrahten – am besten via .mcp.json im Projekt (nicht in ~/.claude/settings.json). Das ist der vom Hersteller empfohlene Weg. (Anthropic, GitHub)
+Beispiel .mcp.json im Projektwurzelordner:
+{
+  "mcpServers": {
+    "claude-flow": { "command": "npx", "args": ["claude-flow@alpha", "mcp", "start"] }
+  }
+}
+
+3) UTF-8/Emoji im Konfig-Dateinamen
+Dein Wizard schreibt die Config unter
+.claude-flow/saved-configs/20250817_140125_agents_preset_??-Python-Development.json.
+Mit nicht-UTF-8-Locale (CWD im Log setzt keine LANG/LC_ALL) können Shell/Node den Emoji-Pfad nicht finden ? „Datei nicht gefunden“ oder stille Fehlschläge.
+Fix A (empfohlen): Keine Emojis in Dateinamen – beim Speichern slugifizieren (ASCII-only).
+Fix B: Vor jedem Spawn UTF-8 setzen:
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+npx claude-flow@alpha hive-mind spawn "…" --config ".claude-flow/saved-configs/2025…_agents_preset_Python-Development.json" --claude --verbose
+
+Konkreter, reproduzierbarer Ablauf (sauber & minimal)
+Im WSL-Terminal, im Projektordner:
+# 0) Sicherstellen: UTF-8 & Voraussetzungen
+export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
+node -v && npm -v && npx --version
+claude --version || npm i -g @anthropic-ai/claude-code
+
+# 1) Alpha re-initialisieren (incl. MCP-Setup)
+npx claude-flow@alpha init --force
+
+# 2) (Falls zuvor Migration/Schema-Fehler) State zurücksetzen
+rm -rf .hive-mind .swarm
+rm -f ~/.claude-flow/hive-mind.db*
+npx claude-flow@alpha init --force
+
+# 3) Test-Spawn ohne Sonderzeichen/Emoji in Datei- und Zielnamen
+CFG=".claude-flow/saved-configs/test_spawn.json"
+echo '{"project":{"name":"ai-coding-station"},"swarm":{"topology":"hierarchical","task":"hello world"},"agents":{"selected":["queen"]}}' > "$CFG"
+
+npx claude-flow@alpha hive-mind spawn "hello world" --config "$CFG" --claude --verbose
+Wenn das funktioniert, ist die Pipeline ok. Danach kannst du wieder deine echten Presets/Agenten nutzen – aber: Konfigdateien bitte ohne Emoji benennen oder vorher LANG/LC_ALL setzen.
+
+Zusatz: pyenv-Meldung („pyenv: command not found“)
+Einige Flows/MCP-Tools ziehen sich Python-Umgebungen via pyenv. Installiere pyenv in WSL einmal korrekt: (ericsysmin's DevOps Blog)
+# Dependencies
+sudo apt-get update && sudo apt-get install -y make build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils \
+  tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev git
+
+# pyenv installieren
+curl https://pyenv.run | bash
+
+# Shell-Hooks setzen (bash)
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+# optional: virtualenv
+echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+source ~/.bashrc
+
+pyenv --version
+
+Warum das in deinem Log auffällt
+* Dein Spawn-Block setzt kein LANG/LC_ALL ? Emoji im JSON-Dateinamen ist riskant.
+* Der Log zeigt keinen echten Here-Doc-Start (mktemp + bash $tmp). D. h. dein Frontend nutzt noch den Inline-String-Pfad mit Echo/printf und langen Einzeilern. Damit häufen sich Quoting-/Locale-Kanten – genau die wollten wir mit dem Temp-Skript eliminieren.
+Stelle sicher, dass dein GUI tatsächlich open_wsl_terminal(..) mit Here-Doc aufruft (mktemp ? cat <<'BASH' … ? bash $tmp).
+
+Checkliste zum Abhaken
+1. npm i -g @anthropic-ai/claude-code ausgeführt? claude --version zeigt eine Version? (GitHub)
+2. .mcp.json im Projekt statt ~/.claude/settings.json? (Projekt-Scope) (Anthropic, GitHub)
+3. DB/State zurückgesetzt und npx claude-flow@alpha init --force erneut? (GitHub)
+4. Ohne Emoji im --config-Dateinamen getestet oder LANG/LC_ALL=C.UTF-8 gesetzt?
+5. (Optional) pyenv installiert, wenn Python-basierte Tools/Flows benötigt sind? (ericsysmin's DevOps Blog)
+6. Wenn das aktuelle Alpha zickt: pinne auf 2.0.0-alpha.86 und teste erneut. (npm)
+
+Wenn du willst, passe ich dir zwei Stellen in deinem Code an (ohne sonstige Logik zu ändern):
+* Beim Speichern der Konfig Slugify statt Emoji im Dateinamen (ASCII-safe).
+* Im WSL-Startpfad immer LANG/LC_ALL setzen und die Here-Doc-Variante erzwingen (mktemp ? bash $tmp), dann ist Schluss mit Quotingsalat.
+Sag einfach „go“, dann liefere ich dir die minimalen Patches für save_swarm_config(..) und den WSL-Start (du musst nichts weiter umbauen).
+

@@ -1,0 +1,23 @@
+npx claude-flow@alpha swarm "
+mcp__claude-flow__swarm_init {\"topology\":\"hierarchical\",\"maxAgents\":12}
+
+# --- Agent-hierarchy -------------------------------------------------
+mcp__claude-flow__agent_spawn {\"type\":\"coordinator\",\"name\":\"QueenOpus\"}
+mcp__claude-flow__agent_spawn {\"type\":\"architect\",\"name\":\"Architect\"}
+mcp__claude-flow__agent_spawn {\"type\":\"coder\",\"name\":\"Coder\"}
+mcp__claude-flow__agent_spawn {\"type\":\"tester\",\"name\":\"Tester\"}
+mcp__claude-flow__agent_spawn {\"type\":\"reviewer\",\"name\":\"Reviewer\"}
+mcp__claude-flow__agent_spawn {\"type\":\"doc-writer\",\"name\":\"DocWriter\"}
+
+# --- Work-instruction ------------------------------------------------
+Task(\"QueueProcessor: \
+  Suche rekursiv in 'issues/' nach *.json\
+  Sortiere lexikographisch und bearbeite **jede** Datei nacheinander: \
+    • Lies die Felder (title, description, comments, state) \
+    • Führe die beschriebenen Schritte vollständig aus \
+    • Aktualisiere 'progress' laufend (0-100 %) \
+    • Setze 'state' ➜ 'closed' sobald progress == 100 \
+  Speichere Änderungen atomar (tmp → os.replace). \
+  Überspringe Dateien, deren state bereits 'closed' ist.\
+  Beachte das die Anwendung weiterhin unter Windows lauffähig bleiben MUSS! \")
+"

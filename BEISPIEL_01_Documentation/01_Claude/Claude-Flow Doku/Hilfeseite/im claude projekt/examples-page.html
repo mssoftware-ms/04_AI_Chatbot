@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examples - Claude-Flow v86 Documentation</title>
+    <style>
+        /* Core Variables */
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #1A1A1A;
+            --bg-tertiary: #252525;
+            --text-primary: #E0E0E0;
+            --text-secondary: #A0A0A0;
+            --accent-orange: #FF6B35;
+            --accent-blue: #4A9EFF;
+            --accent-green: #00D084;
+            --accent-purple: #9B59B6;
+            --accent-red: #FF4757;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-code: 'JetBrains Mono', 'Cascadia Code', monospace;
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Layout Container */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            padding: 24px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-red) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 48px;
+        }
+
+        .header-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* Category Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+        }
+
+        .tab.active {
+            background: var(--bg-tertiary);
+            color: var(--accent-orange);
+            border-color: var(--accent-orange);
+            border-bottom: 2px solid var(--bg-tertiary);
+            margin-bottom: -2px;
+        }
+
+        /* Example Grid */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .example-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .example-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .example-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .example-title {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .example-lang {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-badge {
+            background: var(--bg-tertiary);
+            color: var(--accent-blue);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .example-description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .example-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #FF5722;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-orange);
+        }
+
+        /* Code Section */
+        .code-section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .code-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .code-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+
+        pre {
+            background: var(--bg-primary);
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: var(--font-code);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: var(--font-code);
+            color: var(--accent-blue);
+        }
+
+        /* Command Palette */
+        .command-palette {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
+            padding: 20px;
+            width: 600px;
+            max-height: 400px;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .command-palette.active {
+            display: block;
+        }
+
+        .command-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Polyglot Section */
+        .polyglot-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .polyglot-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .polyglot-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+            border-color: var(--accent-orange);
+        }
+
+        .polyglot-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .polyglot-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stack-item {
+            background: var(--bg-primary);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-orange);
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">CF</div>
+                <div class="sidebar-title">Claude-Flow</div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Documentation</div>
+                <a href="index.html" class="nav-item">
+                    <span>🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="getting-started.html" class="nav-item">
+                    <span>🚀</span>
+                    <span>Getting Started</span>
+                </a>
+                <a href="cli-reference.html" class="nav-item">
+                    <span>⌨️</span>
+                    <span>CLI Reference</span>
+                </a>
+                <a href="preset-builder.html" class="nav-item">
+                    <span>🎨</span>
+                    <span>Preset Builder</span>
+                </a>
+                <a href="task-completion.html" class="nav-item">
+                    <span>✅</span>
+                    <span>Task Completion</span>
+                </a>
+                <a href="multi-language.html" class="nav-item">
+                    <span>🌍</span>
+                    <span>Multi-Language</span>
+                </a>
+                <a href="features.html" class="nav-item">
+                    <span>⚡</span>
+                    <span>Features</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Resources</div>
+                <a href="examples.html" class="nav-item active">
+                    <span>📚</span>
+                    <span>Examples</span>
+                </a>
+                <a href="api-reference.html" class="nav-item">
+                    <span>🔌</span>
+                    <span>API Reference</span>
+                </a>
+                <a href="troubleshooting.html" class="nav-item">
+                    <span>🔧</span>
+                    <span>Troubleshooting</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header fade-in">
+                <h1 class="header-title">📚 Code Examples</h1>
+                <p class="header-subtitle">Praktische Beispiele für Claude-Flow v86 - Von Hello World bis Enterprise</p>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="tabs-container">
+                <div class="tab active" onclick="showCategory('quick-start')">🚀 Quick Start</div>
+                <div class="tab" onclick="showCategory('single-lang')">💻 Single Language</div>
+                <div class="tab" onclick="showCategory('polyglot')">🌍 Polyglot Projects</div>
+                <div class="tab" onclick="showCategory('enterprise')">🏢 Enterprise</div>
+                <div class="tab" onclick="showCategory('ai-station')">🤖 AI-Coding-Station</div>
+            </div>
+
+            <!-- Quick Start Examples -->
+            <section id="quick-start" class="code-section">
+                <h2 class="section-title">
+                    <span>🚀</span>
+                    <span>Quick Start Examples</span>
+                </h2>
+
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-header">
+                            <div class="example-title">
+                                <span>👋</span>
+                                <span>Hello World</span>
+                            </div>
+                            <div class="example-lang">
+                                <span class="lang-badge">CLI</span>
+                            </div>
+                        </div>
+                        <p class="example-description">
+                            Erster Swarm - Einfaches Hello World Beispiel
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="showCode('hello-world')">
+                                View Code
+                            </button>
+                            <button class="btn btn-secondary" onclick="copyCommand('npx claude-flow init hello-world')">
+                                Copy Command
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-header">
+                            <div class="example-title">
+                                <span>🌐</span>
+                                <span>REST API</span>
+                            </div>
+                            <div class="example-lang">
+                                <span class="lang-badge">Node.js</span>
+                                <span class="lang-badge">Express</span>
+                            </div>
+                        </div>
+                        <p class="example-description">
+                            CRUD API mit Express und MongoDB
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="showCode('rest-api')">
+                                View Code
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadExample('rest-api')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-header">
+                            <div class="example-title">
+                                <span>⚛️</span>
+                                <span>React App</span>
+                            </div>
+                            <div class="example-lang">
+                                <span class="lang-badge">React</span>
+                                <span class="lang-badge">TypeScript</span>
+                            </div>
+                        </div>
+                        <p class="example-description">
+                            Modern React App mit TypeScript und Tailwind
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="showCode('react-app')">
+                                View Code
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadExample('react-app')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-header">
+                            <div class="example-title">
+                                <span>🐍</span>
+                                <span>Python CLI Tool</span>
+                            </div>
+                            <div class="example-lang">
+                                <span class="lang-badge">Python</span>
+                                <span class="lang-badge">Click</span>
+                            </div>
+                        </div>
+                        <p class="example-description">
+                            CLI Tool mit Click Framework und Tests
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="showCode('python-cli')">
+                                View Code
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadExample('python-cli')">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Blocks -->
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>⚡</span>
+                            <span>Initialisierung & Erster Swarm</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Installation
+npm install -g claude-flow
+
+# Projekt initialisieren
+npx claude-flow init my-project --preset=comprehensive
+
+# Swarm starten mit 5 Agenten
+npx claude-flow swarm --agents=5 --task="Create a REST API with authentication"
+
+# Memory nutzen für bessere Ergebnisse
+npx claude-flow memory store "api-requirements" "JWT auth, user CRUD, rate limiting"
+npx claude-flow swarm --memory="api-requirements" --preset=backend</code></pre>
+                </div>
+            </section>
+
+            <!-- Single Language Examples -->
+            <section id="single-lang" class="code-section" style="display: none;">
+                <h2 class="section-title">
+                    <span>💻</span>
+                    <span>Single Language Projects</span>
+                </h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🐍</span>
+                            <span>Python - FastAPI Microservice</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Preset: python-microservice.json
+{
+  "name": "python-fastapi-service",
+  "agents": [
+    {
+      "role": "architect",
+      "model": "Claude-3.5-Sonnet",
+      "expertise": ["Python", "FastAPI", "Clean Architecture"]
+    },
+    {
+      "role": "backend",
+      "model": "GPT-4",
+      "expertise": ["SQLAlchemy", "Pydantic", "Async Python"]
+    },
+    {
+      "role": "tester",
+      "model": "Claude-3.5-Haiku",
+      "expertise": ["Pytest", "Coverage", "Load Testing"]
+    }
+  ],
+  "workflow": {
+    "phases": ["design", "implement", "test", "optimize"],
+    "pattern": "waterfall"
+  }
+}
+
+# Command
+npx claude-flow swarm --preset=python-microservice \
+  --task="Build user authentication service with OAuth2" \
+  --output=./auth-service</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>⚡</span>
+                            <span>Go - High-Performance API Gateway</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Go Gateway mit Rate Limiting und Circuit Breaker
+npx claude-flow swarm \
+  --agents='[
+    {"role": "architect", "expertise": ["Go", "Microservices", "gRPC"]},
+    {"role": "performance", "expertise": ["Concurrency", "Memory Management"]},
+    {"role": "security", "expertise": ["TLS", "JWT", "OWASP"]}
+  ]' \
+  --task="API Gateway with rate limiting, circuit breaker, and monitoring" \
+  --sparc-mode="exhaustive" \
+  --features="prometheus-metrics,jaeger-tracing,redis-cache"</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🦀</span>
+                            <span>Rust - WebAssembly Module</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Rust WASM Module für Performance-kritische Operationen
+npx claude-flow hive-mind \
+  --models='["Claude-3.5-Opus", "GPT-4", "Gemini-Pro"]' \
+  --task="Image processing WASM module with Rust" \
+  --requirements='[
+    "SIMD optimizations",
+    "WebAssembly target",
+    "JavaScript bindings",
+    "Streaming support"
+  ]' \
+  --memory-context="previous-rust-patterns"</code></pre>
+                </div>
+            </section>
+
+            <!-- Polyglot Projects -->
+            <section id="polyglot" class="code-section" style="display: none;">
+                <h2 class="section-title">
+                    <span>🌍</span>
+                    <span>Polyglot Project Templates</span>
+                </h2>
+
+                <div class="polyglot-templates">
+                    <div class="polyglot-card">
+                        <div class="polyglot-title">
+                            <span>🛒</span>
+                            <span>E-Commerce Platform</span>
+                        </div>
+                        <div class="polyglot-stack">
+                            <span class="stack-item">React</span>
+                            <span class="stack-item">Node.js</span>
+                            <span class="stack-item">Python</span>
+                            <span class="stack-item">Go</span>
+                            <span class="stack-item">PostgreSQL</span>
+                            <span class="stack-item">Redis</span>
+                        </div>
+                        <p class="example-description">
+                            Full-Stack E-Commerce mit Microservices Architecture
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="deployPolyglot('ecommerce')">
+                                Deploy Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="polyglot-card">
+                        <div class="polyglot-title">
+                            <span>🏦</span>
+                            <span>Banking System</span>
+                        </div>
+                        <div class="polyglot-stack">
+                            <span class="stack-item">Java</span>
+                            <span class="stack-item">Kotlin</span>
+                            <span class="stack-item">TypeScript</span>
+                            <span class="stack-item">Python</span>
+                            <span class="stack-item">Kafka</span>
+                        </div>
+                        <p class="example-description">
+                            Enterprise Banking mit Event-Driven Architecture
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="deployPolyglot('banking')">
+                                Deploy Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="polyglot-card">
+                        <div class="polyglot-title">
+                            <span>🔧</span>
+                            <span>IoT Platform</span>
+                        </div>
+                        <div class="polyglot-stack">
+                            <span class="stack-item">C++</span>
+                            <span class="stack-item">Rust</span>
+                            <span class="stack-item">Go</span>
+                            <span class="stack-item">Python</span>
+                            <span class="stack-item">MQTT</span>
+                        </div>
+                        <p class="example-description">
+                            Industrial IoT mit Edge Computing
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="deployPolyglot('iot')">
+                                Deploy Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="polyglot-card">
+                        <div class="polyglot-title">
+                            <span>🎮</span>
+                            <span>Gaming Backend</span>
+                        </div>
+                        <div class="polyglot-stack">
+                            <span class="stack-item">C#</span>
+                            <span class="stack-item">Go</span>
+                            <span class="stack-item">Redis</span>
+                            <span class="stack-item">WebSocket</span>
+                        </div>
+                        <p class="example-description">
+                            Multiplayer Game Backend mit Matchmaking
+                        </p>
+                        <div class="example-actions">
+                            <button class="btn btn-primary" onclick="deployPolyglot('gaming')">
+                                Deploy Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🛒</span>
+                            <span>E-Commerce Polyglot Setup</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Complete E-Commerce Platform Setup
+npx claude-flow init ecommerce-platform --template=polyglot-ecommerce
+
+# Deploy mit spezifischen Agenten pro Service
+npx claude-flow deploy-polyglot \
+  --config='{
+    "frontend": {
+      "language": "TypeScript",
+      "framework": "Next.js",
+      "agents": ["ui-expert", "react-specialist"]
+    },
+    "api-gateway": {
+      "language": "Go",
+      "framework": "Echo",
+      "agents": ["performance-expert", "security-auditor"]
+    },
+    "user-service": {
+      "language": "Python",
+      "framework": "FastAPI",
+      "agents": ["backend-developer", "database-architect"]
+    },
+    "payment-service": {
+      "language": "Java",
+      "framework": "Spring Boot",
+      "agents": ["enterprise-developer", "payment-specialist"]
+    },
+    "recommendation-engine": {
+      "language": "Python",
+      "framework": "TensorFlow",
+      "agents": ["ml-engineer", "data-scientist"]
+    }
+  }'</code></pre>
+                </div>
+            </section>
+
+            <!-- Enterprise Examples -->
+            <section id="enterprise" class="code-section" style="display: none;">
+                <h2 class="section-title">
+                    <span>🏢</span>
+                    <span>Enterprise Solutions</span>
+                </h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🔄</span>
+                            <span>Legacy System Migration</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Schritt 1: Analyse des Legacy Systems
+npx claude-flow analyze-legacy \
+  --source="./legacy-monolith" \
+  --language="Java" \
+  --output="migration-plan.json"
+
+# Schritt 2: Generiere Microservices
+npx claude-flow decompose \
+  --plan="migration-plan.json" \
+  --target-stack='[
+    {"service": "user-management", "language": "Go"},
+    {"service": "billing", "language": "Python"},
+    {"service": "reporting", "language": "TypeScript"}
+  ]' \
+  --preserve-business-logic=true
+
+# Schritt 3: Setup Data Migration
+npx claude-flow migrate-data \
+  --source-db="oracle://legacy" \
+  --target-db="postgres://microservices" \
+  --strategy="event-sourcing"</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>📊</span>
+                            <span>Enterprise Data Pipeline</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Complex Data Pipeline mit Multi-Language Processing
+npx claude-flow create-pipeline \
+  --name="enterprise-etl" \
+  --stages='[
+    {
+      "name": "ingestion",
+      "language": "Go",
+      "tools": ["Kafka", "Debezium"],
+      "agents": ["streaming-expert"]
+    },
+    {
+      "name": "transformation",
+      "language": "Python",
+      "tools": ["Apache Spark", "Pandas"],
+      "agents": ["data-engineer", "ml-specialist"]
+    },
+    {
+      "name": "storage",
+      "language": "Scala",
+      "tools": ["Delta Lake", "Parquet"],
+      "agents": ["big-data-architect"]
+    },
+    {
+      "name": "analytics",
+      "language": "R",
+      "tools": ["Shiny", "ggplot2"],
+      "agents": ["data-scientist", "visualization-expert"]
+    }
+  ]' \
+  --orchestrator="airflow" \
+  --monitoring="datadog"</code></pre>
+                </div>
+            </section>
+
+            <!-- AI-Coding-Station Examples -->
+            <section id="ai-station" class="code-section" style="display: none;">
+                <h2 class="section-title">
+                    <span>🤖</span>
+                    <span>AI-Coding-Station Integration</span>
+                </h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🎯</span>
+                            <span>AI-Powered Development Workflow</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Integration mit AI-Coding-Station
+npx claude-flow ai-station init \
+  --workspace="./my-project" \
+  --languages='["Python", "TypeScript", "Go"]' \
+  --ai-models='["Claude-3.5", "GPT-4", "Gemini"]'
+
+# Auto-Generate Project Structure
+npx claude-flow ai-station generate \
+  --type="full-stack-app" \
+  --requirements="Real-time chat with video calls" \
+  --tech-stack="auto-suggest" \
+  --best-practices=true
+
+# Continuous AI Assistance
+npx claude-flow ai-station watch \
+  --auto-complete=true \
+  --code-review=true \
+  --test-generation=true \
+  --documentation=true</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-title">
+                            <span>🔮</span>
+                            <span>Intelligent Code Generation</span>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre><code># Natural Language to Full Application
+npx claude-flow ai-generate \
+  --prompt="Build a SaaS platform for project management with:
+    - User authentication and team management
+    - Kanban boards with drag-and-drop
+    - Real-time collaboration
+    - Time tracking and reporting
+    - Stripe integration for billing
+    - Mobile responsive design" \
+  --output-format="production-ready" \
+  --include-tests=true \
+  --include-ci-cd=true \
+  --deploy-to="vercel"
+
+# Das System wird automatisch:
+# 1. Beste Technologie-Stack vorschlagen
+# 2. Komplette Architektur designen
+# 3. Code in mehreren Sprachen generieren
+# 4. Tests und Dokumentation erstellen
+# 5. CI/CD Pipeline konfigurieren
+# 6. Deployment vorbereiten</code></pre>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="command-palette" id="commandPalette">
+        <input type="text" class="command-input" placeholder="Type a command or search..." id="commandInput">
+        <div id="commandResults"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span>🌙</span>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showCategory(category) {
+            // Hide all sections
+            document.querySelectorAll('.code-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(category).style.display = 'block';
+            
+            // Update tab states
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Copy Code Function
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block').querySelector('code');
+            navigator.clipboard.writeText(codeBlock.textContent);
+            
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.background = 'var(--accent-green)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+            }, 2000);
+        }
+
+        // Copy Command
+        function copyCommand(command) {
+            navigator.clipboard.writeText(command);
+            showNotification('Command copied to clipboard!');
+        }
+
+        // Show Code Modal
+        function showCode(example) {
+            // Implementation for showing code in modal
+            console.log('Showing code for:', example);
+        }
+
+        // Download Example
+        function downloadExample(example) {
+            // Implementation for downloading example
+            console.log('Downloading:', example);
+        }
+
+        // Deploy Polyglot Template
+        function deployPolyglot(template) {
+            const commands = {
+                'ecommerce': 'npx claude-flow deploy --template=ecommerce-polyglot',
+                'banking': 'npx claude-flow deploy --template=banking-enterprise',
+                'iot': 'npx claude-flow deploy --template=iot-platform',
+                'gaming': 'npx claude-flow deploy --template=gaming-backend'
+            };
+            copyCommand(commands[template]);
+        }
+
+        // Show Notification
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                right: 20px;
+                background: var(--accent-green);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                z-index: 1000;
+                animation: fadeIn 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Command Palette
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                const palette = document.getElementById('commandPalette');
+                palette.classList.toggle('active');
+                if (palette.classList.contains('active')) {
+                    document.getElementById('commandInput').focus();
+                }
+            }
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const icon = document.querySelector('.theme-toggle span');
+            icon.textContent = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Claude-Flow Examples Page Loaded');
+        });
+    </script>
+</body>
+</html>

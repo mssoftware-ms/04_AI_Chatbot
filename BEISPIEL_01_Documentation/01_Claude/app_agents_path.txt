@@ -1,0 +1,79 @@
+Agent Config – Quellen & Pfade
+
+Stand: 2025-08-16 17:50
+
+Kurzüberblick
+- Verfügbare Agenten & Presets: `src/claude_flow_gui/constants.py` → `AGENT_CATEGORIES`, `AGENT_PRESETS`.
+- Geladene Auswahl/Modelle/Topologie: `<Projekt>/.claude-flow/saved-configs/*.json` (GUI lädt über `apply_complete_config`).
+- Projektspeicher/Mirror (nicht primäre Quelle des Fensters): `<Projekt>/.claude-flow/config.json`, `<Projekt>/.claude/config.json`.
+
+Dateien & Zuständigkeiten
+1) `src/claude_flow_gui/constants.py`
+   - `AGENT_CATEGORIES`: Kategorien, Namen, Farben, Agent-IDs, Kurzbeschreibungen.
+   - `AGENT_PRESETS`: Vordefinierte Agent-Gruppen inkl. Topologie (z. B. hierarchical/star/mesh).
+
+2) `<Projekt>/.claude-flow/saved-configs/*.json`
+   - Primäre Quelle für das Agent-Config-Fenster beim Laden einer Konfiguration.
+   - Relevante Schlüssel: `project.*`, `agents.selected`, `agents.queen_model`, `agents.worker_model`, `swarm.*`, `settings.*`, optional `codex_*`.
+
+3) `src/claude_flow_gui/mixins/config_io.py`
+   - `load_complete_config()`/`apply_complete_config(path)`: Liest Saved‑Config und setzt UI‑Felder. `save_complete_config()` speichert.
+
+4) `src/claude_flow_gui/mixins/ui_tabs.py`
+   - Baut den Agent-Tab und nutzt `AGENT_CATEGORIES`/`AGENT_PRESETS` zur Anzeige/Filterung/Presets.
+
+5) `src/claude_flow_gui/mixins/app_state.py`
+   - `save_project_config(name, path)`: Spiegelt zusätzlich nach `<Projekt>/.claude-flow/config.json` und `<Projekt>/.claude/config.json`.
+
+Aktuell geladene Konfiguration (dieses Projekt)
+- Dateiname: `AI Coding Station.json`
+- Preset (in der Datei vermerkt): `🐍 Python Development`
+- Speicherort (Windows): `D:\03_GIT\02_Python\01_AI Coding Station\.claude-flow\saved-configs\AI Coding Station.json`
+- Speicherort (WSL): `/mnt/d/03_GIT/02_Python/01_AI Coding Station/.claude-flow/saved-configs/AI Coding Station.json`
+- Ausgewählte Agenten: 10 (queen, backend-dev, frontend-dev, system-architect, tester, performance-tester…)
+
+Hinweise: Erkennen & Navigieren zur geladenen Config
+- Header/Unsaved-Indicator: `*` hinter Tab‑Titel bei ungespeicherten Änderungen.
+- Current Project im Header: zeigt Name und Dir (Projekt‑Root).
+- Preset‑Anzeige (Agents‑Tab): aktive Preset‑Combobox (z. B. `🐍 Python Development` bzw. `Custom`).
+- Manage Configurations: `Load Config` → Liste aller Saved‑Configs mit Name/Preset/Agentenzahl/Zeitstempel; `Load/Rename/Delete`.
+- Speicherort öffnen: Explorer → Projektpfad → `.claude-flow\saved-configs` | WSL Terminal → `ls -la .claude-flow/saved-configs`.
+- Zuletzt genutzter Speicherort: `.claude_flow/claude-flow-manager/config_history.json` → `last_config_dir`.
+
+Praktisches Beispiel (dieses Projekt)
+- Projektpfad (Windows): `D:\03_GIT\02_Python\01_AI Coding Station`
+- Saved‑Config: `D:\03_GIT\02_Python\01_AI Coding Station\.claude-flow\saved-configs\AI Coding Station.json` (WSL: `/mnt/d/03_GIT/02_Python/01_AI Coding Station/.claude-flow/saved-configs/AI Coding Station.json`)
+- Schritte:
+  1. Project Setup → Project Directory auf obigen Pfad setzen, Project Name: `AI Coding Station`.
+  2. Agent Config → Presets: `🐍 Python Development` wählen; optional Agenten manuell an-/abwählen.
+  3. Save Config → Name: `AI Coding Station` (ergibt die Datei oben).
+  4. Load Config → `AI Coding Station` wählen, UI wird aus Saved‑Config befüllt (Agenten, Modelle, Topologie, Task).
+  5. Verifikation:
+     • Windows: Datei öffnen und `preset`, `agents.selected`, `swarm.topology` prüfen.
+     • WSL: `cat ".claude-flow/saved-configs/AI Coding Station.json" | jq '.preset, .agents.selected | length, .swarm.topology'`.
+
+- Erwartete Werte (Auszug aus aktueller Datei):
+  • preset: 🐍 Python Development
+  • agents.selected: 10
+  • first agents: queen, backend-dev, frontend-dev, system-architect, tester…
+
+Quelle der Schwarm-Struktur (Instanzinitialisierung)
+
+Priorität der Informationsquellen (wie der Schwarm aufgebaut ist)
+1) Saved-Config (primär): `D:\03_GIT\02_Python\01_AI Coding Station\.claude-flow\saved-configs\AI Coding Station.json` (WSL: `/mnt/d/03_GIT/02_Python/01_AI Coding Station/.claude-flow/saved-configs/AI Coding Station.json`)
+   - Schlüssel: `agents.selected`, `agents.queen_model`, `agents.worker_model`, `swarm.topology`, `swarm.task`, `settings.*`.
+   - Wird beim Laden über `apply_complete_config(...)` gesetzt (Datei: `src/claude_flow_gui/mixins/config_io.py`).
+
+2) Preset (Fallback, wenn keine Saved-Config): `src/claude_flow_gui/constants.py` → `AGENT_PRESETS`
+   - Legt vordefinierte Agentenauswahl und `topology` fest; Auswahl in der UI im Agent-Tab.
+
+3) Agenten-Katalog (Grundlage für Auswahl): `src/claude_flow_gui/constants.py` → `AGENT_CATEGORIES`
+   - Definiert verfügbare Agenten pro Kategorie; daraus generiert die UI die Checkbox-Liste.
+
+4) Mirrored Project Configs (sekundär): `<Projekt>/.claude-flow/config.json`, `<Projekt>/.claude/config.json`
+   - Durch `save_project_config(...)` geschrieben; sekundär, aber für andere Tools lesbar.
+
+5) Verbrauch/Start:
+   - `ClaudeFlowManager` nutzt den UI-Zustand; Start via `HiveMixin` (src/claude_flow_gui/mixins/hive.py) und Ausführung via `WSLBridge` (src/claude_flow_gui/wsl_bridge.py).
+
+Nicht maßgeblich für die Schwarm-Struktur: `codex_cli.config.json` (betrifft Codex CLI Policies/Modelle).

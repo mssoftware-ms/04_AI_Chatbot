@@ -1,0 +1,21 @@
+{
+  "import_times": {
+    "main": 0.5873,
+    "app": 0.0284,
+    "src.main": 0.2125,
+    "src.core.chunking": 0.9389,
+    "src.core.embeddings": 0.0033,
+    "src.core.retrieval": 0.004,
+    "src.api.websocket": 0.0103,
+    "src.database.models": 0.3089
+  },
+  "database": {
+    "database": "Error: module 'src.database.models' has no attribute 'Use"
+  },
+  "text_processing": {
+    "text_processing": "Error: cannot import name 'RecursiveChunker' from 'src.co"
+  },
+  "api": {
+    "api_health_check": 0.0021169127001485323
+  }
+}

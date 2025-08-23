@@ -1,0 +1,12 @@
+▌beim starten von cloud flow (Button "Launch Hive-Mind" im Fenster "Schwarm starten"), muss überprüft werden ob code
+ initialisiert wurde! Beispiel Erkennung: 01_Dokumentation/check_init_claude-Flow und Claude.bat
+Super bei Erkennung, wenn ein wsl fenster gestertet wird und die beiden inits dann ausgeführt werden.
+Der check sollte auch am ende des Systeminstallationscheck stattfinden! (Fenster Projekteinrichtung Buttons "Claude Flow" initialisieren und "Anforderungen prüfen") Funktion zum wsl fenster öffnen, bitte aus dem Button "WSL Terminal" entnehmen, der funktiert endlich mal.
+
+
+Beim starten von "Claude-Flow initialisieren" und "Anforderungen prüfen", die Konsolenausgabe leeren.
+
+Füge im Fenster Repository, einen Button ein, neben dem Button Load, der Initialisieren heißt. Beim laden des Fensters, sollte aber geprüft werden ob git nicht schon initialisiert wurde und ein branch vorhanden ist. Beispiel in Python: "/01_Dokumentation/beispiel_check_git_init.py". Diese Prüfung sollte auch in der Systemüberprüfung stattfinden. (Fenster Projekteinrichtung Buttons "Claude-Flow" und "Anforderungen prüfen") Achja, die git installation ist optional!
+
+
+Fehlermeldung nach dem ändern eines Pfades, dem Namen und dem gespeicherten Namen in der Projektliste: von einem Projekt Error saving recent project: Expecting value: line 1 column 1 (char 0)

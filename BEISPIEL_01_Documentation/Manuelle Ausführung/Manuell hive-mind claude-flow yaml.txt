@@ -1,0 +1,20 @@
+# Erste Installation und Setup
+npx claude-flow@alpha init --monitoring
+
+# Hive Mind Setup mit Wizard (empfohlen)
+npx claude-flow@alpha hive-mind wizard
+
+
+.yaml erstellen und speichern
+
+# Option A: Direkt mit YAML starten (EMPFOHLEN)
+claude-flow swarm "Erstelle PowerPoint-Präsentation PECO Produktkonfigurator 2.0" --config peco_swarm_config.yaml --claude
+
+# Option B: Mit Hive-Mind und YAML
+claude-flow hive-mind spawn "PECO Produktkonfigurator PowerPoint erstellen" --config peco_swarm_config.yaml --claude
+
+# Option C: Mit UI und Monitoring
+claude-flow start --ui --swarm --config peco_swarm_config.yaml --monitoring
+
+
+Bearbeite alle offenen Issues im ordner Root->issues. Stelle sich das WIRKLICH ALLE AUFGABEN, auch Teilaufgaben in den vorhandenen issue welches du gerade bearbeitest, durchgeführt, abgeschlossen und getestet sind, bevor du das issue auf closed setzt. Bei Fehlern oder unlösbaren Aufgaben, Meldung im cmd Fenster und issue auf open lassen. Anweisung in description, beachte auch additional und comments. Abarbeitung step by step also z.b. Issue_1.json, Issue_2.json usw. Nach Abschluss der Aufgabe state=closed

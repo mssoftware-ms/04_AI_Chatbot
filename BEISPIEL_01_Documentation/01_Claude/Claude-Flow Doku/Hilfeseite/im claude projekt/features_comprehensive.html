@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - Claude-Flow v86 Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #141414;
+            --bg-tertiary: #1A1A1A;
+            --border: #2A2A2A;
+            --accent-orange: #FF6B35;
+            --accent-orange-hover: #FF8255;
+            --accent-blue: #3B82F6;
+            --accent-blue-hover: #5A9CF6;
+            --accent-green: #238636;
+            --accent-green-hover: #2EA043;
+            --success: #10B981;
+            --error: #EF4444;
+            --warning: #F59E0B;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 8px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-nav {
+            padding: 24px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 24px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-subnav {
+            padding-left: 40px;
+        }
+
+        .nav-subnav .nav-item {
+            font-size: 13px;
+            padding: 4px 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-bottom: 1px solid var(--border);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Content */
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Feature Sections */
+        .feature-section {
+            margin: 60px 0;
+            scroll-margin-top: 20px;
+        }
+
+        .feature-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feature-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        /* Hive Mind */
+        .hive-mind-overview {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .hierarchy-diagram {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .metric-improvement {
+            font-size: 12px;
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        /* Neural Networks */
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .model-category {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .category-count {
+            background: var(--accent-orange);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .model-list {
+            list-style: none;
+        }
+
+        .model-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .model-list li:last-child {
+            border-bottom: none;
+        }
+
+        .model-number {
+            background: var(--bg-tertiary);
+            color: var(--accent-blue);
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* MCP Tools */
+        .tools-overview {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .tool-category {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .tool-category:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .tool-category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .tool-category-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .tool-count {
+            background: var(--accent-blue);
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tool-examples {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Memory System */
+        .memory-overview {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .table-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .table-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+        }
+
+        .table-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .table-fields {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Examples */
+        .code-example {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .code-header {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-orange-hover);
+        }
+
+        .code-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* Interactive Features */
+        .feature-demo {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .demo-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .demo-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-btn:hover {
+            background: var(--accent-blue-hover);
+        }
+
+        .demo-btn.active {
+            background: var(--accent-orange);
+        }
+
+        .demo-output {
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            min-height: 120px;
+            white-space: pre-wrap;
+        }
+
+        /* Expandable Sections */
+        .expandable {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .expandable-header {
+            background: var(--bg-secondary);
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            transition: all 0.2s ease;
+        }
+
+        .expandable-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .expandable-title {
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .expandable-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .expandable.open .expandable-icon {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .expandable.open .expandable-content {
+            padding: 16px;
+            max-height: 2000px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 4px;
+        }
+
+        .badge-new {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-experimental {
+            background: var(--warning);
+            color: white;
+        }
+
+        .badge-enterprise {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                position: fixed;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .header-stats {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+            .feature-title {
+                font-size: 28px;
+            }
+
+            .models-grid,
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Search */
+        .search-box {
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Claude-Flow</div>
+                <div class="sidebar-subtitle">Features v86</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search features..." id="search-input">
+            </div>
+            
+            <div class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Documentation</div>
+                    <a href="index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        Home
+                    </a>
+                    <a href="getting-started.html" class="nav-item">
+                        <span class="nav-icon">🚀</span>
+                        Getting Started
+                    </a>
+                    <a href="cli-reference.html" class="nav-item">
+                        <span class="nav-icon">💻</span>
+                        CLI Reference
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Core Features</div>
+                    <div class="nav-item active">
+                        <span class="nav-icon">🧠</span>
+                        Features Overview
+                    </div>
+                    <div class="nav-subnav">
+                        <a href="#hive-mind" class="nav-item">🐝 Hive-Mind Intelligence</a>
+                        <a href="#neural-networks" class="nav-item">🧠 Neural Networks</a>
+                        <a href="#mcp-tools" class="nav-item">🔧 MCP Tools</a>
+                        <a href="#memory-system" class="nav-item">💾 Memory System</a>
+                        <a href="#agent-architecture" class="nav-item">🤖 Agent Architecture</a>
+                        <a href="#hooks-system" class="nav-item">🪝 Hooks System</a>
+                        <a href="#github-integration" class="nav-item">📊 GitHub Integration</a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Tools</div>
+                    <a href="preset-builder.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        Preset Builder
+                    </a>
+                    <a href="task-completion.html" class="nav-item">
+                        <span class="nav-icon">✅</span>
+                        Task Completion
+                    </a>
+                    <a href="examples.html" class="nav-item">
+                        <span class="nav-icon">📁</span>
+                        Examples
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h1 class="header-title">Claude-Flow v86 Features</h1>
+                <p class="header-subtitle">Enterprise-Grade AI Orchestration Platform with Revolutionary Capabilities</p>
+                
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">87</div>
+                        <div class="stat-label">MCP Tools</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">33</div>
+                        <div class="stat-label">Neural Models</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Memory Tables</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2.8x</div>
+                        <div class="stat-label">Performance Boost</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Hive-Mind Intelligence -->
+                <section id="hive-mind" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>🐝</span>
+                        Hive-Mind Intelligence
+                        <span class="badge badge-new">Revolutionary</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Biologically inspired swarm coordination with Queen-led architecture and collective intelligence features
+                    </p>
+
+                    <div class="hive-mind-overview">
+                        <h3 style="margin-bottom: 16px; font-size: 24px;">Biological Inspiration</h3>
+                        <p style="margin-bottom: 20px; line-height: 1.6;">
+                            The Hive-Mind Intelligence system draws inspiration from bee colonies, utilizing a hierarchical structure 
+                            with specialized agents coordinated through shared memory and neural pattern recognition.
+                        </p>
+
+                        <div class="hierarchy-diagram">
+                            <div style="color: var(--accent-orange); font-weight: bold; margin-bottom: 8px;">👑 Queen Agent (Central Coordination)</div>
+                            <div style="margin: 8px 0;">┃</div>
+                            <div style="display: flex; justify-content: center; gap: 40px; margin: 16px 0;">
+                                <div>🏗️ Architect<br><small>Lead</small></div>
+                                <div>💻 Coder<br><small>Lead</small></div>
+                                <div>🧪 Tester<br><small>Lead</small></div>
+                                <div>📊 Analyst<br><small>Lead</small></div>
+                            </div>
+                            <div style="margin: 8px 0;">┃ ┃ ┃ ┃</div>
+                            <div style="color: var(--text-secondary);">Workers Workers Workers Workers</div>
+                        </div>
+
+                        <h4 style="margin: 24px 0 12px; font-size: 18px;">Collective Intelligence Features</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                            <div style="background: rgba(59, 130, 246, 0.1); padding: 16px; border-radius: 8px;">
+                                <strong>Consensus Voting</strong><br>
+                                <small>4 algorithms: majority, weighted, byzantine, raft</small>
+                            </div>
+                            <div style="background: rgba(16, 185, 129, 0.1); padding: 16px; border-radius: 8px;">
+                                <strong>Memory Sharing</strong><br>
+                                <small>Cross-agent communication and knowledge transfer</small>
+                            </div>
+                            <div style="background: rgba(245, 158, 11, 0.1); padding: 16px; border-radius: 8px;">
+                                <strong>Neural Synchronization</strong><br>
+                                <small>Pattern sharing between specialized agents</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 32px 0 16px; font-size: 24px;">Performance Improvements</h3>
+                    <div class="performance-metrics">
+                        <div class="metric-card">
+                            <div class="metric-value">284%</div>
+                            <div class="metric-label">Task Completion Speed</div>
+                            <div class="metric-improvement">+184% improvement</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">-85%</div>
+                            <div class="metric-label">Error Reduction</div>
+                            <div class="metric-improvement">From 100 to 15 errors/1000 tasks</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">-33%</div>
+                            <div class="metric-label">Resource Usage</div>
+                            <div class="metric-improvement">CPU & Memory efficiency</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">4.4x</div>
+                            <div class="metric-label">Overall Performance</div>
+                            <div class="metric-improvement">Maximum improvement factor</div>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Hive-Mind Setup Example</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre># Initialize hive-mind with hierarchical topology
+npx claude-flow@alpha hive-mind init \
+  --topology hierarchical \
+  --agents 12 \
+  --coordination-level high
+
+# Spawn queen with strategic capabilities  
+npx claude-flow@alpha hive-mind spawn \
+  "Build complete e-commerce platform" \
+  --queen-type strategic \
+  --consensus-algorithm majority \
+  --agents 10 --claude
+
+# Monitor collective intelligence
+npx claude-flow@alpha hive-mind status
+npx claude-flow@alpha neural sync --pattern coordination</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Neural Networks -->
+                <section id="neural-networks" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>🧠</span>
+                        Neural Networks & Cognitive Models
+                        <span class="badge badge-experimental">WASM SIMD</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        33 cognitive models with hardware-accelerated WASM SIMD processing for intelligent decision making
+                    </p>
+
+                    <div class="feature-demo">
+                        <h3 style="margin-bottom: 16px;">Interactive Neural Model Explorer</h3>
+                        <div class="demo-controls">
+                            <button class="demo-btn active" onclick="showModels('coordination')">Coordination Models</button>
+                            <button class="demo-btn" onclick="showModels('learning')">Learning Models</button>
+                            <button class="demo-btn" onclick="showModels('decision')">Decision Models</button>
+                            <button class="demo-btn" onclick="showModels('communication')">Communication Models</button>
+                            <button class="demo-btn" onclick="showModels('performance')">Performance Models</button>
+                            <button class="demo-btn" onclick="showModels('all')">All Models</button>
+                        </div>
+                        <div class="demo-output" id="neural-demo-output">
+Loading coordination models...
+</div>
+                    </div>
+
+                    <div class="models-grid">
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">🎯</span>
+                                <h4 class="category-title">Coordination Models</h4>
+                                <span class="category-count">5</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">1</span> Task Orchestrator - Optimal task distribution</li>
+                                <li><span class="model-number">2</span> Resource Allocator - Efficient resource management</li>
+                                <li><span class="model-number">3</span> Conflict Resolver - Deadlock resolution</li>
+                                <li><span class="model-number">4</span> Priority Manager - Dynamic priority adjustment</li>
+                                <li><span class="model-number">5</span> Load Balancer - Agent workload distribution</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">📚</span>
+                                <h4 class="category-title">Learning Models</h4>
+                                <span class="category-count">6</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">6</span> Pattern Recognizer - Recurring development patterns</li>
+                                <li><span class="model-number">7</span> Success Predictor - Task success rate prediction</li>
+                                <li><span class="model-number">8</span> Error Analyzer - Error cause analysis</li>
+                                <li><span class="model-number">9</span> Optimization Learner - Performance improvements</li>
+                                <li><span class="model-number">10</span> Meta-Learner - Learning about learning</li>
+                                <li><span class="model-number">11</span> Domain Adapter - New domain adaptation</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">⚖️</span>
+                                <h4 class="category-title">Decision Models</h4>
+                                <span class="category-count">5</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">12</span> Decision Tree Navigator - Complex decision trees</li>
+                                <li><span class="model-number">13</span> Risk Assessor - Implementation risk evaluation</li>
+                                <li><span class="model-number">14</span> Trade-off Analyzer - Cost-benefit analysis</li>
+                                <li><span class="model-number">15</span> Strategy Selector - Optimal strategy selection</li>
+                                <li><span class="model-number">16</span> Consensus Builder - Conflict resolution consensus</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">💬</span>
+                                <h4 class="category-title">Communication Models</h4>
+                                <span class="category-count">4</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">17</span> Intent Parser - User intent understanding</li>
+                                <li><span class="model-number">18</span> Context Maintainer - Session context continuity</li>
+                                <li><span class="model-number">19</span> Response Generator - Natural language responses</li>
+                                <li><span class="model-number">20</span> Translation Bridge - Cross-agent communication</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">⚡</span>
+                                <h4 class="category-title">Performance Models</h4>
+                                <span class="category-count">4</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">21</span> Bottleneck Detector - Performance bottlenecks</li>
+                                <li><span class="model-number">22</span> Optimization Suggester - Code optimization suggestions</li>
+                                <li><span class="model-number">23</span> Cache Manager - Intelligent caching</li>
+                                <li><span class="model-number">24</span> Resource Predictor - Resource requirement prediction</li>
+                            </ul>
+                        </div>
+
+                        <div class="model-category">
+                            <div class="category-header">
+                                <span style="font-size: 20px;">🔍</span>
+                                <h4 class="category-title">Specialized Models</h4>
+                                <span class="category-count">9</span>
+                            </div>
+                            <ul class="model-list">
+                                <li><span class="model-number">25</span> Quality Assessor - Code quality evaluation</li>
+                                <li><span class="model-number">26</span> Complexity Analyzer - Code complexity analysis</li>
+                                <li><span class="model-number">27</span> Refactor Suggester - Refactoring recommendations</li>
+                                <li><span class="model-number">28</span> Security Analyzer - Security vulnerability detection</li>
+                                <li><span class="model-number">29</span> Vulnerability Detector - Security threats</li>
+                                <li><span class="model-number">30</span> Threat Assessor - Risk assessment</li>
+                                <li><span class="model-number">31</span> Doc Generator - Automated documentation</li>
+                                <li><span class="model-number">32</span> API Documenter - API documentation</li>
+                                <li><span class="model-number">33</span> Comment Generator - Code comments</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Neural Model Training & Usage</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre># Train a neural model
+npx claude-flow@alpha neural train \
+  --model task-orchestrator \
+  --data successful-workflows.json \
+  --epochs 50 \
+  --learning-rate 0.001
+
+# Use model for prediction
+npx claude-flow@alpha neural predict \
+  --model task-orchestrator \
+  --input current-state.json \
+  --output-format detailed
+
+# Analyze cognitive behavior
+npx claude-flow@alpha cognitive analyze \
+  --behavior "development-patterns" \
+  --timeframe "last-7-days" \
+  --export-insights patterns.json</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MCP Tools System -->
+                <section id="mcp-tools" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>🔧</span>
+                        MCP Tools System
+                        <span class="badge badge-enterprise">87 Tools</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Comprehensive Model Context Protocol integration with 87 specialized tools across 10 categories
+                    </p>
+
+                    <div class="tools-overview">
+                        <h3 style="margin-bottom: 16px; font-size: 24px;">What is Model Context Protocol (MCP)?</h3>
+                        <p style="margin-bottom: 20px; line-height: 1.6;">
+                            MCP is an open standard by Anthropic providing a unified interface between AI models and external tools/data sources. 
+                            Instead of building separate integrations for each tool-model combination, MCP offers a standardized communication layer.
+                        </p>
+                        
+                        <div style="background: var(--bg-tertiary); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h4 style="margin-bottom: 12px;">Tool Distribution</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 14px;">
+                                <div>🐝 Swarm Management: <strong>12 tools</strong></div>
+                                <div>🤖 Agent Control: <strong>15 tools</strong></div>
+                                <div>📋 Task Orchestration: <strong>8 tools</strong></div>
+                                <div>💾 Memory Operations: <strong>10 tools</strong></div>
+                                <div>🧠 Neural Processing: <strong>8 tools</strong></div>
+                                <div>📊 GitHub Integration: <strong>6 tools</strong></div>
+                                <div>📈 Performance Monitoring: <strong>7 tools</strong></div>
+                                <div>🔄 Workflow Automation: <strong>9 tools</strong></div>
+                                <div>🔒 Security & Compliance: <strong>6 tools</strong></div>
+                                <div>🛠️ Utility Tools: <strong>6 tools</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tools-grid">
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🐝 Swarm Management</span>
+                                <span class="tool-count">12</span>
+                            </div>
+                            <div class="tool-examples">
+                                swarm_init, swarm_status, swarm_think, swarm_terminate, swarm_pause, swarm_resume, swarm_scale, swarm_rebalance, swarm_checkpoint, swarm_rollback, swarm_merge, swarm_split
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🤖 Agent Control</span>
+                                <span class="tool-count">15</span>
+                            </div>
+                            <div class="tool-examples">
+                                agent_spawn, agent_terminate, agent_status, agent_assign, agent_reassign, agent_pause, agent_resume, agent_upgrade, agent_downgrade, agent_clone, agent_migrate, agent_communicate, agent_synchronize, agent_benchmark, agent_profile
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">📋 Task Orchestration</span>
+                                <span class="tool-count">8</span>
+                            </div>
+                            <div class="tool-examples">
+                                task_create, task_orchestrate, task_distribute, task_prioritize, task_dependencies, task_monitor, task_retry, task_cancel
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">💾 Memory Operations</span>
+                                <span class="tool-count">10</span>
+                            </div>
+                            <div class="tool-examples">
+                                memory_store, memory_retrieve, memory_query, memory_update, memory_delete, memory_share, memory_sync, memory_compress, memory_export, memory_import
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🧠 Neural Processing</span>
+                                <span class="tool-count">8</span>
+                            </div>
+                            <div class="tool-examples">
+                                neural_train, neural_predict, neural_sync, neural_evolve, neural_prune, neural_quantize, neural_ensemble, neural_transfer
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">📊 GitHub Integration</span>
+                                <span class="tool-count">6</span>
+                            </div>
+                            <div class="tool-examples">
+                                github_coordinator, github_pr_manager, github_issue_tracker, github_release_manager, github_repo_architect, github_sync_coordinator
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">📈 Performance Monitoring</span>
+                                <span class="tool-count">7</span>
+                            </div>
+                            <div class="tool-examples">
+                                performance_monitor, performance_analyze, performance_optimize, bottleneck_detect, resource_monitor, metric_collect, alert_manage
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🔄 Workflow Automation</span>
+                                <span class="tool-count">9</span>
+                            </div>
+                            <div class="tool-examples">
+                                workflow_create, workflow_execute, workflow_schedule, pipeline_create, pipeline_execute, batch_process, parallel_execute, chain_execute, conditional_execute
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🔒 Security & Compliance</span>
+                                <span class="tool-count">6</span>
+                            </div>
+                            <div class="tool-examples">
+                                security_scan, vulnerability_check, compliance_audit, access_control, encryption_manage, secret_manage
+                            </div>
+                        </div>
+
+                        <div class="tool-category">
+                            <div class="tool-category-header">
+                                <span class="tool-category-name">🛠️ Utility Tools</span>
+                                <span class="tool-count">6</span>
+                            </div>
+                            <div class="tool-examples">
+                                consensus_vote, health_check, diagnostic_run, backup_create, restore_backup, system_reset
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expandable-title">JavaScript API Integration Example</span>
+                            <span class="expandable-icon">▼</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="code-example" style="margin: 0;">
+                                <div class="code-content">
+<pre>// MCP Tool Integration Example
+async function orchestrateProject() {
+  // 1. Initialize swarm
+  await mcp__claude_flow__swarm_init({
+    topology: "hierarchical",
+    strategy: "auto",
+    maxAgents: 10
+  });
+
+  // 2. Spawn specialized agents
+  const agents = await Promise.all([
+    mcp__claude_flow__agent_spawn({
+      type: "coordinator",
+      name: "ProjectLead"
+    }),
+    mcp__claude_flow__agent_spawn({
+      type: "coder", 
+      name: "BackendDev",
+      capabilities: ["python", "fastapi"]
+    }),
+    mcp__claude_flow__agent_spawn({
+      type: "tester",
+      name: "QAEngineer"
+    })
+  ]);
+
+  // 3. Orchestrate tasks
+  await mcp__claude_flow__task_orchestrate({
+    task: "Build REST API with authentication",
+    strategy: "parallel",
+    priority: "high",
+    agents: agents.map(a => a.id)
+  });
+
+  // 4. Store progress in memory
+  await mcp__claude_flow__memory_store({
+    key: "project-status",
+    value: { phase: "development", progress: 0.25 },
+    namespace: "api-project"
+  });
+
+  // 5. Monitor performance
+  const metrics = await mcp__claude_flow__performance_monitor({
+    metrics: ["task-completion", "agent-efficiency"],
+    interval: 5000
+  });
+
+  return metrics;
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Memory System -->
+                <section id="memory-system" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>💾</span>
+                        SQLite Memory System
+                        <span class="badge badge-enterprise">12 Tables</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Persistent, distributed knowledge storage with 12 specialized tables for comprehensive state management
+                    </p>
+
+                    <div class="memory-overview">
+                        <h3 style="margin-bottom: 16px; font-size: 24px;">Architecture & Design</h3>
+                        <p style="margin-bottom: 20px; line-height: 1.6;">
+                            The SQLite Memory System serves as Claude-Flow's persistent brain, implemented as a relational database 
+                            with 12 specialized tables covering core data, agents, workflows, and learning patterns.
+                        </p>
+                        
+                        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h4 style="margin-bottom: 12px;">Database Structure: .swarm/memory.db</h4>
+                            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6;">
+                                📁 .swarm/<br>
+                                └── 💾 memory.db (SQLite Database)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;├── 🗃️ Core Tables (4)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;├── 🤖 Agent Tables (3)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;├── 🔄 Workflow Tables (2)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;└── 🧠 Learning Tables (3)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tables-grid">
+                        <div class="table-card">
+                            <div class="table-name">1. memory_store</div>
+                            <div class="table-description">General key-value storage for project data, configurations, and intermediate results</div>
+                            <div class="table-fields">id, key, value, namespace, created_at, updated_at, ttl, compression</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">2. sessions</div>
+                            <div class="table-description">Session management across multiple Claude interactions</div>
+                            <div class="table-fields">session_id, user_id, project_name, context, created_at, last_activity, status</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">3. agents</div>
+                            <div class="table-description">Agent registry with status tracking and performance metrics</div>
+                            <div class="table-fields">agent_id, type, name, status, capabilities, memory_allocation, performance_metrics</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">4. tasks</div>
+                            <div class="table-description">Task tracking with status, assignment, and results</div>
+                            <div class="table-fields">task_id, description, status, assigned_agent, priority, created_at, completed_at, result</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">5. agent_memory</div>
+                            <div class="table-description">Individual agent memory with importance scoring</div>
+                            <div class="table-fields">agent_id, memory_key, memory_value, importance, access_count, last_accessed</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">6. shared_state</div>
+                            <div class="table-description">Cross-agent shared data with access control</div>
+                            <div class="table-fields">state_key, state_value, owner_agent, readers, writers, version, locked</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">7. events</div>
+                            <div class="table-description">Comprehensive event log for audit trails</div>
+                            <div class="table-fields">event_id, event_type, source, target, payload, timestamp, processed</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">8. patterns</div>
+                            <div class="table-description">Learned development patterns with confidence scoring</div>
+                            <div class="table-fields">pattern_id, pattern_type, pattern_data, confidence, usage_count, success_rate</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">9. performance_metrics</div>
+                            <div class="table-description">Detailed performance tracking over time</div>
+                            <div class="table-fields">metric_id, metric_name, metric_value, unit, source, timestamp, tags</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">10. workflow_state</div>
+                            <div class="table-description">Workflow persistence for seamless resumption</div>
+                            <div class="table-fields">workflow_id, workflow_name, current_stage, stages_completed, context, checkpoints</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">11. swarm_topology</div>
+                            <div class="table-description">Network topology mapping for visualization</div>
+                            <div class="table-fields">node_id, node_type, parent_id, children, connections, position, health_score</div>
+                        </div>
+
+                        <div class="table-card">
+                            <div class="table-name">12. consensus_state</div>
+                            <div class="table-description">Distributed consensus decisions and voting</div>
+                            <div class="table-fields">consensus_id, question, votes, result, algorithm, participants, resolved_at</div>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Memory Management Example</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre># Store project data with compression
+npx claude-flow@alpha memory store "project-requirements" \
+  "OAuth2 with JWT tokens, Redis cache, PostgreSQL" \
+  --namespace auth-system \
+  --compress \
+  --ttl 7200
+
+# Query memory with filtering
+npx claude-flow@alpha memory query "auth" \
+  --namespace auth-system \
+  --recent \
+  --limit 10 \
+  --format json
+
+# Export memory for backup
+npx claude-flow@alpha memory export \
+  --output backup.json \
+  --filter "project-*" \
+  --compress
+
+# Import from backup
+npx claude-flow@alpha memory import backup.json \
+  --merge \
+  --validate</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dynamic Agent Architecture -->
+                <section id="agent-architecture" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>🤖</span>
+                        Dynamic Agent Architecture (DAA)
+                        <span class="badge badge-new">Self-Organizing</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Self-organizing, adaptive agents with auto-scaling, fault tolerance, and evolutionary learning
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin: 32px 0;">
+                        <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-blue);">🔄 Self-Organization</h4>
+                            <ul style="list-style: none; font-size: 14px;">
+                                <li style="padding: 4px 0;">✅ Auto-scaling (min/max agents)</li>
+                                <li style="padding: 4px 0;">✅ Load balancing</li>
+                                <li style="padding: 4px 0;">✅ Resource optimization</li>
+                                <li style="padding: 4px 0;">✅ Fault tolerance</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-green);">🧬 Adaptation Features</h4>
+                            <ul style="list-style: none; font-size: 14px;">
+                                <li style="padding: 4px 0;">📊 Learning Rate: 0.1</li>
+                                <li style="padding: 4px 0;">🔄 Evolution Cycles: 100</li>
+                                <li style="padding: 4px 0;">🎲 Mutation Rate: 0.05</li>
+                                <li style="padding: 4px 0;">🤝 Crossover Rate: 0.7</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-orange);">🛡️ Resilience Mechanisms</h4>
+                            <ul style="list-style: none; font-size: 14px;">
+                                <li style="padding: 4px 0;">⚡ Circuit Breaker Pattern</li>
+                                <li style="padding: 4px 0;">🔄 Exponential Backoff Retry</li>
+                                <li style="padding: 4px 0;">👥 Redundancy Management</li>
+                                <li style="padding: 4px 0;">💓 Health Monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">DAA Configuration</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre># Enable DAA with autonomous mode
+npx claude-flow@alpha daa enable \
+  --mode autonomous \
+  --min-agents 3 \
+  --max-agents 20 \
+  --optimization-goal "minimize-time"
+
+# Configure auto-scaling rules
+npx claude-flow@alpha config set daa.autoScale.enabled true
+npx claude-flow@alpha config set daa.autoScale.scaleUpThreshold 0.8
+npx claude-flow@alpha config set daa.autoScale.scaleDownThreshold 0.3
+npx claude-flow@alpha config set daa.autoScale.cooldownPeriod 60
+
+# Monitor agent adaptation
+npx claude-flow@alpha daa status
+npx claude-flow@alpha daa metrics --real-time</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Hooks System -->
+                <section id="hooks-system" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>🪝</span>
+                        Advanced Hooks System
+                        <span class="badge badge-new">Automated</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Automated workflow integration with 6 hook types for seamless tool orchestration
+                    </p>
+
+                    <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; margin: 24px 0;">
+                        <h4 style="margin-bottom: 16px; font-size: 18px;">Hook Lifecycle & Types</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
+                                <strong style="color: var(--accent-blue);">Global Hooks</strong><br>
+                                <small>preInit, postInit, preShutdown, postShutdown</small>
+                            </div>
+                            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
+                                <strong style="color: var(--accent-green);">Tool Hooks</strong><br>
+                                <small>preToolUse, postToolUse, onToolError</small>
+                            </div>
+                            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
+                                <strong style="color: var(--accent-orange);">Agent Hooks</strong><br>
+                                <small>onSpawn, onTerminate, onIdle, onBusy</small>
+                            </div>
+                            <div style="background: var(--bg-tertiary); padding: 16px; border-radius: 8px;">
+                                <strong style="color: var(--warning);">Workflow Hooks</strong><br>
+                                <small>onStageComplete, onCheckpoint, onRollback</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="expandable">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expandable-title">Practical Hook Example: Automatic Code Formatting</span>
+                            <span class="expandable-icon">▼</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="code-example" style="margin: 0;">
+                                <div class="code-content">
+<pre>// hooks/pre-tool.js - Automatic Code Formatting
+module.exports = async function preToolHook(context) {
+  const { tool, args, agent } = context;
+  
+  // Auto-format on file writes
+  if (tool === 'Write' || tool === 'Edit') {
+    const filePath = args.path;
+    const content = args.content;
+    
+    // Language-specific formatting
+    if (filePath.endsWith('.py')) {
+      args.content = await formatPython(content);
+      log(`Formatted Python file: ${filePath}`);
+    } else if (filePath.endsWith('.js') || filePath.endsWith('.ts')) {
+      args.content = await formatJavaScript(content);
+      log(`Formatted JavaScript file: ${filePath}`);
+    }
+    
+    // Linting validation
+    const lintErrors = await lint(filePath, args.content);
+    if (lintErrors.length > 0) {
+      return {
+        allow: false,
+        reason: `Linting errors: ${lintErrors.join(', ')}`
+      };
+    }
+  }
+  
+  return { allow: true };
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Hook Configuration in settings.json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre>{
+  "hooks": [
+    {
+      "matcher": "Edit|Write|MultiEdit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "prettier --write \"$CLAUDE_FILE_PATHS\""
+        },
+        {
+          "type": "command",
+          "command": "eslint --fix \"$CLAUDE_FILE_PATHS\""
+        }
+      ]
+    },
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "script",
+          "script": "./hooks/validate-command.js"
+        }
+      ]
+    },
+    {
+      "matcher": ".*Test.*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "npm test -- --coverage"
+        }
+      ]
+    }
+  ]
+}</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- GitHub Integration -->
+                <section id="github-integration" class="feature-section">
+                    <h2 class="feature-title">
+                        <span>📊</span>
+                        GitHub Integration
+                        <span class="badge badge-enterprise">6 Modes</span>
+                    </h2>
+                    <p class="feature-subtitle">
+                        Comprehensive GitHub workflow automation with 6 specialized modes for repository management
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin: 32px 0;">
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-orange);">🎯 GH-Coordinator</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Repository coordination and analysis</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Code analysis across multiple repos</li>
+                                <li style="padding: 2px 0;">• Dependency tracking</li>
+                                <li style="padding: 2px 0;">• Cross-repo refactoring</li>
+                                <li style="padding: 2px 0;">• Team coordination</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-blue);">🔄 PR-Manager</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Pull request management automation</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Automatic PR reviews</li>
+                                <li style="padding: 2px 0;">• Multi-agent review teams</li>
+                                <li style="padding: 2px 0;">• Conflict resolution</li>
+                                <li style="padding: 2px 0;">• Auto-merge strategies</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--success);">📋 Issue-Tracker</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Intelligent issue management</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Auto issue classification</li>
+                                <li style="padding: 2px 0;">• Agent assignment</li>
+                                <li style="padding: 2px 0;">• Sprint planning integration</li>
+                                <li style="padding: 2px 0;">• Bug prioritization</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--warning);">🚀 Release-Manager</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Release coordination and deployment</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Auto changelog generation</li>
+                                <li style="padding: 2px 0;">• Semantic versioning</li>
+                                <li style="padding: 2px 0;">• Multi-repo releases</li>
+                                <li style="padding: 2px 0;">• Deployment orchestration</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--accent-green);">🏗️ Repo-Architect</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Repository structure optimization</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Structure analysis</li>
+                                <li style="padding: 2px 0;">• Refactoring suggestions</li>
+                                <li style="padding: 2px 0;">• Monorepo migration</li>
+                                <li style="padding: 2px 0;">• Dependency optimization</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                            <h4 style="margin-bottom: 12px; color: var(--error);">🔄 Sync-Coordinator</h4>
+                            <p style="font-size: 14px; margin-bottom: 12px; color: var(--text-secondary);">Multi-repository synchronization</p>
+                            <ul style="list-style: none; font-size: 13px;">
+                                <li style="padding: 2px 0;">• Cross-repo synchronization</li>
+                                <li style="padding: 2px 0;">• Shared code management</li>
+                                <li style="padding: 2px 0;">• Version alignment</li>
+                                <li style="padding: 2px 0;">• Conflict resolution</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">GitHub Workflow Integration</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <div class="code-content">
+<pre># Repository coordination
+npx claude-flow@alpha github gh-coordinator \
+  --analysis-type comprehensive \
+  --target ./src \
+  --output report.md
+
+# PR management with AI review
+npx claude-flow@alpha github pr-manager \
+  --action review \
+  --multi-reviewer \
+  --ai-powered \
+  --auto-merge-on-approval
+
+# Issue tracking with auto-assignment
+npx claude-flow@alpha github issue-tracker \
+  --mode manage \
+  --auto-label \
+  --auto-assign \
+  --project-coordination
+
+# Release management
+npx claude-flow@alpha github release-manager \
+  --version 2.0.0 \
+  --auto-changelog \
+  --semantic-versioning \
+  --deployment-coordination</pre>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script>
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-example').querySelector('pre');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--accent-orange)';
+                }, 2000);
+            });
+        }
+
+        // Neural models demo
+        const neuralModels = {
+            coordination: [
+                "1. Task Orchestrator - Optimal task distribution",
+                "2. Resource Allocator - Efficient resource management", 
+                "3. Conflict Resolver - Deadlock resolution",
+                "4. Priority Manager - Dynamic priority adjustment",
+                "5. Load Balancer - Agent workload distribution"
+            ],
+            learning: [
+                "6. Pattern Recognizer - Recurring development patterns",
+                "7. Success Predictor - Task success rate prediction",
+                "8. Error Analyzer - Error cause analysis",
+                "9. Optimization Learner - Performance improvements",
+                "10. Meta-Learner - Learning about learning processes",
+                "11. Domain Adapter - New domain adaptation"
+            ],
+            decision: [
+                "12. Decision Tree Navigator - Complex decision trees",
+                "13. Risk Assessor - Implementation risk evaluation",
+                "14. Trade-off Analyzer - Cost-benefit analysis",
+                "15. Strategy Selector - Optimal strategy selection",
+                "16. Consensus Builder - Conflict resolution consensus"
+            ],
+            communication: [
+                "17. Intent Parser - User intent understanding",
+                "18. Context Maintainer - Session context continuity",
+                "19. Response Generator - Natural language responses",
+                "20. Translation Bridge - Cross-agent communication"
+            ],
+            performance: [
+                "21. Bottleneck Detector - Performance bottlenecks",
+                "22. Optimization Suggester - Code optimization suggestions",
+                "23. Cache Manager - Intelligent caching",
+                "24. Resource Predictor - Resource requirement prediction"
+            ],
+            all: []
+        };
+
+        // Flatten all models for 'all' view
+        Object.keys(neuralModels).forEach(category => {
+            if (category !== 'all') {
+                neuralModels.all = neuralModels.all.concat(neuralModels[category]);
+            }
+        });
+
+        // Add specialized models to 'all'
+        const specializedModels = [
+            "25. Quality Assessor - Code quality evaluation",
+            "26. Complexity Analyzer - Code complexity analysis", 
+            "27. Refactor Suggester - Refactoring recommendations",
+            "28. Security Analyzer - Security vulnerability detection",
+            "29. Vulnerability Detector - Security threats",
+            "30. Threat Assessor - Risk assessment",
+            "31. Doc Generator - Automated documentation",
+            "32. API Documenter - API documentation",
+            "33. Comment Generator - Code comments"
+        ];
+        neuralModels.all = neuralModels.all.concat(specializedModels);
+
+        function showModels(category) {
+            // Update button states
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show models
+            const output = document.getElementById('neural-demo-output');
+            const models = neuralModels[category] || [];
+            
+            let content = `Neural Models: ${category.charAt(0).toUpperCase() + category.slice(1)}\n`;
+            content += `Total: ${models.length} models\n\n`;
+            
+            models.forEach(model => {
+                content += `${model}\n`;
+            });
+
+            output.textContent = content;
+        }
+
+        // Initialize with coordination models
+        setTimeout(() => showModels('coordination'), 100);
+
+        // Expandable sections
+        function toggleExpandable(header) {
+            const expandable = header.parentElement;
+            expandable.classList.toggle('open');
+        }
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.feature-section');
+            
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(query) || query === '') {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.12.8
+Run started:2025-08-23 17:07:22.895168
+
+Test results:
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
+   Location: src/api/websocket.py:478:8
+477	            await websocket.close(code=1011, reason="Internal server error")
+478	        except:
+479	            pass
+480	
+
+--------------------------------------------------
+>> Issue: [B107:hardcoded_password_default] Possible hardcoded password: 'cl100k_base'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b107_hardcoded_password_default.html
+   Location: src/core/chunking.py:51:4
+50	    
+51	    def __init__(
+52	        self,
+53	        chunk_size: int = 1000,
+54	        chunk_overlap: int = 200,
+55	        strategy: ChunkingStrategy = ChunkingStrategy.RECURSIVE_CHARACTER,
+56	        enable_semantic_chunking: bool = True,
+57	        token_model: str = "cl100k_base",  # GPT-4 tokenizer
+58	        min_chunk_size: int = 100,
+59	        max_chunk_size: int = 4000
+60	    ):
+61	        """
+62	        Initialize Document Chunker
+63	        
+64	        Args:
+65	            chunk_size: Target chunk size in tokens
+66	            chunk_overlap: Overlap between chunks in tokens
+67	            strategy: Primary chunking strategy
+68	            enable_semantic_chunking: Whether to use semantic boundaries
+69	            token_model: Tokenizer model for token counting
+70	            min_chunk_size: Minimum chunk size in tokens
+71	            max_chunk_size: Maximum chunk size in tokens
+72	        """
+73	        self.chunk_size = chunk_size
+74	        self.chunk_overlap = chunk_overlap
+75	        self.strategy = strategy
+76	        self.enable_semantic_chunking = enable_semantic_chunking
+77	        self.token_model = token_model
+78	        self.min_chunk_size = min_chunk_size
+79	        self.max_chunk_size = max_chunk_size
+80	        
+81	        # Initialize tokenizer
+82	        try:
+83	            self.tokenizer = tiktoken.get_encoding(token_model)
+84	        except Exception as e:
+85	            logger.warning(f"Failed to load tokenizer {token_model}: {e}")
+86	            self.tokenizer = tiktoken.get_encoding("cl100k_base")
+87	        
+88	        # Separators for different strategies
+89	        self.separators = {
+90	            ChunkingStrategy.RECURSIVE_CHARACTER: [
+91	                "\n\n", "\n", " ", ""
+92	            ],
+93	            ChunkingStrategy.SENTENCE: [
+94	                ". ", "! ", "? ", ".\n", "!\n", "?\n"
+95	            ],
+96	            ChunkingStrategy.PARAGRAPH: [
+97	                "\n\n", "\n\n\n"
+98	            ],
+99	            ChunkingStrategy.MARKDOWN: [
+100	                "\n## ", "\n### ", "\n#### ",
+101	                "\n\n", "\n", " "
+102	            ],
+103	            ChunkingStrategy.CODE: [
+104	                "\nclass ", "\ndef ", "\nasync def ",
+105	                "\n\n", "\n", " "
+106	            ]
+107	        }
+108	        
+109	        # Language detection patterns
+110	        self.language_patterns = {
+111	            "python": re.compile(r"(def |class |import |from .+ import)"),
+112	            "javascript": re.compile(r"(function |const |let |var |=>)"),
+113	            "java": re.compile(r"(public class|private |protected |import java)"),
+114	            "markdown": re.compile(r"(#{1,6} |```|\*\*|\*)"),
+115	            "sql": re.compile(r"(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER)", re.IGNORECASE)
+116	        }
+117	    
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html
+   Location: src/core/embeddings.py:88:20
+87	        """Generate cache key for text"""
+88	        text_hash = hashlib.md5(text.encode()).hexdigest()
+89	        return f"{self.model}:{text_hash}"
+
+--------------------------------------------------
+>> Issue: [B324:hashlib] Use of weak MD5 hash for security. Consider usedforsecurity=False
+   Severity: High   Confidence: High
+   CWE: CWE-327 (https://cwe.mitre.org/data/definitions/327.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html
+   Location: src/core/file_watcher.py:269:17
+268	        
+269	        hasher = hashlib.md5()
+270	        
+
+--------------------------------------------------
+>> Issue: [B403:blacklist] Consider possible security implications associated with pickle module.
+   Severity: Low   Confidence: High
+   CWE: CWE-502 (https://cwe.mitre.org/data/definitions/502.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle
+   Location: src/core/memory.py:16:0
+15	from collections import deque
+16	import pickle
+17	import os
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
+   Location: src/core/project_manager.py:226:16
+225	                    self.chroma_client.delete_collection(project.vector_collection_name)
+226	                except:
+227	                    pass  # Collection might not exist
+228	            
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
+   Location: src/core/project_manager.py:316:16
+315	                    stats.total_chunks = collection.count()
+316	                except:
+317	                    pass
+318	            
+
+--------------------------------------------------
+>> Issue: [B104:hardcoded_bind_all_interfaces] Possible binding to all interfaces.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-605 (https://cwe.mitre.org/data/definitions/605.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html
+   Location: src/main.py:259:13
+258	        "src.main:app",
+259	        host="0.0.0.0",
+260	        port=8000,
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
+   Location: src/ui/components/chat_area.py:385:12
+384	                return datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+385	            except:
+386	                pass
+387	        
+
+--------------------------------------------------
+>> Issue: [B110:try_except_pass] Try, Except, Pass detected.
+   Severity: Low   Confidence: High
+   CWE: CWE-703 (https://cwe.mitre.org/data/definitions/703.html)
+   More Info: https://bandit.readthedocs.io/en/1.8.6/plugins/b110_try_except_pass.html
+   Location: src/utils/dependencies.py:380:8
+379	                    client_id = payload.get("user_id", client_id)
+380	        except:
+381	            pass  # Use IP address if token validation fails
+382	        
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 11459
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 7
+		Medium: 1
+		High: 2
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 2
+		High: 8
+Files skipped (0):

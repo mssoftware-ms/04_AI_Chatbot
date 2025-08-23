@@ -1,0 +1,29 @@
+{
+  "name": "claude-flow-hive-mind",
+  "version": "2.0.0",
+  "description": "Claude-Flow Hive-Mind Multi-Agent System",
+  "main": "start-hive-mind.js",
+  "scripts": {
+    "start": "node start-hive-mind.js",
+    "init": "claude-flow init --sparc",
+    "hive": "claude-flow hive start",
+    "monitor": "claude-flow hive monitor --live",
+    "status": "claude-flow hive status",
+    "clean": "rm -rf node_modules claude-flow.db claude-flow.log"
+  },
+  "dependencies": {
+    "claude-flow": "alpha",
+    "@anthropic-ai/claude-code": "latest",
+    "@modelcontextprotocol/sdk": "latest",
+    "@modelcontextprotocol/server-filesystem": "latest",
+    "sqlite3": "^5.1.6",
+    "ws": "^8.14.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

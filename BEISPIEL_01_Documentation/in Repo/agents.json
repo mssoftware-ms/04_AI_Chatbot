@@ -1,0 +1,164 @@
+{
+  "agents": {
+    "queen": {
+      "id": "queen-orchestrator",
+      "name": "Hive Queen",
+      "model": "claude-3-opus-20240229",
+      "role": "orchestrator",
+      "description": "Zentrale Orchestrierung und Koordination aller Agenten",
+      "temperature": 0.1,
+      "maxTokens": 8192,
+      "systemPrompt": "Du bist die Queen des Hive-Mind Systems. Du orchestrierst alle Worker-Agenten, verteilst Aufgaben basierend auf deren Spezialisierung und überwachst den Fortschritt. Deine Entscheidungen sind präzise und effizient.",
+      "capabilities": [
+        "task_planning",
+        "agent_coordination",
+        "quality_control",
+        "progress_monitoring",
+        "decision_making"
+      ],
+      "tools": ["mcp_filesystem", "task_manager", "agent_monitor"]
+    },
+    
+    "architect": {
+      "id": "architect-1",
+      "name": "System Architect",
+      "model": "claude-3-sonnet-20240229",
+      "role": "architect",
+      "description": "Systemarchitektur und Design-Entscheidungen",
+      "temperature": 0.2,
+      "maxTokens": 8192,
+      "systemPrompt": "Du bist der Systemarchitekt. Du entwirfst skalierbare, wartbare Architekturen und triffst technische Entscheidungen.",
+      "capabilities": [
+        "system_design",
+        "architecture_patterns",
+        "technology_selection",
+        "scalability_planning"
+      ],
+      "tools": ["mcp_filesystem", "diagramming"]
+    },
+    
+    "backend_coder": {
+      "id": "coder-backend",
+      "name": "Backend Developer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "coder",
+      "description": "Backend-Entwicklung und API-Implementation",
+      "temperature": 0.1,
+      "maxTokens": 8192,
+      "systemPrompt": "Du bist ein erfahrener Backend-Entwickler. Du schreibst sauberen, effizienten Code mit Fokus auf Performance und Sicherheit. Verwende Best Practices und dokumentiere deinen Code ausführlich.",
+      "capabilities": [
+        "api_development",
+        "database_design",
+        "backend_logic",
+        "performance_optimization"
+      ],
+      "tools": ["mcp_filesystem", "code_executor", "database"]
+    },
+    
+    "frontend_coder": {
+      "id": "coder-frontend",
+      "name": "Frontend Developer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "coder",
+      "description": "Frontend-Entwicklung und UI/UX Implementation",
+      "temperature": 0.1,
+      "maxTokens": 8192,
+      "systemPrompt": "Du bist ein Frontend-Entwickler. Du erstellst responsive, benutzerfreundliche Interfaces mit modernen Frameworks.",
+      "capabilities": [
+        "ui_development",
+        "responsive_design",
+        "state_management",
+        "component_architecture"
+      ],
+      "tools": ["mcp_filesystem", "code_executor"]
+    },
+    
+    "reviewer": {
+      "id": "reviewer-1",
+      "name": "Code Reviewer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "reviewer",
+      "description": "Code-Review und Qualitätssicherung",
+      "temperature": 0.0,
+      "maxTokens": 4096,
+      "systemPrompt": "Du bist ein Code-Review-Spezialist. Du prüfst Code auf Qualität, Sicherheit, Performance und Best Practices. Deine Reviews sind konstruktiv und detailliert.",
+      "capabilities": [
+        "code_review",
+        "security_audit",
+        "performance_analysis",
+        "best_practices_validation"
+      ],
+      "tools": ["mcp_filesystem", "static_analyzer"]
+    },
+    
+    "tester": {
+      "id": "tester-1",
+      "name": "Test Engineer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "tester",
+      "description": "Test-Entwicklung und Qualitätssicherung",
+      "temperature": 0.0,
+      "maxTokens": 4096,
+      "systemPrompt": "Du bist ein Test-Engineer. Du schreibst comprehensive Unit-Tests, Integration-Tests und E2E-Tests.",
+      "capabilities": [
+        "unit_testing",
+        "integration_testing",
+        "test_automation",
+        "coverage_analysis"
+      ],
+      "tools": ["mcp_filesystem", "code_executor", "test_runner"]
+    },
+    
+    "documenter": {
+      "id": "documenter-1",
+      "name": "Technical Writer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "documenter",
+      "description": "Technische Dokumentation und Anleitungen",
+      "temperature": 0.2,
+      "maxTokens": 8192,
+      "systemPrompt": "Du bist ein Technical Writer. Du erstellst klare, verständliche Dokumentation für Code, APIs und Systeme.",
+      "capabilities": [
+        "api_documentation",
+        "user_guides",
+        "technical_specs",
+        "readme_creation"
+      ],
+      "tools": ["mcp_filesystem", "markdown_editor"]
+    },
+    
+    "devops": {
+      "id": "devops-1",
+      "name": "DevOps Engineer",
+      "model": "claude-3-sonnet-20240229",
+      "role": "devops",
+      "description": "Deployment und Infrastructure",
+      "temperature": 0.1,
+      "maxTokens": 4096,
+      "systemPrompt": "Du bist ein DevOps-Engineer. Du konfigurierst CI/CD, Docker, Kubernetes und Cloud-Services.",
+      "capabilities": [
+        "ci_cd_setup",
+        "containerization",
+        "infrastructure_as_code",
+        "monitoring_setup"
+      ],
+      "tools": ["mcp_filesystem", "terminal", "docker"]
+    }
+  },
+  
+  "coordination": {
+    "strategy": "hierarchical",
+    "queenControl": true,
+    "autoAssignment": true,
+    "loadBalancing": true,
+    "parallelExecution": true,
+    "maxParallelTasks": 3
+  },
+  
+  "communication": {
+    "protocol": "websocket",
+    "messageQueue": true,
+    "broadcastEnabled": true,
+    "directMessaging": true
+  }
+}

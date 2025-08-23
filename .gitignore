@@ -1,63 +1,176 @@
-# Hinzugefügt vom Project Manager am 2025-08-22 16:35
-# === Python ===
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-.venv/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 venv/
 env/
 ENV/
-build/
-dist/
-.eggs/
-*.egg-info/
-.pytest_cache/
-.mypy_cache/
-coverage/
-htmlcov/
-.tox/
-.ipynb_checkpoints/
-.cache/
+env.bak/
+venv.bak/
 
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
 
-# === Node ===
-# Node
-node_modules/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
-dist/
-build/
-.cache/
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
-# === VSCode ===
-# VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/
+# Data directories
+data/uploads/*
+\!data/uploads/.gitkeep
+data/projects/*
+\!data/projects/.gitkeep
+data/chroma/
 
+# Test coverage
+htmlcov/
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
 
-# === System ===
-# System
-.DS_Store
-Thumbs.db
-desktop.ini
+# Jupyter Notebook
+.ipynb_checkpoints
 
+# pyenv
+.python-version
 
-# === JetBrains ===
-# JetBrains
-.idea/
-*.iml
-out/
+# Celery
+celerybeat-schedule
+celerybeat.pid
 
+# SageMath parsed files
+*.sage.py
 
-# === Env ===
-# Env files
-.env
-.env.*
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Claude Flow / Swarm
+.swarm/
+.claude-flow/
+.claude/
+.claude_flow/
+.hive-mind/
+.wsl-tmp/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Static files
+static/uploads/
+static/temp/
+
+# ML Models
+models/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# API Keys and Secrets
+secrets/
+credentials/
+*.pem
+*.key
+*.crt
+EOF < /dev/null
+
+# Claude Flow generated files
+.claude/settings.local.json
+.mcp.json
+claude-flow.config.json
+.swarm/
+.hive-mind/
+memory/claude-flow-data.json
+memory/sessions/*
+!memory/sessions/README.md
+memory/agents/*
+!memory/agents/README.md
+coordination/memory_bank/*
+coordination/subtasks/*
+coordination/orchestration/*
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+claude-flow
+claude-flow.bat
+claude-flow.ps1
+hive-mind-prompt-*.txt
