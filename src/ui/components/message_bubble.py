@@ -9,7 +9,7 @@ from datetime import datetime
 import asyncio
 
 
-class MessageBubble(ft.UserControl):
+class MessageBubble:
     """Individual message bubble component."""
     
     def __init__(
@@ -19,7 +19,7 @@ class MessageBubble(ft.UserControl):
         on_retry: Optional[Callable[[str], None]] = None,
         on_copy: Optional[Callable[[str], None]] = None
     ):
-        super().__init__()
+        pass  # No super() needed
         self.message = message
         self.colors = colors
         self.on_retry = on_retry
@@ -79,7 +79,7 @@ class MessageBubble(ft.UserControl):
                 right=0 if self.is_user else 60,
                 bottom=2
             ),
-            animate=ft.animation.Animation(200, ft.AnimationCurve.EASE_OUT),
+            animate=ft.Animation(200, ft.AnimationCurve.EASE_OUT),
             on_long_press=self.show_message_options,
             on_hover=self.on_hover
         )
@@ -89,8 +89,8 @@ class MessageBubble(ft.UserControl):
         if not self.is_user:
             avatar = ft.CircleAvatar(
                 content=ft.Icon(
-                    ft.icons.SMART_TOY,
-                    color=ft.colors.WHITE,
+                    ft.Icons.SMART_TOY,
+                    color=ft.Colors.WHITE,
                     size=16
                 ),
                 bgcolor=self.colors["primary"],
@@ -201,7 +201,7 @@ class MessageBubble(ft.UserControl):
             content=ft.Row(
                 controls=[
                     ft.Icon(
-                        ft.icons.DESCRIPTION,
+                        ft.Icons.DESCRIPTION,
                         color=self.colors["primary"],
                         size=24
                     ),
@@ -224,7 +224,7 @@ class MessageBubble(ft.UserControl):
                         expand=True
                     ),
                     ft.IconButton(
-                        icon=ft.icons.DOWNLOAD,
+                        icon=ft.Icons.DOWNLOAD,
                         icon_color=self.colors["text_secondary"],
                         icon_size=20,
                         tooltip="Download",
@@ -246,7 +246,7 @@ class MessageBubble(ft.UserControl):
             content=ft.Row(
                 controls=[
                     ft.IconButton(
-                        icon=ft.icons.PLAY_ARROW,
+                        icon=ft.Icons.PLAY_ARROW,
                         icon_color=self.colors["primary"],
                         bgcolor=self.colors["primary"] + "20",
                         tooltip="Play audio"
@@ -284,8 +284,8 @@ class MessageBubble(ft.UserControl):
                 controls=[
                     ft.Container(
                         content=ft.Icon(
-                            ft.icons.VIDEOCAM,
-                            color=ft.colors.WHITE,
+                            ft.Icons.VIDEOCAM,
+                            color=ft.Colors.WHITE,
                             size=40
                         ),
                         width=200,
@@ -296,10 +296,10 @@ class MessageBubble(ft.UserControl):
                     ),
                     ft.Container(
                         content=ft.IconButton(
-                            icon=ft.icons.PLAY_CIRCLE_FILL,
-                            icon_color=ft.colors.WHITE,
+                            icon=ft.Icons.PLAY_CIRCLE_FILL,
+                            icon_color=ft.Colors.WHITE,
                             icon_size=50,
-                            bgcolor=ft.colors.BLACK54,
+                            bgcolor=ft.Colors.BLACK54,
                             style=ft.ButtonStyle(
                                 shape=ft.CircleBorder()
                             )
@@ -309,7 +309,7 @@ class MessageBubble(ft.UserControl):
                     ft.Container(
                         content=ft.Text(
                             attachment.get("name", ""),
-                            color=ft.colors.WHITE,
+                            color=ft.Colors.WHITE,
                             size=12,
                             weight=ft.FontWeight.BOLD
                         ),
@@ -329,7 +329,7 @@ class MessageBubble(ft.UserControl):
             content=ft.Row(
                 controls=[
                     ft.Icon(
-                        ft.icons.ATTACH_FILE,
+                        ft.Icons.ATTACH_FILE,
                         color=self.colors["text_secondary"],
                         size=24
                     ),
@@ -351,7 +351,7 @@ class MessageBubble(ft.UserControl):
                         expand=True
                     ),
                     ft.IconButton(
-                        icon=ft.icons.DOWNLOAD,
+                        icon=ft.Icons.DOWNLOAD,
                         icon_color=self.colors["text_secondary"],
                         icon_size=20,
                         tooltip="Download",
@@ -374,7 +374,7 @@ class MessageBubble(ft.UserControl):
                 content=ft.Row(
                     controls=[
                         ft.Icon(
-                            ft.icons.SOURCE,
+                            ft.Icons.SOURCE,
                             size=12,
                             color=self.colors["text_secondary"]
                         ),
@@ -449,11 +449,11 @@ class MessageBubble(ft.UserControl):
     def get_status_icon(self) -> Optional[ft.Icon]:
         """Get status icon based on message status."""
         status_icons = {
-            "sending": ft.icons.SCHEDULE,
-            "sent": ft.icons.DONE,
-            "delivered": ft.icons.DONE_ALL,
-            "read": ft.icons.DONE_ALL,
-            "failed": ft.icons.ERROR
+            "sending": ft.Icons.SCHEDULE,
+            "sent": ft.Icons.DONE,
+            "delivered": ft.Icons.DONE_ALL,
+            "read": ft.Icons.DONE_ALL,
+            "failed": ft.Icons.ERROR
         }
         
         icon = status_icons.get(self.status)
@@ -464,7 +464,7 @@ class MessageBubble(ft.UserControl):
         if self.status == "read":
             color = self.colors["primary"]
         elif self.status == "failed":
-            color = ft.colors.RED_400
+            color = ft.Colors.RED_400
         
         return ft.Icon(
             icon,
@@ -482,7 +482,7 @@ class MessageBubble(ft.UserControl):
                 ft.MenuItemButton(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.icons.COPY, size=16),
+                            ft.Icon(ft.Icons.COPY, size=16),
                             ft.Text("Copy", size=14)
                         ],
                         spacing=8
@@ -497,7 +497,7 @@ class MessageBubble(ft.UserControl):
                 ft.MenuItemButton(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.icons.REFRESH, size=16),
+                            ft.Icon(ft.Icons.REFRESH, size=16),
                             ft.Text("Retry", size=14)
                         ],
                         spacing=8
@@ -511,8 +511,8 @@ class MessageBubble(ft.UserControl):
             ft.MenuItemButton(
                 content=ft.Row(
                     controls=[
-                        ft.Icon(ft.icons.DELETE, size=16, color=ft.colors.RED_400),
-                        ft.Text("Delete", size=14, color=ft.colors.RED_400)
+                        ft.Icon(ft.Icons.DELETE, size=16, color=ft.Colors.RED_400),
+                        ft.Text("Delete", size=14, color=ft.Colors.RED_400)
                     ],
                     spacing=8
                 ),

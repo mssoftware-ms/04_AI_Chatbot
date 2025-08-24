@@ -4,13 +4,14 @@ Handles message display, scrolling, and typing indicators.
 """
 
 import flet as ft
+import asyncio
 from typing import Dict, Any, List, Callable, Optional
 from datetime import datetime
 
 from .message_bubble import MessageBubble
 
 
-class ChatArea(ft.UserControl):
+class ChatArea:
     """Main chat area for displaying messages."""
     
     def __init__(
@@ -18,7 +19,7 @@ class ChatArea(ft.UserControl):
         colors: Dict[str, str],
         on_scroll_top: Optional[Callable[[], None]] = None
     ):
-        super().__init__()
+        pass  # No super() needed
         self.colors = colors
         self.on_scroll_top = on_scroll_top
         
@@ -52,7 +53,7 @@ class ChatArea(ft.UserControl):
         
         # Scroll to bottom button
         self.scroll_to_bottom_button = ft.FloatingActionButton(
-            icon=ft.icons.KEYBOARD_ARROW_DOWN,
+            icon=ft.Icons.KEYBOARD_ARROW_DOWN,
             bgcolor=self.colors["primary"],
             mini=True,
             visible=False,
@@ -106,21 +107,21 @@ class ChatArea(ft.UserControl):
                     height=8,
                     bgcolor=self.colors["text_secondary"],
                     border_radius=4,
-                    animate=ft.animation.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
+                    animate=ft.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
                 ),
                 ft.Container(
                     width=8,
                     height=8,
                     bgcolor=self.colors["text_secondary"],
                     border_radius=4,
-                    animate=ft.animation.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
+                    animate=ft.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
                 ),
                 ft.Container(
                     width=8,
                     height=8,
                     bgcolor=self.colors["text_secondary"],
                     border_radius=4,
-                    animate=ft.animation.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
+                    animate=ft.Animation(1000, ft.AnimationCurve.EASE_IN_OUT)
                 )
             ],
             spacing=4,
@@ -132,8 +133,8 @@ class ChatArea(ft.UserControl):
                 controls=[
                     ft.CircleAvatar(
                         content=ft.Icon(
-                            ft.icons.SMART_TOY,
-                            color=ft.colors.WHITE,
+                            ft.Icons.SMART_TOY,
+                            color=ft.Colors.WHITE,
                             size=16
                         ),
                         bgcolor=self.colors["primary"],

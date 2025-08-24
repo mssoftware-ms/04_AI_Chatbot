@@ -1,0 +1,191 @@
+
+===============================================================
+           Debug WhatsApp AI Chatbot Startup
+===============================================================
+
+[DEBUG] Current Directory: D:\03_GIT\02_Python\04_AI_Chatbot
+[DEBUG] Checking files...
+[DEBUG] start_windows.py found
+[DEBUG] Checking virtual environment...
+[DEBUG] Virtual environment found
+[DEBUG] Activating virtual environment...
+[DEBUG] Virtual environment activated
+[DEBUG] Checking Python...
+Python 3.12.1
+[DEBUG] Checking imports...
+Python path: D:\03_GIT\02_Python\04_AI_Chatbot\venv\Scripts\python.exe
+Flet version OK
+[DEBUG] Starting application...
+2025-08-24 17:39:38 - config.logging_config - INFO - Logging configured with level: INFO
+2025-08-24 17:39:38 - __main__ - INFO - 🖥️  WhatsApp AI Chatbot - Windows Launcher
+2025-08-24 17:39:38 - __main__ - INFO - 🖥️  Starting Windows full application...
+
+============================================================
+🖥️  WhatsApp AI Chatbot - Windows Edition
+============================================================
+💻 Platform: Windows (nt)
+🌐 Browser: chrome.exe
+📂 Working Dir: D:\03_GIT\02_Python\04_AI_Chatbot
+
+📍 Application URLs:
+   🚀 Backend API: http://localhost:8000
+   📖 API Docs: http://localhost:8000/docs
+   🖥️  UI App: http://localhost:8550
+
+🎯 Browser will open automatically!
+============================================================
+2025-08-24 17:39:38 - __main__ - INFO - ⏳ Waiting for backend to start...
+D:\03_GIT\02_Python\04_AI_Chatbot\src\utils\dependencies.py:32: UserWarning: No SECRET_KEY found in environment variables. Using auto-generated key. Set SECRET_KEY environment variable for production.
+  warnings.warn(
+2025-08-24 17:39:39 - __main__ - INFO - 🚀 Starting Windows backend on 0.0.0.0:8000
+2025-08-24 17:39:39 - src.main - INFO - Starting WhatsApp AI Chatbot API server...
+2025-08-24 17:39:39 - src.api.websocket - INFO - Initializing WebSocket manager
+2025-08-24 17:39:39 - src.main - INFO - WebSocket manager initialized
+2025-08-24 17:39:39 - src.main - INFO - Database connection established
+2025-08-24 17:39:39 - src.main - INFO - Application startup completed successfully
+2025-08-24 17:39:41 - __main__ - INFO - ✅ Backend ready
+2025-08-24 17:39:41 - __main__ - INFO - 🌐 Browser opening: http://localhost:8550
+2025-08-24 17:39:41 - __main__ - INFO - 🖥️  Starting UI server...
+2025-08-24 17:39:42 - __main__ - INFO - 🖥️  Windows environment detected
+2025-08-24 17:39:42 - __main__ - INFO - 🌐 Starting UI server on Windows...
+2025-08-24 17:39:42 - __main__ - INFO - 📝 URL: http://localhost:8550
+2025-08-24 17:39:42 - flet_runtime - INFO - Assets path configured: D:\03_GIT\02_Python\04_AI_Chatbot\assets
+2025-08-24 17:39:42 - flet_runtime - INFO - Starting local Flet Server on port 8550...
+2025-08-24 17:39:42 - flet_runtime - INFO - Flet Server found in: D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet\bin\fletd.exe
+2025-08-24 17:39:42 - flet_runtime - INFO - Host binding configured: 127.0.0.1
+2025-08-24 17:39:42 - flet_runtime - INFO - Web renderer configured: canvaskit
+2025-08-24 17:39:42 - flet_runtime - INFO - Use color emoji: False
+2025-08-24 17:39:42 - flet_runtime - INFO - Route URL strategy configured: path
+INFO[2025-08-24T17:39:42+02:00] Using in-memory cache
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:   export GIN_MODE=release
+ - using code:  gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ws                       --> github.com/flet-dev/flet/server/server.Start.func1 (4 handlers)
+[GIN-debug] GET    /api/                     --> github.com/flet-dev/flet/server/server.Start.func2 (4 handlers)
+[GIN-debug] GET    /api/oauth/redirect       --> github.com/flet-dev/flet/server/server.oauthCallbackHandler (4 handlers)
+[GIN-debug] PUT    /api/upload               --> github.com/flet-dev/flet/server/server.uploadFileAsStream (4 handlers)
+INFO[2025-08-24T17:39:42+02:00] Starting server on 127.0.0.1:8550
+INFO[2025-08-24T17:39:42+02:00] Starting background tasks...
+INFO[2025-08-24T17:39:42+02:00] Start background task to cleanup expired data
+[GIN] 2025/08/24 - 17:39:42 | 200 |            0s |       127.0.0.1 | GET      "/"
+[GIN] 2025/08/24 - 17:39:42 | 304 |            0s |       127.0.0.1 | GET      "/flutter.js"
+[GIN] 2025/08/24 - 17:39:42 | 304 |      7.5858ms |       127.0.0.1 | GET      "/flutter_service_worker.js?v=3554908826"
+[GIN] 2025/08/24 - 17:39:42 | 200 |     21.3908ms |       127.0.0.1 | GET      "/main.dart.js"
+[GIN] 2025/08/24 - 17:39:42 | 301 |       752.4µs |       127.0.0.1 | GET      "/index.html"
+INFO[2025-08-24T17:39:42+02:00] New WebSocket client connected from 127.0.0.1: 7cffdc1d-59e5-4cf5-b2d5-8c80e57609e2
+[GIN] 2025/08/24 - 17:39:42 | 200 |       506.3µs |       127.0.0.1 | GET      "/ws"
+INFO[2025-08-24T17:39:42+02:00] registerHostClient()
+[GIN] 2025/08/24 - 17:39:42 | 200 |      1.5813ms |       127.0.0.1 | GET      "/assets/AssetManifest.json"
+INFO[2025-08-24T17:39:42+02:00] Registering Host client: 7cffdc1d-59e5-4cf5-b2d5-8c80e57609e2
+INFO[2025-08-24T17:39:42+02:00] Registering host client 7cffdc1d-59e5-4cf5-b2d5-8c80e57609e2 to handle 'p/index' sessions
+2025-08-24 17:39:42 - flet_runtime - INFO - App URL: http://127.0.0.1:8550
+2025-08-24 17:39:42 - flet_runtime - INFO - Connected to Flet app and handling user sessions...
+[GIN] 2025/08/24 - 17:39:42 | 200 |      1.6645ms |       127.0.0.1 | GET      "/assets/FontManifest.json"
+[GIN] 2025/08/24 - 17:39:42 | 200 |       626.2µs |       127.0.0.1 | GET      "/"
+[GIN] 2025/08/24 - 17:39:42 | 200 |       592.7µs |       127.0.0.1 | GET      "/"
+INFO[2025-08-24T17:39:43+02:00] New WebSocket client connected from 127.0.0.1: 2308d04d-7187-497b-a7e9-c662817a5705
+[GIN] 2025/08/24 - 17:39:43 | 200 |         353µs |       127.0.0.1 | GET      "/ws"
+INFO[2025-08-24T17:39:43+02:00] registerWebClient()
+INFO[2025-08-24T17:39:43+02:00] Registering Web client: 2308d04d-7187-497b-a7e9-c662817a5705
+INFO[2025-08-24T17:39:43+02:00] Registering Web client 2308d04d-7187-497b-a7e9-c662817a5705 to session p/index:c3de0b55-3fdd-4466-a095-ec6fe08b6c2a
+2025-08-24 17:39:43 - flet_runtime - INFO - Session started: c3de0b55-3fdd-4466-a095-ec6fe08b6c2a
+2025-08-24 17:39:43 - __main__ - ERROR - ChatApp error:
+Unhandled error processing page session c3de0b55-3fdd-4466-a095-ec6fe08b6c2a: Traceback (most recent call last):
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\start_windows.py", line 95, in main
+    await app.main(page)
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\src\ui\chat_app.py", line 53, in main
+    await self.setup_page()
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\src\ui\chat_app.py", line 77, in setup_page
+    self.page.update()
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 290, in update
+    r = self.__update(self)
+        ^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 424, in __update
+    results = self.__conn.send_commands(self._session_id, commands).results
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\connection.py", line 27, in send_commands
+    raise NotImplementedError()
+NotImplementedError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_runtime\app.py", line 448, in on_session_created
+    await session_handler(page)
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\start_windows.py", line 98, in main
+    page.add(ft.Text(f"UI Error: {e}", color="red"))
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 306, in add
+    r = self.__update(self)
+        ^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 422, in __update
+    commands, added_controls, removed_controls = self.__prepare_update(*controls)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 447, in __prepare_update
+    control.build_update_commands(
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\control.py", line 384, in build_update_commands
+    ctrl.build_update_commands(
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\control.py", line 399, in build_update_commands
+    assert self.__uid is not None
+AssertionError
+
+[GIN] 2025/08/24 - 17:39:43 | 304 |      1.0178ms |       127.0.0.1 | GET      "/flutter_service_worker.js?v=3554908826"
+[GIN] 2025/08/24 - 17:39:45 | 304 |      1.3877ms |       127.0.0.1 | GET      "/flutter_service_worker.js?v=3554908826"
+INFO[2025-08-24T17:39:45+02:00] New WebSocket client connected from 127.0.0.1: 9e9438f7-f9f0-4b84-9b80-6fa5e1ebbb81
+[GIN] 2025/08/24 - 17:39:45 | 200 |      1.0629ms |       127.0.0.1 | GET      "/ws"
+INFO[2025-08-24T17:39:45+02:00] registerWebClient()
+INFO[2025-08-24T17:39:45+02:00] Registering Web client: 9e9438f7-f9f0-4b84-9b80-6fa5e1ebbb81
+INFO[2025-08-24T17:39:45+02:00] Registering Web client 9e9438f7-f9f0-4b84-9b80-6fa5e1ebbb81 to session p/index:df8da599-49ce-42c1-82cd-03a09ab1807e
+2025-08-24 17:39:45 - flet_runtime - INFO - Session started: df8da599-49ce-42c1-82cd-03a09ab1807e
+2025-08-24 17:39:45 - __main__ - ERROR - ChatApp error:
+Unhandled error processing page session df8da599-49ce-42c1-82cd-03a09ab1807e: Traceback (most recent call last):
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\start_windows.py", line 95, in main
+    await app.main(page)
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\src\ui\chat_app.py", line 53, in main
+    await self.setup_page()
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\src\ui\chat_app.py", line 77, in setup_page
+    self.page.update()
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 290, in update
+    r = self.__update(self)
+        ^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 424, in __update
+    results = self.__conn.send_commands(self._session_id, commands).results
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\connection.py", line 27, in send_commands
+    raise NotImplementedError()
+NotImplementedError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_runtime\app.py", line 448, in on_session_created
+    await session_handler(page)
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\start_windows.py", line 98, in main
+    page.add(ft.Text(f"UI Error: {e}", color="red"))
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 306, in add
+    r = self.__update(self)
+        ^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 422, in __update
+    commands, added_controls, removed_controls = self.__prepare_update(*controls)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\page.py", line 447, in __prepare_update
+    control.build_update_commands(
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\control.py", line 384, in build_update_commands
+    ctrl.build_update_commands(
+  File "D:\03_GIT\02_Python\04_AI_Chatbot\venv\Lib\site-packages\flet_core\control.py", line 399, in build_update_commands
+    assert self.__uid is not None
+AssertionError
+
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xc0000005 code=0x0 addr=0x8 pc=0xa07d80]
+
+goroutine 31 [running]:
+github.com/flet-dev/flet/server/page.(*sessionHandler).extendExpiration(0xc0004dff60)
+        /home/appveyor/projects/flet/server/page/session_handler.go:84 +0x20
+github.com/flet-dev/flet/server/page.(*Client).register.func2()
+        /home/appveyor/projects/flet/server/page/client.go:117 +0x205
+created by github.com/flet-dev/flet/server/page.(*Client).register
+        /home/appveyor/projects/flet/server/page/client.go:106 +0x1f6
+2025-08-24 17:39:48 - flet - ERROR - Task-11 threw no close frame received or sent

@@ -92,4 +92,9 @@ psutil==5.9.6
 # Additional Utilities
 aiofiles==23.2.1
 slowapi==0.1.9
+PyJWT==2.10.1
 python-json-logger==2.0.7  # Optional for JSON logging
+
+# Testing Framework
+pytest==8.4.1
+pytest-asyncio==1.1.0

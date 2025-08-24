@@ -73,8 +73,6 @@ class ChatApp:
             color_scheme_seed=self.colors["primary"],
             use_material3=True
         )
-        
-        await self.page.update_async()
     
     async def setup_components(self):
         """Initialize all UI components."""
@@ -94,7 +92,8 @@ class ChatApp:
         self.input_area = InputArea(
             colors=self.colors,
             on_send_message=self.on_send_message,
-            on_file_attach=self.on_file_attach
+            on_file_attach=self.on_file_attach,
+            page=self.page
         )
     
     async def setup_layout(self):
@@ -104,7 +103,7 @@ class ChatApp:
             controls=[
                 # Sidebar (left panel)
                 ft.Container(
-                    content=self.sidebar,
+                    content=self.sidebar.build(),
                     width=320,
                     bgcolor=self.colors["sidebar"],
                     border=ft.border.only(right=ft.BorderSide(1, self.colors["border"])),
@@ -118,13 +117,13 @@ class ChatApp:
                             await self.create_chat_header(),
                             # Chat messages
                             ft.Container(
-                                content=self.chat_area,
+                                content=self.chat_area.build(),
                                 expand=True,
                                 bgcolor=self.colors["chat"]
                             ),
                             # Input area
                             ft.Container(
-                                content=self.input_area,
+                                content=self.input_area.build(),
                                 bgcolor=self.colors["sidebar"],
                                 border=ft.border.only(top=ft.BorderSide(1, self.colors["border"])),
                                 padding=ft.padding.all(10)
@@ -142,7 +141,7 @@ class ChatApp:
         )
         
         self.page.add(main_row)
-        await self.page.update_async()
+        self.page.update()
     
     async def create_chat_header(self) -> ft.Container:
         """Create the chat area header."""
@@ -152,7 +151,7 @@ class ChatApp:
                     ft.Row(
                         controls=[
                             ft.CircleAvatar(
-                                content=ft.Icon(ft.icons.SMART_TOY, color=ft.colors.WHITE),
+                                content=ft.Icon(ft.Icons.SMART_TOY, color=ft.Colors.WHITE),
                                 bgcolor=self.colors["primary"],
                                 radius=20
                             ),
@@ -180,13 +179,13 @@ class ChatApp:
                     ft.Row(
                         controls=[
                             ft.IconButton(
-                                icon=ft.icons.SEARCH,
+                                icon=ft.Icons.SEARCH,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="Search messages",
                                 on_click=self.on_search_messages
                             ),
                             ft.IconButton(
-                                icon=ft.icons.MORE_VERT,
+                                icon=ft.Icons.MORE_VERT,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="More options",
                                 on_click=self.on_chat_options

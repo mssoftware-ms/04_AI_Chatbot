@@ -8,7 +8,7 @@ from typing import Dict, Any, List, Callable, Optional
 from datetime import datetime
 
 
-class Sidebar(ft.UserControl):
+class Sidebar:
     """Projects and conversations sidebar."""
     
     def __init__(
@@ -19,7 +19,7 @@ class Sidebar(ft.UserControl):
         on_new_project: Callable[[str, str], None],
         on_new_conversation: Callable[[], None]
     ):
-        super().__init__()
+        pass  # No super() needed
         self.colors = colors
         self.on_project_select = on_project_select
         self.on_conversation_select = on_conversation_select
@@ -49,7 +49,7 @@ class Sidebar(ft.UserControl):
                     ft.Row(
                         controls=[
                             ft.IconButton(
-                                icon=ft.icons.MENU,
+                                icon=ft.Icons.MENU,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="Menu",
                                 on_click=self.on_menu_click
@@ -57,19 +57,19 @@ class Sidebar(ft.UserControl):
                             ft.Row(
                                 controls=[
                                     ft.IconButton(
-                                        icon=ft.icons.ADD_COMMENT,
+                                        icon=ft.Icons.ADD_COMMENT,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="New conversation",
                                         on_click=self.on_new_conversation_click
                                     ),
                                     ft.IconButton(
-                                        icon=ft.icons.CREATE_NEW_FOLDER,
+                                        icon=ft.Icons.CREATE_NEW_FOLDER,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="New project",
                                         on_click=self.on_new_project_click
                                     ),
                                     ft.IconButton(
-                                        icon=ft.icons.MORE_VERT,
+                                        icon=ft.Icons.MORE_VERT,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="More options",
                                         on_click=self.on_more_options
@@ -165,7 +165,7 @@ class Sidebar(ft.UserControl):
             bgcolor=self.colors["background"],
             border_color=self.colors["border"],
             focused_border_color=self.colors["primary"],
-            prefix_icon=ft.icons.SEARCH,
+            prefix_icon=ft.Icons.SEARCH,
             border_radius=25,
             content_padding=ft.padding.symmetric(horizontal=15, vertical=10),
             on_change=self.on_search_change
@@ -201,7 +201,7 @@ class Sidebar(ft.UserControl):
                     # Project icon
                     ft.Container(
                         content=ft.Icon(
-                            ft.icons.FOLDER,
+                            ft.Icons.FOLDER,
                             color=self.colors["primary"] if is_selected else self.colors["text_secondary"],
                             size=20
                         ),
@@ -244,7 +244,7 @@ class Sidebar(ft.UserControl):
                     ),
                     # More options
                     ft.IconButton(
-                        icon=ft.icons.MORE_VERT,
+                        icon=ft.Icons.MORE_VERT,
                         icon_color=self.colors["text_secondary"],
                         icon_size=16,
                         tooltip="Project options",
@@ -285,8 +285,8 @@ class Sidebar(ft.UserControl):
                     # Avatar
                     ft.CircleAvatar(
                         content=ft.Icon(
-                            ft.icons.CHAT,
-                            color=ft.colors.WHITE,
+                            ft.Icons.CHAT,
+                            color=ft.Colors.WHITE,
                             size=16
                         ),
                         bgcolor=self.colors["primary"] if is_selected else self.colors["text_secondary"],
@@ -465,7 +465,7 @@ class Sidebar(ft.UserControl):
                     on_click=lambda _: self.create_project_from_dialog(),
                     style=ft.ButtonStyle(
                         bgcolor=self.colors["primary"],
-                        color=ft.colors.WHITE
+                        color=ft.Colors.WHITE
                     )
                 )
             ],

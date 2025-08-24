@@ -39,15 +39,34 @@ def start_ui():
     from src.ui.chat_app import ChatApp
     
     def main(page: ft.Page):
-        app = ChatApp()
-        app.main(page)
+        try:
+            app = ChatApp()
+            app.main(page)
+        except Exception as e:
+            logger.error(f"UI error: {e}")
     
-    ft.app(
-        target=main,
-        port=settings.ui_port,
-        view=ft.WEB_BROWSER,
-        assets_dir="assets"
-    )
+    try:
+        # WSL fix: Don't try to open Windows browser from WSL thread
+        logger.info(f"🌐 UI will be available at: http://localhost:{settings.ui_port}")
+        logger.info("💡 Open this URL manually in Windows browser if running in WSL")
+        
+        ft.app(
+            target=main,
+            port=settings.ui_port,
+            view=None,  # Don't auto-open browser (fixes WSL issues)
+            assets_dir="assets"
+        )
+    except ValueError as e:
+        if "signal only works in main thread" in str(e):
+            logger.warning("🔧 WSL detected - UI started without signal handling")
+            ft.app(
+                target=main,
+                port=settings.ui_port,
+                view=None,
+                assets_dir="assets"
+            )
+        else:
+            raise
 
 
 async def main():
@@ -67,6 +86,7 @@ async def main():
             
         elif mode == "ui":
             logger.info("Starting UI only...")
+            logger.info(f"UI will be available at: http://localhost:{settings.ui_port}")
             start_ui()
             
         elif mode == "test":
