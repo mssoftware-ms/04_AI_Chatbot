@@ -53,7 +53,7 @@ class ChatArea:
         
         # Scroll to bottom button
         self.scroll_to_bottom_button = ft.FloatingActionButton(
-            icon=ft.Icons.KEYBOARD_ARROW_DOWN,
+            icon=ft.icons.KEYBOARD_ARROW_DOWN,
             bgcolor=self.colors["primary"],
             mini=True,
             visible=False,
@@ -133,8 +133,8 @@ class ChatArea:
                 controls=[
                     ft.CircleAvatar(
                         content=ft.Icon(
-                            ft.Icons.SMART_TOY,
-                            color=ft.Colors.WHITE,
+                            ft.icons.SMART_TOY,
+                            color=ft.colors.WHITE,
                             size=16
                         ),
                         bgcolor=self.colors["primary"],

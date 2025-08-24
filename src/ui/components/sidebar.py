@@ -49,7 +49,7 @@ class Sidebar:
                     ft.Row(
                         controls=[
                             ft.IconButton(
-                                icon=ft.Icons.MENU,
+                                icon=ft.icons.MENU,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="Menu",
                                 on_click=self.on_menu_click
@@ -57,19 +57,19 @@ class Sidebar:
                             ft.Row(
                                 controls=[
                                     ft.IconButton(
-                                        icon=ft.Icons.ADD_COMMENT,
+                                        icon=ft.icons.ADD_COMMENT,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="New conversation",
                                         on_click=self.on_new_conversation_click
                                     ),
                                     ft.IconButton(
-                                        icon=ft.Icons.CREATE_NEW_FOLDER,
+                                        icon=ft.icons.CREATE_NEW_FOLDER,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="New project",
                                         on_click=self.on_new_project_click
                                     ),
                                     ft.IconButton(
-                                        icon=ft.Icons.MORE_VERT,
+                                        icon=ft.icons.MORE_VERT,
                                         icon_color=self.colors["text_secondary"],
                                         tooltip="More options",
                                         on_click=self.on_more_options
@@ -165,7 +165,7 @@ class Sidebar:
             bgcolor=self.colors["background"],
             border_color=self.colors["border"],
             focused_border_color=self.colors["primary"],
-            prefix_icon=ft.Icons.SEARCH,
+            prefix_icon=ft.icons.SEARCH,
             border_radius=25,
             content_padding=ft.padding.symmetric(horizontal=15, vertical=10),
             on_change=self.on_search_change
@@ -201,7 +201,7 @@ class Sidebar:
                     # Project icon
                     ft.Container(
                         content=ft.Icon(
-                            ft.Icons.FOLDER,
+                            ft.icons.FOLDER,
                             color=self.colors["primary"] if is_selected else self.colors["text_secondary"],
                             size=20
                         ),
@@ -244,7 +244,7 @@ class Sidebar:
                     ),
                     # More options
                     ft.IconButton(
-                        icon=ft.Icons.MORE_VERT,
+                        icon=ft.icons.MORE_VERT,
                         icon_color=self.colors["text_secondary"],
                         icon_size=16,
                         tooltip="Project options",
@@ -285,8 +285,8 @@ class Sidebar:
                     # Avatar
                     ft.CircleAvatar(
                         content=ft.Icon(
-                            ft.Icons.CHAT,
-                            color=ft.Colors.WHITE,
+                            ft.icons.CHAT,
+                            color=ft.colors.WHITE,
                             size=16
                         ),
                         bgcolor=self.colors["primary"] if is_selected else self.colors["text_secondary"],
@@ -465,7 +465,7 @@ class Sidebar:
                     on_click=lambda _: self.create_project_from_dialog(),
                     style=ft.ButtonStyle(
                         bgcolor=self.colors["primary"],
-                        color=ft.Colors.WHITE
+                        color=ft.colors.WHITE
                     )
                 )
             ],

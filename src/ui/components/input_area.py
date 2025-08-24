@@ -89,29 +89,29 @@ class InputArea:
         
         # Action buttons
         self.attach_button = ft.IconButton(
-            icon=ft.Icons.ATTACH_FILE,
+            icon=ft.icons.ATTACH_FILE,
             icon_color=self.colors["text_secondary"],
             tooltip="Attach file",
             on_click=self.on_attach_click
         )
         
         self.emoji_button = ft.IconButton(
-            icon=ft.Icons.EMOJI_EMOTIONS,
+            icon=ft.icons.EMOJI_EMOTIONS,
             icon_color=self.colors["text_secondary"],
             tooltip="Emoji",
             on_click=self.on_emoji_click
         )
         
         self.voice_button = ft.IconButton(
-            icon=ft.Icons.MIC,
+            icon=ft.icons.MIC,
             icon_color=self.colors["text_secondary"],
             tooltip="Voice message",
             on_click=self.on_voice_click
         )
         
         self.send_button = ft.IconButton(
-            icon=ft.Icons.SEND,
-            icon_color=ft.Colors.WHITE,
+            icon=ft.icons.SEND,
+            icon_color=ft.colors.WHITE,
             bgcolor=self.colors["primary"],
             tooltip="Send message",
             on_click=self.on_send_click,
@@ -147,7 +147,7 @@ class InputArea:
             content=ft.Column(
                 controls=[
                     ft.Icon(
-                        ft.Icons.CLOUD_UPLOAD,
+                        ft.icons.CLOUD_UPLOAD,
                         size=48,
                         color=self.colors["primary"]
                     ),
@@ -205,16 +205,16 @@ class InputArea:
         
         # Icon based on file type
         icon_map = {
-            "image": ft.Icons.IMAGE,
-            "document": ft.Icons.DESCRIPTION,
-            "audio": ft.Icons.AUDIOTRACK,
-            "video": ft.Icons.VIDEOCAM,
-            "text": ft.Icons.TEXT_SNIPPET,
-            "file": ft.Icons.ATTACH_FILE
+            "image": ft.icons.IMAGE,
+            "document": ft.icons.DESCRIPTION,
+            "audio": ft.icons.AUDIOTRACK,
+            "video": ft.icons.VIDEOCAM,
+            "text": ft.icons.TEXT_SNIPPET,
+            "file": ft.icons.ATTACH_FILE
         }
         
         icon = ft.Icon(
-            icon_map.get(file_type, ft.Icons.ATTACH_FILE),
+            icon_map.get(file_type, ft.icons.ATTACH_FILE),
             color=self.colors["primary"],
             size=20
         )
@@ -260,7 +260,7 @@ class InputArea:
                         expand=True
                     ),
                     ft.IconButton(
-                        icon=ft.Icons.CLOSE,
+                        icon=ft.icons.CLOSE,
                         icon_color=self.colors["text_secondary"],
                         icon_size=16,
                         tooltip="Remove",
@@ -406,8 +406,8 @@ class InputArea:
         self.is_recording = True
         
         if self.voice_button:
-            self.voice_button.icon = ft.Icons.STOP
-            self.voice_button.bgcolor = ft.Colors.RED_400
+            self.voice_button.icon = ft.icons.STOP
+            self.voice_button.bgcolor = ft.colors.RED_400
             self.voice_button.tooltip = "Stop recording"
             await self.voice_button.update_async()
         
@@ -416,7 +416,7 @@ class InputArea:
             title=ft.Text("Recording voice message..."),
             content=ft.Column(
                 controls=[
-                    ft.Icon(ft.Icons.MIC, color=ft.Colors.RED_400, size=48),
+                    ft.Icon(ft.icons.MIC, color=ft.colors.RED_400, size=48),
                     ft.Text("Tap to stop recording", text_align=ft.TextAlign.CENTER)
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -431,8 +431,8 @@ class InputArea:
                     "Stop",
                     on_click=lambda _: self.stop_voice_recording(),
                     style=ft.ButtonStyle(
-                        bgcolor=ft.Colors.RED_400,
-                        color=ft.Colors.WHITE
+                        bgcolor=ft.colors.RED_400,
+                        color=ft.colors.WHITE
                     )
                 )
             ]
@@ -448,7 +448,7 @@ class InputArea:
         
         # Reset voice button
         if self.voice_button:
-            self.voice_button.icon = ft.Icons.MIC
+            self.voice_button.icon = ft.icons.MIC
             self.voice_button.bgcolor = None
             self.voice_button.tooltip = "Voice message"
             await self.voice_button.update_async()
@@ -467,7 +467,7 @@ class InputArea:
         self.is_recording = False
         
         if self.voice_button:
-            self.voice_button.icon = ft.Icons.MIC
+            self.voice_button.icon = ft.icons.MIC
             self.voice_button.bgcolor = None
             await self.voice_button.update_async()
         
@@ -620,7 +620,7 @@ class InputArea:
         """Show error message."""
         error_snackbar = ft.SnackBar(
             content=ft.Text(message),
-            bgcolor=ft.Colors.RED_400,
+            bgcolor=ft.colors.RED_400,
             duration=3000
         )
         self.page.show_snack_bar(error_snackbar)

@@ -89,8 +89,8 @@ class MessageBubble:
         if not self.is_user:
             avatar = ft.CircleAvatar(
                 content=ft.Icon(
-                    ft.Icons.SMART_TOY,
-                    color=ft.Colors.WHITE,
+                    ft.icons.SMART_TOY,
+                    color=ft.colors.WHITE,
                     size=16
                 ),
                 bgcolor=self.colors["primary"],
@@ -201,7 +201,7 @@ class MessageBubble:
             content=ft.Row(
                 controls=[
                     ft.Icon(
-                        ft.Icons.DESCRIPTION,
+                        ft.icons.DESCRIPTION,
                         color=self.colors["primary"],
                         size=24
                     ),
@@ -224,7 +224,7 @@ class MessageBubble:
                         expand=True
                     ),
                     ft.IconButton(
-                        icon=ft.Icons.DOWNLOAD,
+                        icon=ft.icons.DOWNLOAD,
                         icon_color=self.colors["text_secondary"],
                         icon_size=20,
                         tooltip="Download",
@@ -246,7 +246,7 @@ class MessageBubble:
             content=ft.Row(
                 controls=[
                     ft.IconButton(
-                        icon=ft.Icons.PLAY_ARROW,
+                        icon=ft.icons.PLAY_ARROW,
                         icon_color=self.colors["primary"],
                         bgcolor=self.colors["primary"] + "20",
                         tooltip="Play audio"
@@ -284,8 +284,8 @@ class MessageBubble:
                 controls=[
                     ft.Container(
                         content=ft.Icon(
-                            ft.Icons.VIDEOCAM,
-                            color=ft.Colors.WHITE,
+                            ft.icons.VIDEOCAM,
+                            color=ft.colors.WHITE,
                             size=40
                         ),
                         width=200,
@@ -296,10 +296,10 @@ class MessageBubble:
                     ),
                     ft.Container(
                         content=ft.IconButton(
-                            icon=ft.Icons.PLAY_CIRCLE_FILL,
-                            icon_color=ft.Colors.WHITE,
+                            icon=ft.icons.PLAY_CIRCLE_FILL,
+                            icon_color=ft.colors.WHITE,
                             icon_size=50,
-                            bgcolor=ft.Colors.BLACK54,
+                            bgcolor=ft.colors.BLACK54,
                             style=ft.ButtonStyle(
                                 shape=ft.CircleBorder()
                             )
@@ -309,7 +309,7 @@ class MessageBubble:
                     ft.Container(
                         content=ft.Text(
                             attachment.get("name", ""),
-                            color=ft.Colors.WHITE,
+                            color=ft.colors.WHITE,
                             size=12,
                             weight=ft.FontWeight.BOLD
                         ),
@@ -329,7 +329,7 @@ class MessageBubble:
             content=ft.Row(
                 controls=[
                     ft.Icon(
-                        ft.Icons.ATTACH_FILE,
+                        ft.icons.ATTACH_FILE,
                         color=self.colors["text_secondary"],
                         size=24
                     ),
@@ -351,7 +351,7 @@ class MessageBubble:
                         expand=True
                     ),
                     ft.IconButton(
-                        icon=ft.Icons.DOWNLOAD,
+                        icon=ft.icons.DOWNLOAD,
                         icon_color=self.colors["text_secondary"],
                         icon_size=20,
                         tooltip="Download",
@@ -374,7 +374,7 @@ class MessageBubble:
                 content=ft.Row(
                     controls=[
                         ft.Icon(
-                            ft.Icons.SOURCE,
+                            ft.icons.SOURCE,
                             size=12,
                             color=self.colors["text_secondary"]
                         ),
@@ -448,12 +448,12 @@ class MessageBubble:
     
     def get_status_icon(self) -> Optional[ft.Icon]:
         """Get status icon based on message status."""
-        status_icons = {
-            "sending": ft.Icons.SCHEDULE,
-            "sent": ft.Icons.DONE,
-            "delivered": ft.Icons.DONE_ALL,
-            "read": ft.Icons.DONE_ALL,
-            "failed": ft.Icons.ERROR
+            status_icons = {
+            "sending": ft.icons.SCHEDULE,
+            "sent": ft.icons.DONE,
+            "delivered": ft.icons.DONE_ALL,
+            "read": ft.icons.DONE_ALL,
+            "failed": ft.icons.ERROR
         }
         
         icon = status_icons.get(self.status)
@@ -464,7 +464,7 @@ class MessageBubble:
         if self.status == "read":
             color = self.colors["primary"]
         elif self.status == "failed":
-            color = ft.Colors.RED_400
+            color = ft.colors.RED_400
         
         return ft.Icon(
             icon,
@@ -482,7 +482,7 @@ class MessageBubble:
                 ft.MenuItemButton(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.COPY, size=16),
+                        ft.Icon(ft.icons.COPY, size=16),
                             ft.Text("Copy", size=14)
                         ],
                         spacing=8
@@ -497,7 +497,7 @@ class MessageBubble:
                 ft.MenuItemButton(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.REFRESH, size=16),
+                        ft.Icon(ft.icons.REFRESH, size=16),
                             ft.Text("Retry", size=14)
                         ],
                         spacing=8
@@ -511,8 +511,8 @@ class MessageBubble:
             ft.MenuItemButton(
                 content=ft.Row(
                     controls=[
-                        ft.Icon(ft.Icons.DELETE, size=16, color=ft.Colors.RED_400),
-                        ft.Text("Delete", size=14, color=ft.Colors.RED_400)
+                        ft.Icon(ft.icons.DELETE, size=16, color=ft.colors.RED_400),
+                        ft.Text("Delete", size=14, color=ft.colors.RED_400)
                     ],
                     spacing=8
                 ),

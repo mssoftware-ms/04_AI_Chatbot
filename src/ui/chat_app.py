@@ -151,7 +151,7 @@ class ChatApp:
                     ft.Row(
                         controls=[
                             ft.CircleAvatar(
-                                content=ft.Icon(ft.Icons.SMART_TOY, color=ft.Colors.WHITE),
+                                content=ft.Icon(ft.icons.SMART_TOY, color=ft.colors.WHITE),
                                 bgcolor=self.colors["primary"],
                                 radius=20
                             ),
@@ -179,13 +179,13 @@ class ChatApp:
                     ft.Row(
                         controls=[
                             ft.IconButton(
-                                icon=ft.Icons.SEARCH,
+                                icon=ft.icons.SEARCH,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="Search messages",
                                 on_click=self.on_search_messages
                             ),
                             ft.IconButton(
-                                icon=ft.Icons.MORE_VERT,
+                                icon=ft.icons.MORE_VERT,
                                 icon_color=self.colors["text_secondary"],
                                 tooltip="More options",
                                 on_click=self.on_chat_options
